@@ -121,6 +121,7 @@ class Command
 
 				case 't':
 				case 'test':
+					include_once('PHPUnit/Autoload.php');
 
 					// Attempt to load PUPUnit.  If it fails, we are done.
 					if ( ! class_exists('PHPUnit_Framework_TestCase'))
