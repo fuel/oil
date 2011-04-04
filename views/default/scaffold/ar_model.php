@@ -1,8 +1,8 @@
 <?php echo '<?php' ?>
 
-class Model_<?php echo ucfirst($name); ?> extends ActiveRecord\Model {
+class Model_<?php echo ucfirst($name); ?> extends Orm\Model {
 <?php if (isset($table)): ?>
-	protected $table = '<?php echo $table; ?>';
+	protected static $_table_name = '<?php echo $table; ?>';
 <?php endif; ?>
 
 }
