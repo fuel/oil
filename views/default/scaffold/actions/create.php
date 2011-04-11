@@ -1,4 +1,4 @@
-		if ($_POST)
+		if (Input::method() == 'POST')
 		{
 			$<?php echo $singular; ?> = <?php echo $model; ?>::factory(array(
 <?php foreach ($fields as $field): ?>
@@ -20,4 +20,4 @@
 		}
 
 		$this->template->title = "<?php echo ucfirst($plural); ?>";
-		$this->template->content = View::factory('<?php echo strtolower($plural);?>/create');
+		$this->template->content = View::factory('<?php echo Str::lower($plural);?>/create');

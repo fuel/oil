@@ -7,4 +7,4 @@ class Model_<?php echo ucfirst($name); ?> extends Orm\Model {
 
 }
 
-/* End of file <?php echo strtolower($name); ?>.php */
+/* End of file <?php echo Str::lower($name); ?>.php */
