@@ -46,7 +46,7 @@ class Generate
 		$filepath = APPPATH . 'classes/controller/'.$filename.'.php';
 
 		// Uppercase each part of the class name and remove hyphens
-		$class_name = static::class_name($singular);
+		$class_name = \Inflector::classify($plural);
 
 		// Stick "blogs" to the start of the array
 		array_unshift($args, $singular);
@@ -100,7 +100,7 @@ CONTROLLER;
 		$filepath = APPPATH . 'classes/model/'.$filename.'.php';
 
 		// Uppercase each part of the class name and remove hyphens
-		$class_name = static::class_name($singular);
+		$class_name = \Inflector::classify($plural);
 
 		$model = <<<MODEL
 <?php
@@ -460,11 +460,6 @@ HELP;
 		}
 
 		return $result;
-	}
-
-	public static function class_name($name)
-	{
-		return str_replace(array(' ', '-'), '_', ucwords(str_replace('_', ' ', $name)));
 	}
 
 	// Helper methods
