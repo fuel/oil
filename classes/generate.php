@@ -371,6 +371,8 @@ Usage:
 Runtime options:
   -f, [--force]    # Overwrite files that already exist
   -s, [--skip]     # Skip files that already exist
+  -q, [--quiet]    # Supress status output
+  -t, [--speak]    # Speak errors in a robot voice
 
 Description:
   The 'oil' command can be used to generate MVC components, database migrations
