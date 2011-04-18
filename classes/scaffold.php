@@ -55,7 +55,7 @@ class Scaffold
 		}
 
 		$data['singular'] = $singular = strtolower(array_shift($args));
-		$data['model'] = $model_name = 'Model_'.Generate::class_name($singular);
+		$data['model'] = $model_name = 'Model_'.\Inflector::classify($singular);
 		$data['plural'] = $plural = \Inflector::pluralize($singular);
 		$data['fields'] = $fields;
 
