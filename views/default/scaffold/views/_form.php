@@ -7,7 +7,7 @@
 			switch($field['type']):
 
 				case 'text':
-					echo "<?php echo Form::textarea('{$field['name']}', Input::post('{$field['name']}', isset(\${$singular}) ? \${$singular}->{$field['name']} : '')); ?>";
+					echo "<?php echo Form::textarea('{$field['name']}', Input::post('{$field['name']}', isset(\${$singular}) ? \${$singular}->{$field['name']} : ''), array('cols' => 60, 'rows' => 8)); ?>";
 				break;
 
 				default:

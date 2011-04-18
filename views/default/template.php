@@ -4,26 +4,37 @@
 	<meta charset="utf-8">
 	<title><?php echo $title; ?></title>
 	<style type="text/css">
-		body { background-color: #F2F2F2; margin: 45px 0 0 0; font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif; font-size: 18px }
-		#wrapper { width: 740px; margin: 0 auto; }
-		h1 { color: #333333; font: normal normal normal 62px/1em Impact, Charcoal, sans-serif; margin: 0 0 15px 0; }
-		pre { padding: 15px; background-color: #FFF; border: 1px solid #CCC; font-size: 16px;}
-		#footer p { font-size: 14px; text-align: right; }
-		a { color: #000; }
+		* { margin: 0; padding: 0; }
+		body { background-color: #EEE; font-family: sans-serif; font-size: 16px; line-height: 20px; margin: 40px; }
+		#wrapper { padding: 30px; background: #fff; color: #333; margin: 0 auto; width: 600px; }
+		a { color: #36428D; }
+		h1 { color: #000; font-size: 55px; padding: 0 0 25px; line-height: 1em; }
+		.intro { font-size: 22px; line-height: 30px; font-family: georgia, serif; color: #555; padding: 29px 0 20px; border-top: 1px solid #CCC; }
+		.notice { border: 1px solid #CCC; padding: 10px; background-color: #EEE; }
+		h2 { margin: 50px 0 15px; padding: 0 0 10px; font-size: 18px; border-bottom: 1px dashed #ccc; }
+		h2.first { margin: 10px 0 15px; }
+		p { margin: 0 0 15px; line-height: 22px;}
+		a { color: #666; }
+		pre { border-left: 1px solid #ddd; line-height:20px; margin:20px; padding-left:1em; font-size: 16px; }
+		pre, code { color:#137F80; font-family: Courier, monospace; }
+		ul { margin: 15px 30px; }
+		li { line-height: 24px;}
+		label { display: block; }
+		.footer { color: #777; font-size: 12px; margin: 40px 0 0 0; }
 	</style>
 </head>
 <body>
 	<div id="wrapper">
 		<h1><?php echo $title; ?></h1>
+	<?php if (Session::get_flash('notice')): ?>
+		<p class="notice"><?php echo Session::get_flash('notice'); ?></p>
+	<?php endif; ?>
 
-		<div id="content">
+		<?php echo $content; ?>
 
-			<?php if (Session::get_flash('notice')): ?>
-				<p><?php echo Session::get_flash('notice'); ?>
-			<?php endif; ?>
-
-			<?php echo $content; ?>
-		</div>
+		<p class="footer">
+			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />Page rendered in {exec_time}s using {mem_usage}mb of memory.
+		</p>
 	</div>
 </body>
 </html>

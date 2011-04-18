@@ -66,6 +66,12 @@ class Generate_Migration_Actions
 		// ID Field
  		$field_str = "\t\t\t'id' => array('constraint' => 11, 'type' => 'int', 'auto_increment' => true),".PHP_EOL . $field_str;
 
+		if ( ! \Cli::option('no-timestamps', false))
+		{
+			$field_str .= "\t\t\t'created_at' => array('constraint' => 11, 'type' => 'int'),";
+			$field_str .= PHP_EOL."\t\t\t'updated_at' => array('constraint' => 11, 'type' => 'int'),";
+		}
+
 		$up = <<<UP
 		\DBUtil::create_table('{$subjects[1]}', array(
 $field_str
