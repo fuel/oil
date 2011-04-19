@@ -55,8 +55,8 @@ class Scaffold
 		}
 
 		$data['singular'] = $singular = strtolower(array_shift($args));
-		$data['model'] = $model_name = 'Model_'.\Inflector::classify($singular);
 		$data['plural'] = $plural = \Inflector::pluralize($singular);
+		$data['model'] = $model_name = 'Model_'.\Inflector::classify($plural);
 		$data['fields'] = $fields;
 
 		$filepath = APPPATH.'classes/controller/'.trim(str_replace(array('_', '-'), DS, $plural), DS).'.php';
