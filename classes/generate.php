@@ -52,11 +52,13 @@ class Generate
 			}
 		}
 		
+		unset($path);
+		
 		// We always pass in fields to a config, so lets sort them out here.
 		foreach ($args as $conf)
 		{
 			// Each paramater for a config is seperated by the : character
-			$parts = explode(":", $field);
+			$parts = explode(":", $conf);
 
 			// We must have the 'name:value' if nothing else!
 			if (count($parts) >= 2)
@@ -64,6 +66,8 @@ class Generate
 				$config[$parts[0]] = $parts[1];
 			}
 		}
+		
+		$overwrite = \Cli::option('o') || \Cli::option('overwrite');
 		
 		$content = <<<CONF
 <?php
@@ -89,18 +93,23 @@ CONF;
 /* End of file $file.php */
 CONF;
 
-		($path = \Fuel::find_file('config', $file, '.php')) or $path = APPPATH.'config'.DS.$file.'.php';
+		$path = APPPATH.'config'.DS.$file.'.php';
 
+		if (!$overwrite && is_file($path))
+		{
+			throw new Exception("app/config/{$file}.php already exist, please use -overwrite option to force update");
+		}
+		
 		$path = pathinfo($path);
 		
 		try
 		{
-			File::update($path['dirname'], $path['basename'], $content);
-			\Cli::write("app/config/{$name}.php created.", 'green');
+			\File::update($path['dirname'], $path['basename'], $content);
+			\Cli::write("app/config/{$file}.php created.", 'green');
 		}
 		catch (\File_Exception $e)
 		{
-			throw new Exception("app/config/{$name}.php could not be written.");
+			throw new Exception("app/config/{$file}.php could not be written.");
 		}
 	}
 
