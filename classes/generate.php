@@ -32,6 +32,25 @@ class Generate
 		'char' => 255,
 		'int' => 11
 	);
+	
+	public static function config($args, $build = true)
+	{
+		$args = self::_clear_args($args);
+		$name = strtolower(array_shift($args));
+		// load the config
+		\Config::load($name, true);
+		$config = \Config::get($name, array ());
+		
+		try
+		{
+			\Config::save($name, $config);
+			\Cli::write("app/config/{$name}.php created.", 'green');
+		}
+		catch (\File_Exception $e)
+		{
+			throw new Exception("app/config/{$name}.php could not be written.");
+		}
+	}
 
 	public static function controller($args, $build = true)
 	{
