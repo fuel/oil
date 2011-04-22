@@ -36,14 +36,66 @@ class Generate
 	public static function config($args, $build = true)
 	{
 		$args = self::_clear_args($args);
-		$name = strtolower(array_shift($args));
+		$file = strtolower(array_shift($args));
+		
+		$config = array();
+		
 		// load the config
-		\Config::load($name, true);
-		$config = \Config::get($name, array ());
+		if ($paths = \Fuel::find_file('config', $file, '.php', true))
+		{
+			// Reverse the file list so that we load the core configs first and
+			// the app can override anything.
+			$paths = array_reverse($paths);
+			foreach ($paths as $path)
+			{
+				$config = \Fuel::load($path) + $config;
+			}
+		}
+		
+		// We always pass in fields to a config, so lets sort them out here.
+		foreach ($args as $conf)
+		{
+			// Each paramater for a config is seperated by the : character
+			$parts = explode(":", $field);
+
+			// We must have the 'name:value' if nothing else!
+			if (count($parts) >= 2)
+			{
+				$config[$parts[0]] = $parts[1];
+			}
+		}
+		
+		$content = <<<CONF
+<?php
+/**
+ * Fuel
+ *
+ * Fuel is a fast, lightweight, community driven PHP5 framework.
+ *
+ * @package		Fuel
+ * @version		1.0
+ * @author		Fuel Development Team
+ * @license		MIT License
+ * @copyright	2011 Fuel Development Team
+ * @link		http://fuelphp.com
+ */
+
+
+CONF;
+		$content .= 'return '.str_replace('  ', "\t", var_export($config, true)).';';
+		$content .= <<<CONF
+
+
+/* End of file $file.php */
+CONF;
+
+		($path = \Fuel::find_file('config', $file, '.php')) or $path = APPPATH.'config'.DS.$file.'.php';
+
+		$path = pathinfo($path);
 		
 		try
 		{
-			\Config::save($name, $config);
+			File::update($path['dirname'], $path['basename'], $content);
 			\Cli::write("app/config/{$name}.php created.", 'green');
 		}
 		catch (\File_Exception $e)
