@@ -96,7 +96,7 @@ class Cell
 	public static function search($name)
 	{
 		$request_url = 'http://'.static::$_api_url.'cells/search.json?name='.urlencode($name);
-		$response = json_decode(@file_get_contents($request_url), true);
+		$response = json_decode(file_get_contents($request_url), true);
 
 		if (empty($response['cells']))
 		{
