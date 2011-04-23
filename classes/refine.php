@@ -84,23 +84,78 @@ class Refine
 
 	public static function help()
 	{
+	    // Build a list of possible tasks for the help output
+		$tasks = self::_discover_tasks();
+		if (count($tasks) > 0)
+		{
+			$output_available_tasks = "";
+			
+			foreach ($tasks as $task => $options)
+			{
+				foreach ($options as $option)
+				{
+				    $option = ($option == "run") ? "" : ":$option";
+					$output_available_tasks .= "    php oil refine $task$option\n";
+				}
+			}
+		} else {
+			$output_available_tasks = "    (none found)";
+		}
+		
 		$output = <<<HELP
 
 Usage:
-  php oil [r|refine] <taskname>
+    php oil [r|refine] <taskname>
 
 Description:
     Tasks are classes that can be run through the the command line or set up as a cron job.
 
-Examples:
-    php oil refine robots [<message>]
-    php oil refine robots:protect
-
+Available tasks:
+$output_available_tasks
 Documentation:
-	http://fuelphp.com/docs/packages/oil/refine.html
+    http://fuelphp.com/docs/packages/oil/refine.html
 HELP;
 		\Cli::write($output);
 
+	}
+	
+	/**
+	 * Find all of the task classes in the system and use reflection to discover the
+	 * commands we can call.
+	 *
+	 * @return array $taskname => array($taskmethods)
+	 **/
+	protected static function _discover_tasks() {
+		$result = array();
+		$files = \Fuel::list_files('tasks');
+		
+		if (count($files) > 0)
+		{
+			foreach ($files as $file)
+			{
+				$task_name = str_replace('.php', '', basename($file));
+				$class_name = '\\Fuel\\Tasks\\'.$task_name;
+				
+				require $file;
+				
+				$reflect = new \ReflectionClass($class_name);
+				
+				// Ensure we only pull out the public methods
+				$methods = $reflect->getMethods(\ReflectionMethod::IS_PUBLIC);
+				
+				$result[$task_name] = array();
+				
+				if (count($methods) > 0)
+				{
+					foreach ($methods as $method)
+					{
+						$result[$task_name][] = $method->name;
+					}
+				}
+			}
+		}
+		
+		return $result;
 	}
 }
 
