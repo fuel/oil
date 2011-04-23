@@ -136,6 +136,9 @@ class Command
 					// Respect the group option
 					\Cli::option('group') and $command .= ' --group '.\Cli::option('group');
 
+					// Respect the coverage-html option
+					\Cli::option('coverage-html') and $command .= ' --coverage-html '.\Cli::option('coverage-html');
+
 					passthru($command);
 
 				break;
