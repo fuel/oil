@@ -39,6 +39,8 @@ class Generate
 		$singular = strtolower(array_shift($args));
 		$actions = $args;
 		
+		$plural = \Inflector::pluralize($singular);
+		
 		$filename = trim(str_replace(array('_', '-'), DS, $singular), DS);
 
 		$filepath = APPPATH . 'classes/controller/'.$filename.'.php';
