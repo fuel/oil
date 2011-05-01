@@ -72,8 +72,6 @@ class Generate
 		$content = <<<CONF
 <?php
 /**
- * Fuel
- *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
  * @package		Fuel
@@ -95,7 +93,7 @@ CONF;
 
 		$path = APPPATH.'config'.DS.$file.'.php';
 
-		if (!$overwrite && is_file($path))
+		if (!$overwrite and is_file($path))
 		{
 			throw new Exception("APPPATH/config/{$file}.php already exist, please use -overwrite option to force update");
 		}
