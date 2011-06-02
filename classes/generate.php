@@ -244,6 +244,12 @@ VIEW;
 				{
 					$subjects = array($matches[0], $matches[2]);
 				}
+				
+				// rename_field_{table}_{field}_to_{field} (with underscores in field names)
+				else if (count($matches) >= 4 && in_array('to', $matches))
+				{
+					$subjects = array($matches[0], implode('_', array_slice($matches, 1, array_search('to', $matches)-1)), implode('_', array_slice($matches, array_search('to', $matches)+1)));
+				}
 
 				// create_{table} (with underscores in table name)
 				else if (count($matches) !== 0)
