@@ -44,7 +44,7 @@ class Generate
 		$filepath = APPPATH . 'classes/controller/'.trim(str_replace(array('_', '-'), DS, $singular), DS).'.php';
 
 		// Uppercase each part of the class name and remove hyphens
-		$class_name = static::class_name($singular);
+		$class_name = str_replace('/', '_', static::class_name($singular));
 
 		// Stick "blogs" to the start of the array
 		array_unshift($args, $singular);
