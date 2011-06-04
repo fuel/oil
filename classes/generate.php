@@ -255,7 +255,7 @@ VIEW;
 				  );
 				}
 
-				// create_{table} (with underscores in table name)
+				// create_{table} or drop_{table} (with underscores in table name)
 				else if (count($matches) !== 0)
 				{
 					$subjects = array(false, implode('_', $matches));

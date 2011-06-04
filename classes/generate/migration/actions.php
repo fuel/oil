@@ -195,10 +195,67 @@ DOWN;
 		$up = <<<UP
 		\DBUtil::drop_table('{$subjects[1]}');
 UP;
-
-		// TODO Create down by looking at the table and building a create
-
-		return array($up, '');
+    $field_str = '';
+    $column_list = \DB::list_columns($subjects[1]);
+    foreach ($column_list as $column)
+    {
+      switch ($column['type'])
+  		{
+  			case 'float':
+  				$constraint = '\''.$column['numeric_precision'].', '.$column['numeric_scale'].'\'';
+  			break;
+  			case 'int':
+  				$constraint = $column['display'];
+  			break;
+  			case 'string':
+  				switch ($column['data_type'])
+  				{
+  					case 'binary':
+  					case 'varbinary':
+  					case 'char':
+  					case 'varchar':
+              $constraint = $column['character_maximum_length'];
+  					break;
+  
+  					case 'enum':
+  					case 'set':
+  					  $constraint = '"\''.implode('\',\'',$column['options']).'\'"';
+  					break;
+  				}
+  			break;
+  		}
+  		$constraint_str = isset($constraint) ? ", 'constraint' => $constraint" : '';
+  		$auto_increment = $column['extra'] == 'auto_increment' ? ", 'auto_increment' => true" : '';
+  		$default_str = $column['default'] != null ? ", 'default' => '{$column['default']}'" : ", 'null' => true";
+  		if ($column['key'] == 'PRI')
+  		{
+  		  $primary_keys[] = "'{$column['name']}'";
+  		} 
+  		else if ($column['key'] == 'MUL')
+  		{
+  		  $indexes[] = $column['name'];
+  		}
+  		$field_str .= "\t\t\t'{$column['name']}' => array('type' => '{$column['data_type']}'{$default_str}{$constraint_str}{$auto_increment}),".PHP_EOL;
+  		unset($constraint);
+    }
+    $primary_keys = implode(',', $primary_keys);
+    $down = <<<DOWN
+		\DBUtil::create_table('{$subjects[1]}', array(
+$field_str
+		), array($primary_keys));
+DOWN;
+    $down .= PHP_EOL;
+    
+    $active_db = \Config::get('db.active');
+    $table_prefix = \Config::get('db.'.$active_db.'.table_prefix');
+    if (isset($indexes))
+    {
+      foreach ($indexes as $field)
+      {
+        $down .= "\t\t\\DB::query(\"CREATE INDEX {$field}_idx ON {$table_prefix}{$subjects[1]} (`{$field}`)\")->execute();".PHP_EOL;
+      }
+    }
+		return array($up, $down);
 	}
 	
 }
