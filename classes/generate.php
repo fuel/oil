@@ -1,7 +1,5 @@
 <?php
 /**
- * Fuel
- *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
  * @package    Fuel
@@ -40,11 +38,15 @@ class Generate
 		$args = self::_clear_args($args);
 		$singular = strtolower(array_shift($args));
 		$actions = $args;
+		
+		$plural = \Inflector::pluralize($singular);
+		
+		$filename = trim(str_replace(array('_', '-'), DS, $singular), DS);
 
-		$filepath = APPPATH . 'classes/controller/'.trim(str_replace(array('_', '-'), DS, $singular), DS).'.php';
+		$filepath = APPPATH . 'classes/controller/'.$filename.'.php';
 
 		// Uppercase each part of the class name and remove hyphens
-		$class_name = str_replace('/', '_', static::class_name($singular));
+		$class_name = \Inflector::classify($plural);
 
 		// Stick "blogs" to the start of the array
 		array_unshift($args, $singular);
@@ -73,7 +75,7 @@ class Controller_{$class_name} extends Controller_Template {
 {$action_str}
 }
 
-/* End of file $singular.php */
+/* End of file $filename.php */
 CONTROLLER;
 
 		// Write controller
@@ -92,18 +94,33 @@ CONTROLLER;
 		}
 
 		$plural = \Inflector::pluralize($singular);
+		
+		$filename = trim(str_replace(array('_', '-'), DS, $singular), DS);
 
-		$filepath = APPPATH . 'classes/model/'.trim(str_replace(array('_', '-'), DS, $singular), DS).'.php';
+		$filepath = APPPATH . 'classes/model/'.$filename.'.php';
 
 		// Uppercase each part of the class name and remove hyphens
-		$class_name = static::class_name($singular);
+		$class_name = \Inflector::classify($plural);
+
+		$contents = '';
+		if ( ! \Cli::option('no-timestamps', false))
+		{
+			$contents = <<<CONTENTS
+
+	protected static \$_observers = array(
+		'Orm\\Observer_CreatedAt' => array('before_insert'),
+		'Orm\\Observer_UpdatedAt' => array('before_save'),
+	);
+
+CONTENTS;
+		}
 
 		$model = <<<MODEL
 <?php
 
-class Model_{$class_name} extends Orm\Model { }
+class Model_{$class_name} extends Orm\Model {{$contents}}
 
-/* End of file $singular.php */
+/* End of file $filename.php */
 MODEL;
 
 		// Build the model

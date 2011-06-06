@@ -1,7 +1,5 @@
 <?php
 /**
- * Fuel
- *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
  * @package    Fuel
@@ -55,7 +53,7 @@ class Scaffold
 		}
 
 		$data['singular'] = $singular = strtolower(array_shift($args));
-		$data['model'] = $model_name = 'Model_'.Generate::class_name($singular);
+		$data['model'] = $model_name = 'Model_'.\Inflector::classify($singular);
 		$data['plural'] = $plural = \Inflector::pluralize($singular);
 		$data['fields'] = $fields;
 
