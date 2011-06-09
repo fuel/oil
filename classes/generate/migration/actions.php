@@ -86,13 +86,93 @@ DOWN;
 	// add_{thing}_to_{tablename}
 	public static function add($subjects, $fields)
 	{
-		return array("\t\t\t// Not yet implemented this migration action", "\t\t\t// Not yet implemented this migration action");
+		$field_up_str = '';
+	
+		foreach($fields as $field)
+		{
+			$name = array_shift($field);
+			
+			$field_opts = array();
+			foreach($field as $option => $val)
+			{
+				if($val === true)
+				{
+					$field_opts[] = "'$option' => true";
+				}
+				else
+				{
+					if(is_int($val))
+					{
+						$field_opts[] = "'$option' => $val";
+					}
+					else
+					{
+						$field_opts[] = "'$option' => '$val'";
+					}
+				}
+			}
+			$field_opts = implode(', ', $field_opts);
+			
+			$field_up_str .= "\t\t\t'$name' => array({$field_opts}),".PHP_EOL;
+			$field_down[] = "'$name'";
+		}
+    $field_down_str = implode(',', $field_down);
+		$up = <<<UP
+    \DBUtil::add_fields('{$subjects[1]}', array(
+\t\t\t$field_up_str
+    ));	
+UP;
+    $down = <<<DOWN
+    \DBUtil::drop_fields('{$subjects[1]}', array(
+\t\t\t$field_down_str    
+    ));
+DOWN;
+    return array($up, $down);
 	}
 	
-	// rename_field_{fieldname}_to_{newfieldname}
+	// rename_field_{table}_{fieldname}_to_{newfieldname}
 	public static function rename_field($subjects, $fields)
 	{
-		return array("\t\t\t// Not yet implemented this migration action", "\t\t\t// Not yet implemented this migration action");
+		$column_list = \DB::list_columns($subjects[0], $subjects[1]);
+		$column = $column_list[$subjects[1]];
+
+		switch ($column['type'])
+		{
+			case 'float':
+				$constraint = '\''.$column['numeric_precision'].', '.$column['numeric_scale'].'\'';
+			break;
+			case 'int':
+				$constraint = $column['display'];
+			break;
+			case 'string':
+				switch ($column['data_type'])
+				{
+					case 'binary':
+					case 'varbinary':
+					case 'char':
+					case 'varchar':
+            $constraint = $column['character_maximum_length'];
+					break;
+
+					case 'enum':
+					case 'set':
+					  $constraint = '"\''.implode('\',\'',$column['options']).'\'"';
+					break;
+				}
+			break;
+		}
+		$constraint_str = isset($constraint) ? ", 'constraint' => $constraint" : '';
+		$up = <<<UP
+		\DBUtil::modify_fields('{$subjects[0]}', array(
+\t\t\t'{$subjects[1]}' => array('name' => '{$subjects[2]}', 'type' => '{$column['data_type']}'$constraint_str)
+		));
+UP;
+    $down = <<<DOWN
+    \DBUtil::modify_fields('{$subjects[0]}', array(
+\t\t\t'{$subjects[2]}' => array('name' => '{$subjects[1]}', 'type' => '{$column['data_type']}'$constraint_str)
+		));
+DOWN;
+    return array($up, $down);
 	}
 	
 	// rename_table_{tablename}_to_{newtablename}
@@ -115,10 +195,67 @@ DOWN;
 		$up = <<<UP
 		\DBUtil::drop_table('{$subjects[1]}');
 UP;
-
-		// TODO Create down by looking at the table and building a create
-
-		return array($up, '');
+    $field_str = '';
+    $column_list = \DB::list_columns($subjects[1]);
+    foreach ($column_list as $column)
+    {
+      switch ($column['type'])
+  		{
+  			case 'float':
+  				$constraint = '\''.$column['numeric_precision'].', '.$column['numeric_scale'].'\'';
+  			break;
+  			case 'int':
+  				$constraint = $column['display'];
+  			break;
+  			case 'string':
+  				switch ($column['data_type'])
+  				{
+  					case 'binary':
+  					case 'varbinary':
+  					case 'char':
+  					case 'varchar':
+              $constraint = $column['character_maximum_length'];
+  					break;
+  
+  					case 'enum':
+  					case 'set':
+  					  $constraint = '"\''.implode('\',\'',$column['options']).'\'"';
+  					break;
+  				}
+  			break;
+  		}
+  		$constraint_str = isset($constraint) ? ", 'constraint' => $constraint" : '';
+  		$auto_increment = $column['extra'] == 'auto_increment' ? ", 'auto_increment' => true" : '';
+  		$default_str = $column['default'] != null ? ", 'default' => '{$column['default']}'" : ", 'null' => true";
+  		if ($column['key'] == 'PRI')
+  		{
+  		  $primary_keys[] = "'{$column['name']}'";
+  		} 
+  		else if ($column['key'] == 'MUL')
+  		{
+  		  $indexes[] = $column['name'];
+  		}
+  		$field_str .= "\t\t\t'{$column['name']}' => array('type' => '{$column['data_type']}'{$default_str}{$constraint_str}{$auto_increment}),".PHP_EOL;
+  		unset($constraint);
+    }
+    $primary_keys = implode(',', $primary_keys);
+    $down = <<<DOWN
+		\DBUtil::create_table('{$subjects[1]}', array(
+$field_str
+		), array($primary_keys));
+DOWN;
+    $down .= PHP_EOL;
+    
+    $active_db = \Config::get('db.active');
+    $table_prefix = \Config::get('db.'.$active_db.'.table_prefix');
+    if (isset($indexes))
+    {
+      foreach ($indexes as $field)
+      {
+        $down .= "\t\t\\DB::query(\"CREATE INDEX {$field}_idx ON {$table_prefix}{$subjects[1]} (`{$field}`)\")->execute();".PHP_EOL;
+      }
+    }
+		return array($up, $down);
 	}
 	
 }

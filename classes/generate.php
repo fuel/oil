@@ -244,8 +244,18 @@ VIEW;
 				{
 					$subjects = array($matches[0], $matches[2]);
 				}
+				
+				// rename_field_{field}_to_{field}_in_{table} (with underscores in field names)
+				else if (count($matches) >= 5 && in_array('to', $matches) && in_array('in', $matches))
+				{
+					$subjects = array(
+					 implode('_', array_slice($matches, array_search('in', $matches)+1)), 
+					 implode('_', array_slice($matches, 0, array_search('to', $matches))), 
+					 implode('_', array_slice($matches, array_search('to', $matches)+1, array_search('in', $matches)-2))
+				  );
+				}
 
-				// create_{table} (with underscores in table name)
+				// create_{table} or drop_{table} (with underscores in table name)
 				else if (count($matches) !== 0)
 				{
 					$subjects = array(false, implode('_', $matches));
