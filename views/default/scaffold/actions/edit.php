@@ -21,7 +21,7 @@
 		
 		else
 		{
-			$this->template->set_global('<?php echo $singular; ?>', $<?php echo $singular; ?>);
+			$this->template->set_global('<?php echo $singular; ?>', $<?php echo $singular; ?>, false);
 		}
 		
 		$this->template->title = "<?php echo ucfirst($plural); ?>";
