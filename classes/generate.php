@@ -54,7 +54,7 @@ class Generate
 		// Create views folder and each view file
 		static::views($args, false);
 
-       $actions or $actions = array('index');
+		$actions or $actions = array('index');
 
 		$action_str = '';
 		foreach ($actions as $action)
@@ -67,11 +67,13 @@ class Generate
 	}'.PHP_EOL;
 		}
 
+		$extends = \Cli::option('extends', 'Controller_Template');
+
 		// Build Controller
 		$controller = <<<CONTROLLER
 <?php
 
-class Controller_{$class_name} extends Controller_Template {
+class Controller_{$class_name} extends {$extends} {
 {$action_str}
 }
 
@@ -80,13 +82,14 @@ CONTROLLER;
 
 		// Write controller
 		static::create($filepath, $controller, 'controller');
+		
 		$build and static::build();
 	}
 
 
 	public static function model($args, $build = true)
 	{
-		$singular = strtolower(array_shift($args));
+		$singular = \Str::lower(array_shift($args));
 
 		if (empty($args))
 		{
@@ -178,7 +181,7 @@ VIEW;
 	public static function migration($args, $build = true)
 	{
 		// Get the migration name
-		$migration_name = strtolower(str_replace('-', '_', array_shift($args)));
+		$migration_name = \Str::lower(str_replace(array('-', '/'), '_', array_shift($args)));
 
 		// Check if a migration with this name already exists
 		if (count($duplicates = glob(APPPATH."migrations/*_{$migration_name}*")) > 0)

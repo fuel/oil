@@ -1,6 +1,6 @@
 <?php echo '<?php' ?>
 
-class Controller_<?php echo ucfirst($plural); ?> extends Controller_Template {
+class <?php echo $controller; ?> extends <?php echo \Cli::option('extends', 'Controller_Template') ?> {
 	
 <?php foreach ($actions as $action): ?>
 	public function action_<?php echo $action['name']; ?>(<?php echo $action['params']; ?>)
@@ -12,4 +12,4 @@ class Controller_<?php echo ucfirst($plural); ?> extends Controller_Template {
 	
 }
 
-/* End of file <?php echo strtolower($plural); ?>.php */
+/* End of file <?php echo $controller_uri; ?>.php */

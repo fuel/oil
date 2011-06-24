@@ -46,18 +46,26 @@ class Scaffold
 			preg_match('/([a-z0-9_]+):([a-z0-9_]+)(\[([0-9]+)\])?/i', $arg, $matches);
 
 			$fields[] = array(
-				'name' => strtolower($matches[1]),
+				'name' => \Str::lower($matches[1]),
 				'type' => isset($matches[2]) ? $matches[2] : 'string',
 				'constraint' => isset($matches[4]) ? $matches[4] : null
 			);
 		}
 
-		$data['singular'] = $singular = strtolower(array_shift($args));
-		$data['model'] = $model_name = 'Model_'.\Inflector::classify($singular);
+		$full_thing = array_shift($args);
+		$full_underscores = str_replace(DS, '_', $full_thing);
+
+		// Either something[s] or folder/something[s]
+		$data['controller_uri'] = $controller_uri = \Inflector::pluralize(\Str::lower($full_thing));
+		$data['controller'] = 'Controller_'.\Inflector::classify(\Inflector::pluralize($full_underscores));
+
+		// If a folder is used, the entity is the last part
+		$data['singular'] = $singular = \Inflector::singularize(end(explode(DS, $full_thing)));
+		$data['model'] = $model_name = 'Model_'.\Inflector::classify($full_underscores);
 		$data['plural'] = $plural = \Inflector::pluralize($singular);
 		$data['fields'] = $fields;
 
-		$filepath = APPPATH.'classes/controller/'.trim(str_replace(array('_', '-'), DS, $plural), DS).'.php';
+		$filepath = APPPATH.'classes/controller/'.trim(str_replace(array('_', '-'), DS, $controller_uri), DS).'.php';
 		$controller = \View::factory($subfolder.'/scaffold/controller', $data);
 
 		$controller->actions = array(
@@ -94,7 +102,7 @@ class Scaffold
 		// Create each of the views
 		foreach (array('index', 'view', 'create', 'edit', '_form') as $view)
 		{
-			Generate::create(APPPATH.'views/'.$plural.'/'.$view.'.php', \View::factory($subfolder.'/scaffold/views/'.$view, $data), 'view');
+			Generate::create(APPPATH.'views/'.$controller_uri.'/'.$view.'.php', \View::factory($subfolder.'/scaffold/views/'.$view, $data), 'view');
 		}
 
 		// Add the default template if it doesnt exist
