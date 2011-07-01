@@ -25,4 +25,4 @@
 		}
 		
 		$this->template->title = "<?php echo ucfirst($plural); ?>";
-		$this->template->content = View::factory('<?php echo $controller_uri) ?>/edit');
+		$this->template->content = View::factory('<?php echo $controller_uri; ?>/edit');
