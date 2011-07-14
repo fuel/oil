@@ -2,8 +2,9 @@
 
 <?php foreach ($fields as $field): ?>
 	<p>
-		<label for="<?php echo $field['name']; ?>"><?php echo \Inflector::humanize($field['name']); ?>:</label>
 		<?php
+			echo "<?php echo Form::label('". \Inflector::humanize($field['name'] ."', '{$field['name']}'); ?>\n";
+
 			switch($field['type']):
 
 				case 'text':
