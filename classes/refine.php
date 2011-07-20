@@ -62,7 +62,7 @@ class Refine
 			return;
 		}
 
-		require $file;
+		require_once $file;
 
 		$task = '\\Fuel\\Tasks\\'.$task;
 
