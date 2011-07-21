@@ -130,14 +130,49 @@ class Command
 						throw new Exception('PHPUnit does not appear to be installed.'.PHP_EOL.PHP_EOL."\tPlease visit http://phpunit.de and install.");
 					}
 
+					// Override PHPUnit's help command with our own
+					if ( \Cli::option('help'))
+					{
+						static::help_test();
+						break;
+					}
+
 					// CD to the root of Fuel and call up phpunit with a path to our config
 					$command = 'cd '.DOCROOT.'; phpunit -c "'.COREPATH.'phpunit.xml"';
 
-					// Respect the group option
-					\Cli::option('group') and $command .= ' --group '.\Cli::option('group');
-
-					// Respect the coverage-html option
+					// Respect the code coverage options
 					\Cli::option('coverage-html') and $command .= ' --coverage-html '.\Cli::option('coverage-html');
+					\Cli::option('coverage-clover') and $command .= ' --coverage-clover '.\Cli::option('coverage-clover');
+
+					// Respect the agile documentation options
+					\Cli::option('testdox-html') and $command .= ' --testdox-html '.\Cli::option('testdox-html');
+					\Cli::option('testdox-text') and $command .= ' --testdox-text '.\Cli::option('testdox-text');
+
+					// Respect the group options
+					\Cli::option('filter') and $command .= ' --filter '.\Cli::option('filter');
+					\Cli::option('group') and $command .= ' --group '.\Cli::option('group');
+					\Cli::option('exclude-group') and $command .= ' --exclude-group '.\Cli::option('exclude-group');
+					\Cli::option('list-groups') and $command .= ' --list-groups';
+
+					// Respect the repeat option
+					\Cli::option('repeat') and $command .= ' --repeat '.\Cli::option('repeat');
+
+					// Respect the report options
+					\Cli::option('tap') and $command .= ' --tap';
+					\Cli::option('testdox') and $command .= ' --testdox';
+
+					// Respect the test options
+					\Cli::option('stderr') and $command .= ' --stderr';
+					\Cli::option('stop-on-error') and $command .= ' --stop-on-error';
+					\Cli::option('stop-on-failure') and $command .= ' --stop-on-failure';
+					\Cli::option('stop-on-skipped') and $command .= ' --stop-on-skipped';
+					\Cli::option('stop-on-incomplete') and $command .= ' --stop-on-incomplete';
+					\Cli::option('strict') and $command .= ' --strict';
+
+					// Respect assorted remaining options
+					\Cli::option('syntax-check') and $command .= ' --syntax-check';
+					\Cli::option('version') and $command .= ' --version';
+					\Cli::option('debug') and $command .= ' --debug';
 
 					passthru($command);
 
@@ -175,6 +210,46 @@ Description:
 Documentation:
   http://fuelphp.com/docs/packages/oil/intro.html
 
+HELP;
+
+	}
+
+	public static function help_test()
+	{
+		passthru('phpunit --version');
+
+		echo <<<HELP
+Usage: php oil test [switches]
+
+  --coverage-html=<dir>     Generate code coverage report in HTML format.
+  --coverage-clover=<dir>   Write code coverage data in Clover XML format.
+
+  --testdox-html=<file>	    Write agile documentation in HTML format to file.
+  --testdox-text=<file>     Write agile documentation in Text format to file.
+
+  --filter="<pattern>"      Filter which tests to run.
+  --group=...               Only runs tests from the specified group(s).
+  --exclude-group=...       Exclude tests from the specified group(s).
+  --list-groups             List available test groups.
+
+  --repeat=<times>          Runs the test(s) repeatedly.
+
+  --tap                     Report test execution progress in TAP format.
+  --testdox                 Report test execution progress in TestDox format.
+
+  --stderr                  Write to STDERR instead of STDOUT.
+  --stop-on-error           Stop execution upon first error.
+  --stop-on-failure         Stop execution upon first error or failure.
+  --stop-on-skipped         Stop execution upon first skipped test.
+  --stop-on-incomplete      Stop execution upon first incomplete test.
+  --strict                  Mark a test as incomplete if no assertions are made.
+
+  --syntax-check            Try to check source files for syntax errors.
+
+  --help                    Prints this usage information.
+  --version                 Prints the version and exits.
+
+  --debug                   Output debugging information.
 HELP;
 
 	}
