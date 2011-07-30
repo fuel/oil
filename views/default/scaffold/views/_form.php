@@ -3,7 +3,7 @@
 <?php foreach ($fields as $field): ?>
 	<p>
 		<?php
-			echo "<?php echo Form::label('". \Inflector::humanize($field['name'] ."', '{$field['name']}'); ?>\n";
+			echo "<?php echo Form::label('". \Inflector::humanize($field['name']) ."', '{$field['name']}'); ?>\n";
 
 			switch($field['type']):
 
