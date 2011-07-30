@@ -10,7 +10,7 @@
 			{
 				Session::set_flash('notice', 'Added <?php echo $singular; ?> #' . $<?php echo $singular; ?>->id . '.');
 
-				Response::redirect('<?php echo $plural; ?>');
+				Response::redirect('<?php echo $controller_uri; ?>');
 			}
 
 			else
@@ -19,5 +19,5 @@
 			}
 		}
 
-		$this->template->title = "<?php echo ucfirst($plural); ?>";
-		$this->template->content = View::factory('<?php echo Str::lower($plural);?>/create');
+		$this->template->title = "<?php echo \Str::ucwords($plural); ?>";
+		$this->template->content = View::factory('<?php echo $controller_uri ?>/create');

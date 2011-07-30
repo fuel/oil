@@ -1,4 +1,4 @@
-<h2 class="first">Listing <?php echo ucfirst($plural); ?></h2>
+<h2 class="first">Listing <?php echo \Str::ucfirst($plural); ?></h2>
 
 <table cellspacing="0">
 	<tr>
@@ -15,9 +15,9 @@
 		<td><?php echo '<?php'; ?> echo $<?php echo $singular.'->'.$field['name']; ?>; <?php echo '?>'; ?></td>
 <?php endforeach; ?>
 		<td>
-			<?php echo '<?php'; ?> echo Html::anchor('<?php echo $plural; ?>/view/'.$<?php echo $singular; ?>->id, 'View'); <?php echo '?>'; ?> |
-			<?php echo '<?php'; ?> echo Html::anchor('<?php echo $plural; ?>/edit/'.$<?php echo $singular; ?>->id, 'Edit'); <?php echo '?>'; ?> |
-			<?php echo '<?php'; ?> echo Html::anchor('<?php echo $plural; ?>/delete/'.$<?php echo $singular; ?>->id, 'Delete', array('onclick' => "return confirm('Are you sure?')")); <?php echo '?>'; ?>
+			<?php echo '<?php'; ?> echo Html::anchor('<?php echo $controller_uri; ?>/view/'.$<?php echo $singular; ?>->id, 'View'); <?php echo '?>'; ?> |
+			<?php echo '<?php'; ?> echo Html::anchor('<?php echo $controller_uri; ?>/edit/'.$<?php echo $singular; ?>->id, 'Edit'); <?php echo '?>'; ?> |
+			<?php echo '<?php'; ?> echo Html::anchor('<?php echo $controller_uri; ?>/delete/'.$<?php echo $singular; ?>->id, 'Delete', array('onclick' => "return confirm('Are you sure?')")); <?php echo '?>'; ?>
 		</td>
 	</tr>
 	<?php echo '<?php endforeach; ?>'; ?>
@@ -25,4 +25,4 @@
 
 <br />
 
-<?php echo '<?php'; ?> echo Html::anchor('<?php echo $plural; ?>/create', 'Add new <?php echo \Inflector::humanize($singular); ?>'); <?php echo '?>'; ?>
+<?php echo '<?php'; ?> echo Html::anchor('<?php echo $controller_uri; ?>/create', 'Add new <?php echo \Inflector::humanize($singular); ?>'); <?php echo '?>'; ?>

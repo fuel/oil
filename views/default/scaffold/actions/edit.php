@@ -10,7 +10,7 @@
 			{
 				Session::set_flash('notice', 'Updated <?php echo $singular; ?> #' . $id);
 
-				Response::redirect('<?php echo $plural; ?>');
+				Response::redirect('<?php echo $controller_uri; ?>');
 			}
 
 			else
@@ -21,8 +21,8 @@
 		
 		else
 		{
-			$this->template->set_global('<?php echo $singular; ?>', $<?php echo $singular; ?>);
+			$this->template->set_global('<?php echo $singular; ?>', $<?php echo $singular; ?>, false);
 		}
 		
 		$this->template->title = "<?php echo ucfirst($plural); ?>";
-		$this->template->content = View::factory('<?php echo strtolower($plural);?>/edit');
+		$this->template->content = View::factory('<?php echo $controller_uri; ?>/edit');
