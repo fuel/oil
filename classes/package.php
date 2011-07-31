@@ -100,6 +100,29 @@ class Package
 		\File::delete_dir($package_folder);
 	}
 
+
+	public static function source($source)
+	{
+		// Need to add some sort of validation to input...
+		
+		if ( ! $config = \Config::load('package'))
+		{
+			throw new Exception('Could not load package configuration file.', 'red');
+		}
+		
+		$config['sources'][] = $source;
+		\Config::set('package.sources', array_values($config['sources']));
+
+		if (\Config::save('package', $config))
+		{
+			\Cli::write('Source "' . $source . '" was added.', 'green');
+			return;
+		}
+
+		throw new Exception('Source "' . $source . '" could not be saved.');
+	}
+
+
 	public static function help()
 	{
 		$output = <<<HELP

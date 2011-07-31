@@ -108,6 +108,7 @@ class Command
 					{
 						case 'install':
 						case 'uninstall':
+						case 'source':
 							call_user_func_array('Oil\Package::'.$action, array_slice($args, 3));
 						break;
 
