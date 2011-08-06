@@ -63,7 +63,7 @@ class Generate
 	public function action_'.$action.'()
 	{
 		$this->template->title = \'' . \Inflector::humanize($singular) .' &raquo; ' . \Inflector::humanize($action) . '\';
-		$this->template->content = View::factory(\''.$singular .'/' . $action .'\');
+		$this->template->content = View::factory(\''.$filename.'/' . $action .'\');
 	}'.PHP_EOL;
 		}
 
