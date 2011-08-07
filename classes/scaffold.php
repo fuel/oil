@@ -57,7 +57,7 @@ class Scaffold
 
 		// Either something[s] or folder/something[s]
 		$data['controller_uri'] = $controller_uri = \Inflector::pluralize(\Str::lower($full_thing));
-		$data['controller'] = 'Controller_'.\Inflector::classify(\Inflector::pluralize($full_underscores));
+		$data['controller'] = 'Controller_'.\Inflector::pluralize(\Inflector::classify($full_underscores));
 
 		// If a folder is used, the entity is the last part
 		$data['singular'] = $singular = \Inflector::singularize(end(explode(DS, $full_thing)));
