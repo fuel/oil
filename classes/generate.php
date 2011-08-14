@@ -263,7 +263,7 @@ VIEW;
 				{
 					$name = str_replace(array('create_', 'add_', '_to_'), array('create-', 'add-', '-to-'), $migration_name);
     				
-    				if (preg_match('/^(create|add)\-([A-Za-z0-9\_]*)(\-to\-)?([A-Za-z0-9\_]*)?$/i', $name, $deep_matches)) 
+    				if (preg_match('/^(create|add)\-([a-z0-9\_]*)(\-to\-)?([a-z0-9\_]*)?$/i', $name, $deep_matches)) 
     				{
     					switch ($deep_matches[1])
     					{
