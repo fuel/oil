@@ -261,7 +261,21 @@ VIEW;
 				// create_{table} or drop_{table} (with underscores in table name)
 				else if (count($matches) !== 0)
 				{
-					$subjects = array(false, implode('_', $matches));
+					$name = str_replace(array('create_', 'add_', '_to_'), array('create-', 'add-', '-to-'), $migration_name);
+    				
+    				if (preg_match('/^(create|add)\-([a-z0-9\_]*)(\-to\-)?([a-z0-9\_]*)?$/i', $name, $deep_matches)) 
+    				{
+    					switch ($deep_matches[1])
+    					{
+    						case 'create' :
+    							$subjects = array(false, $deep_matches[2]);
+    						break;
+
+    						case 'add' :
+    							$subjects = array($deep_matches[2], $deep_matches[4]);
+    						break;
+    					}
+    				}
 				}
 
 				// There is no subject here so just carry on with a normal empty migration
