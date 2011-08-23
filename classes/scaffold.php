@@ -66,33 +66,33 @@ class Scaffold
 		$data['fields'] = $fields;
 
 		$filepath = APPPATH.'classes/controller/'.trim(str_replace(array('_', '-'), DS, $controller_uri), DS).'.php';
-		$controller = \View::factory($subfolder.'/scaffold/controller', $data);
+		$controller = \View::forge($subfolder.'/scaffold/controller', $data);
 
 		$controller->actions = array(
 			array(
 				'name'		=> 'index',
 				'params'	=> '',
-				'code'		=> \View::factory($subfolder.'/scaffold/actions/index', $data),
+				'code'		=> \View::forge($subfolder.'/scaffold/actions/index', $data),
 			),
 			array(
 				'name'		=> 'view',
 				'params'	=> '$id = null',
-				'code'		=> \View::factory($subfolder.'/scaffold/actions/view', $data),
+				'code'		=> \View::forge($subfolder.'/scaffold/actions/view', $data),
 			),
 			array(
 				'name'		=> 'create',
 				'params'	=> '$id = null',
-				'code'		=> \View::factory($subfolder.'/scaffold/actions/create', $data),
+				'code'		=> \View::forge($subfolder.'/scaffold/actions/create', $data),
 			),
 			array(
 				'name'		=> 'edit',
 				'params'	=> '$id = null',
-				'code'		=> \View::factory($subfolder.'/scaffold/actions/edit', $data),
+				'code'		=> \View::forge($subfolder.'/scaffold/actions/edit', $data),
 			),
 			array(
 				'name'		=> 'delete',
 				'params'	=> '$id = null',
-				'code'		=> \View::factory($subfolder.'/scaffold/actions/delete', $data),
+				'code'		=> \View::forge($subfolder.'/scaffold/actions/delete', $data),
 			),
 		);
 
@@ -102,7 +102,7 @@ class Scaffold
 		// Create each of the views
 		foreach (array('index', 'view', 'create', 'edit', '_form') as $view)
 		{
-			Generate::create(APPPATH.'views/'.$controller_uri.'/'.$view.'.php', \View::factory($subfolder.'/scaffold/views/'.$view, $data), 'view');
+			Generate::create(APPPATH.'views/'.$controller_uri.'/'.$view.'.php', \View::forge($subfolder.'/scaffold/views/'.$view, $data), 'view');
 		}
 
 		// Add the default template if it doesnt exist

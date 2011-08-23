@@ -1,6 +1,6 @@
 		if (Input::method() == 'POST')
 		{
-			$<?php echo $singular; ?> = <?php echo $model; ?>::factory(array(
+			$<?php echo $singular; ?> = <?php echo $model; ?>::forge(array(
 <?php foreach ($fields as $field): ?>
 				'<?php echo $field['name']; ?>' => Input::post('<?php echo $field['name']; ?>'),
 <?php endforeach; ?>
@@ -20,4 +20,4 @@
 		}
 
 		$this->template->title = "<?php echo \Str::ucwords($plural); ?>";
-		$this->template->content = View::factory('<?php echo $controller_uri ?>/create');
+		$this->template->content = View::forge('<?php echo $controller_uri ?>/create');
