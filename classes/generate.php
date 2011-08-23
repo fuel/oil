@@ -41,15 +41,15 @@ class Generate
 		
 		$plural = \Inflector::pluralize($singular);
 		
-		$filename = trim(str_replace(array('_', '-'), DS, $singular), DS);
+		$filename = trim(str_replace(array('_', '-'), DS, $plural), DS);
 
 		$filepath = APPPATH . 'classes/controller/'.$filename.'.php';
 
 		// Uppercase each part of the class name and remove hyphens
-		$class_name = \Inflector::classify($plural);
+		$class_name = \Inflector::classify($plural, false);
 
 		// Stick "blogs" to the start of the array
-		array_unshift($args, $singular);
+		array_unshift($args, $plural);
 
 		// Create views folder and each view file
 		static::views($args, false);

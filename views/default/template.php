@@ -26,9 +26,9 @@
 <body>
 	<div id="wrapper">
 		<h1><?php echo $title; ?></h1>
-	<?php if (Session::get_flash('notice')): ?>
-		<p class="notice"><?php echo Session::get_flash('notice'); ?></p>
-	<?php endif; ?>
+		<?php if (Session::get_flash('notice')): ?>
+			<div class="notice"><p><?php echo implode('</p><p>', (array) Session::get_flash('notice')); ?></div></p>
+		<?php endif; ?>
 
 		<?php echo $content; ?>
 
