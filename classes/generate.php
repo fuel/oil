@@ -36,20 +36,18 @@ class Generate
 	public static function controller($args, $build = true)
 	{
 		$args = self::_clear_args($args);
-		$singular = strtolower(array_shift($args));
+		$base_name = strtolower(array_shift($args));
 		$actions = $args;
 		
-		$plural = \Inflector::pluralize($singular);
-		
-		$filename = trim(str_replace(array('_', '-'), DS, $plural), DS);
+		$filename = trim(str_replace(array('_', '-'), DS, $base_name), DS);
 
 		$filepath = APPPATH . 'classes/controller/'.$filename.'.php';
 
 		// Uppercase each part of the class name and remove hyphens
-		$class_name = \Inflector::classify($plural, false);
+		$class_name = \Inflector::classify($base_name, false);
 
 		// Stick "blogs" to the start of the array
-		array_unshift($args, $plural);
+		array_unshift($args, $base_name);
 
 		// Create views folder and each view file
 		static::views($args, false);
@@ -62,8 +60,8 @@ class Generate
 			$action_str .= '
 	public function action_'.$action.'()
 	{
-		$this->template->title = \'' . \Inflector::humanize($singular) .' &raquo; ' . \Inflector::humanize($action) . '\';
-		$this->template->content = View::factory(\''.$singular .'/' . $action .'\');
+		$this->template->title = \'' . \Inflector::humanize($base_name) .' &raquo; ' . \Inflector::humanize($action) . '\';
+		$this->template->content = View::factory(\''.$base_name .'/' . $action .'\');
 	}'.PHP_EOL;
 		}
 
