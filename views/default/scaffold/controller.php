@@ -11,5 +11,3 @@ class <?php echo $controller; ?> extends <?php echo \Cli::option('extends', 'Con
 <?php endforeach; ?>
 	
 }
-
-/* End of file <?php echo $controller_uri; ?>.php */
