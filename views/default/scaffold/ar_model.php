@@ -12,5 +12,3 @@ class Model_<?php echo ucfirst($name); ?> extends Orm\Model {
 <?php endif; ?>
 
 }
-
-/* End of file <?php echo Str::lower($name); ?>.php */
