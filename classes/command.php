@@ -139,7 +139,10 @@ class Command
 					// Respect the coverage-html option
 					\Cli::option('coverage-html') and $command .= ' --coverage-html '.\Cli::option('coverage-html');
 
-					passthru($command);
+					foreach(explode(';', $command) as $c)
+					{
+						passthru($c);
+					}
 
 				break;
 
