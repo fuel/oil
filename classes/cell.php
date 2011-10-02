@@ -188,7 +188,7 @@ HELP;
 	}
 
 
-	private static function _use_git()
+	protected static function _use_git()
 	{
 		exec('which git', $output);
 
@@ -209,7 +209,7 @@ HELP;
 		return ! empty($matches[0]);
 	}
 
-	private static function _download_package_zip($zip_url, $package, $version)
+	protected static function _download_package_zip($zip_url, $package, $version)
 	{
 		// Make the folder so we can extract the ZIP to it
 		mkdir($tmp_folder = APPPATH . 'tmp/' . $package . '-' . time());
