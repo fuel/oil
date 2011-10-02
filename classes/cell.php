@@ -22,8 +22,8 @@ namespace Oil;
  */
 class Cell
 {
-	protected static $_protected = array('auth', 'oil', 'orm');
-	protected static $_api_url = 'local.station.fuelphp.com/api/';
+	protected static $_protected = array('auth', 'oil', 'orm', 'parser');
+	protected static $_api_url = 'local.cells.fuelphp.com/api/';
 	
 	protected static $_git_binary = 'git';
 	protected static $_hg_binary = 'hg';
@@ -59,20 +59,23 @@ class Cell
 			throw new Exception('Could not find the cell "' . $package . '".');
 		}
 		
+		$cell = $response['cell'];
+		
 		// Now, lets get this package
 
-		// If a direct download is requested, or git is unavailable, download it!
-		if (\Cli::option('git-submodule'))
+		// If it is git and (they have git installed (TODO) and they havent asked for a zip)
+		if ($cell['repository_type'] == 'git' and ! \Cli::option('via-zip'))
 		{
-			static::_download_package_zip($zip_url, $package, $version);
+			\Cli::write('Downloading package: ' . $package);
+			static::_clone_package_repo($cell['repository_url'], $package, $version);	
 		}
 
-		// Otherwise, get your clone on baby!
+		// Fallback to shoving a ZIP file in place
 		else
 		{
-			static::_clone_package_repo($source, $package, $version);
+			\Cli::write('Downloading package: ' . $package);
+			static::_download_package_zip($zip_url, $package, $version);
 		}
-
 	}
 
 	public static function all()
@@ -131,21 +134,50 @@ class Cell
 		\File::delete_dir($package_folder);
 	}
 
+	public static function info($cell = null)
+	{
+		// Make sure something is set
+		if ($cell === null)
+		{
+			static::help();
+			return;
+		}
+	
+		$request_url = 'http://'.static::$_api_url.'cells/show.json?name='.urlencode($cell);
+		// $response = file_get_contents($request_url);
+		$response = json_decode(@file_get_contents($request_url), true);
+		
+		if ( ! $response)
+		{
+			throw new Exception('No response from the API. Perhaps check your internet connection?');
+		}
+		
+		else if (empty($response['cell']))
+		{
+			throw new Exception('Could not find the cell "' . $cell . '".');
+		}
+		
+		var_dump($response);
+	}
+	
 	public static function help()
 	{
 		$output = <<<HELP
 
 Usage:
-  oil cell install <cell-name>
+  oil cell <sub-command> <cell-name>
 
 Description:
   Packages containing extra functionality can be downloaded (or git cloned) simply with
   the following commands.
 
 Runtime options:
-  --git-submodule       # Install as a git submodule
+  --via-zip       # Download a ZIP file instead of using Git or Hg.
 
 Examples:
+  oil cell list
+  oil cell search <keyword>
+  oil cell show <cell-name>
   oil cell install <cell-name>
   oil cell uninstall <cell-name>
 
@@ -180,8 +212,6 @@ HELP;
 
 	private static function _download_package_zip($zip_url, $package, $version)
 	{
-		\Cli::write('Downloading package: ' . $zip_url);
-
 		// Make the folder so we can extract the ZIP to it
 		mkdir($tmp_folder = APPPATH . 'tmp/' . $package . '-' . time());
 
@@ -210,18 +240,15 @@ HELP;
 		}
 	}
 
-	public static function _clone_package_repo($source, $package, $version)
+	public static function _clone_package_repo($repo_url, $package, $version)
 	{
-		$repo_url = 'git://' . rtrim($source, '/').'/fuel-'.$package . '.git';
-
-		\Cli::write('Downloading package: ' . $repo_url);
-
-		$package_folder = PKGPATH . $package;
+		// TODO Make this magic
+		// $package_folder = str_replace(realpath(__DIR__.'/').'/', '', PKGPATH.$package);
+		$package_folder = 'fuel/packages/'.$package;
 
 		// Clone to the package path
-		passthru(static::$_git_binary . ' clone ' . $repo_url . ' ' . $package_folder);
-
-		passthru(static::$_git_binary .' add ' . $package_folder . '/');
+		passthru(static::$_git_binary.' submodule add '.$repo_url.' '.$package_folder);
+		passthru(static::$_git_binary.' submodule update');
 
 		\Cli::write('');
 	}

@@ -116,6 +116,11 @@ class Command
 						case 'uninstall':
 							call_user_func_array('Oil\Cell::'.$action, array_slice($args, 3));
 						break;
+						
+						case 'info':
+						case 'details':
+							call_user_func_array('Oil\Cell::info', array_slice($args, 3));
+						break;
 
 						default:
 							Cell::help();
