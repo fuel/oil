@@ -23,7 +23,7 @@ namespace Oil;
 class Cell
 {
 	protected static $_protected = array('auth', 'oil', 'orm', 'parser');
-	protected static $_api_url = 'local.cells.fuelphp.com/api/';
+	protected static $_api_url = 'http://cells.fuelphp.com/api/';
 	
 	protected static $_git_binary = 'git';
 	protected static $_hg_binary = 'hg';
@@ -46,7 +46,7 @@ class Cell
 			return;
 		}
 		
-		$request_url = 'http://'.static::$_api_url.'cells/show.json?name='.urlencode($package);
+		$request_url = static::$_api_url.'cells/show.json?name='.urlencode($package);
 		$response = json_decode(@file_get_contents($request_url), true);
 		
 		if ( ! $response)
@@ -80,7 +80,7 @@ class Cell
 
 	public static function all()
 	{
-		$request_url = 'http://'.static::$_api_url.'cells/list.json';
+		$request_url = static::$_api_url.'cells/list.json';
 		$response = json_decode(@file_get_contents($request_url), true);
 
 		if (empty($response['cells']))
@@ -96,7 +96,7 @@ class Cell
 
 	public static function search($name)
 	{
-		$request_url = 'http://'.static::$_api_url.'cells/search.json?name='.urlencode($name);
+		$request_url = static::$_api_url.'cells/search.json?name='.urlencode($name);
 		$response = json_decode(file_get_contents($request_url), true);
 
 		if (empty($response['cells']))
@@ -143,8 +143,7 @@ class Cell
 			return;
 		}
 	
-		$request_url = 'http://'.static::$_api_url.'cells/show.json?name='.urlencode($cell);
-		// $response = file_get_contents($request_url);
+		$request_url = static::$_api_url.'cells/show.json?name='.urlencode($cell);
 		$response = json_decode(@file_get_contents($request_url), true);
 		
 		if ( ! $response)
