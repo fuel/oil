@@ -39,7 +39,7 @@ class Command
 			{
 				if (\Cli::option('v', \Cli::option('version')))
 				{
-					\Cli::write('Fuel: ' . \Fuel::VERSION);
+					\Cli::write('Fuel: '.\Fuel::VERSION);
 					return;
 				}
 
@@ -99,20 +99,26 @@ class Command
 					call_user_func('Oil\Refine::run', $task, array_slice($args, 3));
 				break;
 
-				case 'p':
-				case 'package':
+				case 'cell':
+				case 'cells':
 
 					$action = isset($args[2]) ? $args[2]: 'help';
 
 					switch ($action)
-					{
+					{	
+						case 'list':
+							call_user_func('Oil\Cell::all');
+						break;
+						
+						case 'search':
 						case 'install':
+						case 'upgrade':
 						case 'uninstall':
-							call_user_func_array('Oil\Package::'.$action, array_slice($args, 3));
+							call_user_func_array('Oil\Cell::'.$action, array_slice($args, 3));
 						break;
 
 						default:
-							Package::help();
+							Cell::help();
 					}
 
 				break;
@@ -156,6 +162,8 @@ class Command
 		{
 			\Cli::error('Error: '.$e->getMessage());
 			\Cli::beep();
+			
+			\Cli::option('speak') and `say --voice="Trinoids" "{$e->getMessage()}"`;
 		}
 	}
 
@@ -164,12 +172,13 @@ class Command
 		echo <<<HELP
 
 Usage:
-  php oil [console|generate|help|test|package]
+  php oil [cells|console|generate|help|test]
 
 Runtime options:
   -f, [--force]    # Overwrite files that already exist
   -s, [--skip]     # Skip files that already exist
   -q, [--quiet]    # Supress status output
+  -t, [--speak]    # Speak errors in a robot voice
 
 Description:
   The 'oil' command can be used in several ways to facilitate quick development, help with
