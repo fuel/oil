@@ -105,18 +105,18 @@ class Command
 					$action = isset($args[2]) ? $args[2]: 'help';
 
 					switch ($action)
-					{	
+					{
 						case 'list':
 							call_user_func('Oil\Cell::all');
 						break;
-						
+
 						case 'search':
 						case 'install':
 						case 'upgrade':
 						case 'uninstall':
 							call_user_func_array('Oil\Cell::'.$action, array_slice($args, 3));
 						break;
-						
+
 						case 'info':
 						case 'details':
 							call_user_func_array('Oil\Cell::info', array_slice($args, 3));
@@ -150,6 +150,8 @@ class Command
 					// Respect the coverage-html option
 					\Cli::option('coverage-html') and $command .= ' --coverage-html '.\Cli::option('coverage-html');
 
+					\Cli::write('Tests Running...This may take a few moments.', 'green');
+
 					foreach(explode(';', $command) as $c)
 					{
 						passthru($c);
@@ -167,7 +169,7 @@ class Command
 		{
 			\Cli::error('Error: '.$e->getMessage());
 			\Cli::beep();
-			
+
 			\Cli::option('speak') and `say --voice="Trinoids" "{$e->getMessage()}"`;
 		}
 	}
