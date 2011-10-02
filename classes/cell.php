@@ -22,7 +22,7 @@ namespace Oil;
  */
 class Cell
 {
-	protected static $_protected = array('auth', 'oil', 'orm', 'parser');
+	protected static $_protected = array('auth', 'email', 'oil', 'orm', 'parser');
 	protected static $_api_url = 'http://cells.fuelphp.com/api/';
 	
 	protected static $_git_binary = 'git';
