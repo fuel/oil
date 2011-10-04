@@ -38,12 +38,25 @@ class Package
 		$config = \Config::load('package');
 
 		$version = \Cli::option('version', 'master');
+		$folder  = \Cli::option('folder', $package);
 
-		// Check to see if this package is already installed
-		if (is_dir(PKGPATH . $package))
+		if($folder === $package)
 		{
-			throw new Exception('Package "' . $package . '" is already installed.');
-			return;
+			// Check to see if this package is already installed
+			if (is_dir(PKGPATH . $package))
+			{
+				throw new Exception('Package "' . $package . '" is already installed.');
+				return;
+			}
+		}
+		else
+		{
+			// Check to see if this folder is already used
+			if (is_dir(PKGPATH . $folder))
+			{
+				throw new Exception('Folder "' . $folder . '" already exists. Please verify it\'s content. Maybe the package is already installed.');
+				return;
+			}
 		}
 
 		foreach ($config['sources'] as $source)
@@ -60,13 +73,13 @@ class Package
 				// If a direct download is requested, or git is unavailable, download it!
 				if (\Cli::option('direct') OR static::_use_git() === false)
 				{
-					static::_download_package_zip($zip_url, $package, $version);
+					static::_download_package_zip($zip_url, $package, $version, $folder);
 				}
 
 				// Otherwise, get your clone on baby!
 				else
 				{
-					static::_clone_package_repo($source, $package, $version);
+					static::_clone_package_repo($source, $package, $version, $folder);
 				}
 				
 				exit;
@@ -147,7 +160,7 @@ HELP;
 		return ! empty($matches[0]);
 	}
 
-	private static function _download_package_zip($zip_url, $package, $version)
+	private static function _download_package_zip($zip_url, $package, $version, $folder)
 	{
 		\Cli::write('Downloading package: ' . $zip_url);
 
@@ -163,7 +176,7 @@ HELP;
 		// Grab the first folder out of it (we dont know what it's called)
 		list($tmp_package_folder) = glob($tmp_folder.'/*', GLOB_ONLYDIR);
 
-		$package_folder = PKGPATH . $package;
+		$package_folder = PKGPATH . $folder;
 
 		// Move that folder into the packages folder
 		rename($tmp_package_folder, $package_folder);
@@ -179,13 +192,13 @@ HELP;
 		}
 	}
 
-	public static function _clone_package_repo($source, $package, $version)
+	public static function _clone_package_repo($source, $package, $version, $folder)
 	{
 		$repo_url = 'git://' . rtrim($source, '/').'/fuel-'.$package . '.git';
 
 		\Cli::write('Downloading package: ' . $repo_url);
 
-		$package_folder = PKGPATH . $package;
+		$package_folder = PKGPATH . $folder;
 
 		// Clone to the package path
 		passthru(static::$git . ' clone ' . $repo_url . ' ' . $package_folder);
