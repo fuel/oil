@@ -1,5 +1,7 @@
 <h2 class="first">Listing <?php echo \Str::ucfirst($plural); ?></h2>
 
+<?php echo "<?php if (\${$plural}): ?>"; ?>
+
 <table cellspacing="0">
 	<tr>
 <?php foreach ($fields as $field): ?>
@@ -22,6 +24,12 @@
 	</tr>
 	<?php echo '<?php endforeach; ?>'; ?>
 </table>
+
+<?php echo '<?php else: ?>'; ?>
+
+<p>No Entries.</p>
+
+<?php echo '<?php endif; ?>'; ?>
 
 <br />
 

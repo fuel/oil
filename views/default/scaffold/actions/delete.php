@@ -1,7 +1,7 @@
-		if ($<?php echo $singular; ?> = <?php echo $model; ?>::find($id))
+		if ($<?php echo $singular; ?> = <?php echo $model; ?>::find_one_by_id($id))
 		{
 			$<?php echo $singular; ?>->delete();
-			
+
 			Session::set_flash('notice', 'Deleted <?php echo $singular; ?> #' . $id);
 		}
 

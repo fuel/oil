@@ -33,7 +33,7 @@
 		<?php echo $content; ?>
 
 		<p class="footer">
-			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />Page rendered in {exec_time}s using {mem_usage}mb of memory.
+			<a href="http://fuelphp.com">Fuel</a> is released under the MIT license.<br />Page rendered in {exec_time}s using {mem_usage}mb of memory.
 		</p>
 	</div>
 </body>

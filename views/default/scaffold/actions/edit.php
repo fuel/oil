@@ -1,4 +1,4 @@
-		$<?php echo $singular; ?> = <?php echo $model; ?>::find($id);
+		$<?php echo $singular; ?> = <?php echo $model; ?>::find_one_by_id($id);
 
 		if (Input::method() == 'POST')
 		{
@@ -18,11 +18,11 @@
 				Session::set_flash('notice', 'Could not update <?php echo $singular; ?> #' . $id);
 			}
 		}
-		
+
 		else
 		{
 			$this->template->set_global('<?php echo $singular; ?>', $<?php echo $singular; ?>, false);
 		}
-		
+
 		$this->template->title = "<?php echo ucfirst($plural); ?>";
 		$this->template->content = View::forge('<?php echo $controller_uri; ?>/edit');

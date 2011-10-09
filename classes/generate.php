@@ -38,9 +38,9 @@ class Generate
 		$args = self::_clear_args($args);
 		$singular = strtolower(array_shift($args));
 		$actions = $args;
-		
+
 		$plural = \Inflector::pluralize($singular);
-		
+
 		$filename = trim(str_replace(array('_', '-'), DS, $plural), DS);
 
 		$filepath = APPPATH . 'classes/controller/'.$filename.'.php';
@@ -77,12 +77,11 @@ class Controller_{$class_name} extends {$extends} {
 {$action_str}
 }
 
-/* End of file $filename.php */
 CONTROLLER;
 
 		// Write controller
 		static::create($filepath, $controller, 'controller');
-		
+
 		$build and static::build();
 	}
 
@@ -97,7 +96,7 @@ CONTROLLER;
 		}
 
 		$plural = \Inflector::pluralize($singular);
-		
+
 		$filename = trim(str_replace(array('_', '-'), DS, $singular), DS);
 
 		$filepath = APPPATH . 'classes/model/'.$filename.'.php';
@@ -105,25 +104,23 @@ CONTROLLER;
 		// Uppercase each part of the class name and remove hyphens
 		$class_name = \Inflector::classify($plural);
 
-		$contents = '';
-		if ( ! \Cli::option('no-timestamps', false))
-		{
-			$contents = <<<CONTENTS
+		$contents = <<<CONTENTS
 
-	protected static \$_observers = array(
-		'Orm\\Observer_CreatedAt' => array('before_insert'),
-		'Orm\\Observer_UpdatedAt' => array('before_save'),
-	);
+	protected static \$_table_name = '{$plural}';
 
 CONTENTS;
-		}
-
 		$model = <<<MODEL
 <?php
 
-class Model_{$class_name} extends Orm\Model {{$contents}}
+namespace Model;
 
-/* End of file $filename.php */
+use \Model_Crud;
+
+class {$class_name} extends Model_Crud
+{
+{$contents}
+}
+
 MODEL;
 
 		// Build the model
@@ -247,13 +244,13 @@ VIEW;
 				{
 					$subjects = array($matches[0], $matches[2]);
 				}
-				
+
 				// rename_field_{field}_to_{field}_in_{table} (with underscores in field names)
 				else if (count($matches) >= 5 && in_array('to', $matches) && in_array('in', $matches))
 				{
 					$subjects = array(
-					 implode('_', array_slice($matches, array_search('in', $matches)+1)), 
-					 implode('_', array_slice($matches, 0, array_search('to', $matches))), 
+					 implode('_', array_slice($matches, array_search('in', $matches)+1)),
+					 implode('_', array_slice($matches, 0, array_search('to', $matches))),
 					 implode('_', array_slice($matches, array_search('to', $matches)+1, array_search('in', $matches)-2))
 				  );
 				}
@@ -262,8 +259,8 @@ VIEW;
 				else if (count($matches) !== 0)
 				{
 					$name = str_replace(array('create_', 'add_', '_to_'), array('create-', 'add-', '-to-'), $migration_name);
-    				
-    				if (preg_match('/^(create|add)\-([a-z0-9\_]*)(\-to\-)?([a-z0-9\_]*)?$/i', $name, $deep_matches)) 
+
+    				if (preg_match('/^(create|add)\-([a-z0-9\_]*)(\-to\-)?([a-z0-9\_]*)?$/i', $name, $deep_matches))
     				{
     					switch ($deep_matches[1])
     					{
