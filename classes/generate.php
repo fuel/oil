@@ -67,7 +67,7 @@ class Generate
 			}
 		}
 		
-		$overwrite = \Cli::option('o') || \Cli::option('overwrite');
+		$overwrite = \Cli::option('o') or \Cli::option('overwrite');
 		
 		$content = <<<CONF
 <?php
