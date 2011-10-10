@@ -32,6 +32,88 @@ class Generate
 		'char' => 255,
 		'int' => 11
 	);
+	
+	public static function config($args, $build = true)
+	{
+		$args = self::_clear_args($args);
+		$file = strtolower(array_shift($args));
+		
+		$config = array();
+		
+		// load the config
+		if ($paths = \Fuel::find_file('config', $file, '.php', true))
+		{
+			// Reverse the file list so that we load the core configs first and
+			// the app can override anything.
+			$paths = array_reverse($paths);
+			foreach ($paths as $path)
+			{
+				$config = \Fuel::load($path) + $config;
+			}
+		}
+		
+		unset($path);
+		
+		// We always pass in fields to a config, so lets sort them out here.
+		foreach ($args as $conf)
+		{
+			// Each paramater for a config is seperated by the : character
+			$parts = explode(":", $conf);
+
+			// We must have the 'name:value' if nothing else!
+			if (count($parts) >= 2)
+			{
+				$config[$parts[0]] = $parts[1];
+			}
+		}
+		
+		$overwrite = \Cli::option('o') or \Cli::option('overwrite');
+		
+		$content = <<<CONF
+<?php
+/**
+ * Fuel is a fast, lightweight, community driven PHP5 framework.
+ *
+ * @package		Fuel
+ * @version		1.0
+ * @author		Fuel Development Team
+ * @license		MIT License
+ * @copyright	2011 Fuel Development Team
+ * @link		http://fuelphp.com
+ */
+
+
+CONF;
+		$content .= 'return '.str_replace('  ', "\t", var_export($config, true)).';';
+		$content .= <<<CONF
+
+
+/* End of file $file.php */
+CONF;
+
+		$path = APPPATH.'config'.DS.$file.'.php';
+
+		if ( ! $overwrite and is_file($path))
+		{
+			throw new Exception("APPPATH/config/{$file}.php already exist, please use -overwrite option to force update");
+		}
+		
+		$path = pathinfo($path);
+		
+		try
+		{
+			\File::update($path['dirname'], $path['basename'], $content);
+			\Cli::write("Created config: APPPATH/config/{$file}.php", 'green');
+		}
+		catch (\InvalidPathException $e)
+		{
+			throw new Exception("Invalid basepath, cannot update at ".APPPATH."config".DS."{$file}.php");
+		}
+		catch (\FileAccessException $e)
+		{ 
+			throw new Exception(APPPATH."config".DS.$file.".php could not be written.");
+		}
+	}
 
 	public static function controller($args, $build = true)
 	{
