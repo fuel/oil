@@ -105,9 +105,13 @@ CONF;
 			\File::update($path['dirname'], $path['basename'], $content);
 			\Cli::write("Created config: APPPATH/config/{$file}.php", 'green');
 		}
-		catch (\FileException $e)
+		catch (\InvalidPathException $e)
 		{
-			throw new Exception("APPPATH/config/{$file}.php could not be written.");
+			throw new Exception("Invalid basepath, cannot update at ".APPPATH."config".DS."{$file}.php");
+		}
+		catch (\FileAccessException $e)
+		{ 
+			throw new Exception(APPPATH."config".DS.$file.".php could not be written.");
 		}
 	}
 
