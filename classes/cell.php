@@ -38,12 +38,25 @@ class Cell
 		}
 
 		$version = \Cli::option('version', 'master');
+		$folder  = \Cli::option('folder', $package);
 
-		// Check to see if this package is already installed
-		if (is_dir(PKGPATH . $package))
+		if($folder === $package)
 		{
-			throw new Exception('Package "' . $package . '" is already installed.');
-			return;
+			// Check to see if this package is already installed
+			if (is_dir(PKGPATH . $package))
+			{
+				throw new Exception('Package "' . $package . '" is already installed.');
+				return;
+			}
+		}
+		else
+		{
+			// Check to see if this folder is already used
+			if (is_dir(PKGPATH . $folder))
+			{
+				throw new Exception('Folder "' . $folder . '" already exists. Please verify it\'s content. Maybe the package is already installed.');
+				return;
+			}
 		}
 		
 		$request_url = static::$_api_url.'cells/show.json?name='.urlencode($package);
@@ -67,14 +80,14 @@ class Cell
 		if ($cell['repository_type'] == 'git' and ! \Cli::option('via-zip'))
 		{
 			\Cli::write('Downloading package: ' . $package);
-			static::_clone_package_repo($cell['repository_url'], $package, $version);	
+			static::_clone_package_repo($cell['repository_url'], $package, $version, $folder);	
 		}
 
 		// Fallback to shoving a ZIP file in place
 		else
 		{
 			\Cli::write('Downloading package: ' . $package);
-			static::_download_package_zip($zip_url, $package, $version);
+			static::_download_package_zip($zip_url, $package, $version, $folder);
 		}
 	}
 
@@ -209,7 +222,7 @@ HELP;
 		return ! empty($matches[0]);
 	}
 
-	protected static function _download_package_zip($zip_url, $package, $version)
+	protected static function _download_package_zip($zip_url, $package, $version, $folder)
 	{
 		// Make the folder so we can extract the ZIP to it
 		mkdir($tmp_folder = APPPATH . 'tmp/' . $package . '-' . time());
@@ -223,7 +236,7 @@ HELP;
 		// Grab the first folder out of it (we dont know what it's called)
 		list($tmp_package_folder) = glob($tmp_folder.'/*', GLOB_ONLYDIR);
 
-		$package_folder = PKGPATH . $package;
+		$package_folder = PKGPATH . $folder;
 
 		// Move that folder into the packages folder
 		rename($tmp_package_folder, $package_folder);
@@ -239,11 +252,11 @@ HELP;
 		}
 	}
 
-	public static function _clone_package_repo($repo_url, $package, $version)
+	public static function _clone_package_repo($repo_url, $package, $version, $folder)
 	{
 		// TODO Make this magic
-		// $package_folder = str_replace(realpath(__DIR__.'/').'/', '', PKGPATH.$package);
-		$package_folder = 'fuel/packages/'.$package;
+		// $package_folder = str_replace(realpath(__DIR__.'/').'/', '', PKGPATH.$folder);
+		$package_folder = 'fuel/packages/'.$folder;
 
 		// Clone to the package path
 		passthru(static::$_git_binary.' submodule add '.$repo_url.' '.$package_folder);
