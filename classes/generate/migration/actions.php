@@ -32,7 +32,8 @@ class Generate_Migration_Actions
 	public static function create($subjects, $fields)
 	{
 		$field_str = '';
-		
+		$defined_columns = array();
+
 		foreach($fields as $field)
 		{
 			$name = array_shift($field);
@@ -58,7 +59,8 @@ class Generate_Migration_Actions
 			}
 			$field_opts = implode(', ', $field_opts);
 			
-			$field_str .= "\t\t\t'$name' => array({$field_opts}),".PHP_EOL;			
+			$field_str .= "\t\t\t'$name' => array({$field_opts}),".PHP_EOL;
+			$defined_columns[$name] = true;
 		}
 		
 		// ID Field
@@ -66,8 +68,16 @@ class Generate_Migration_Actions
 
 		if ( ! \Cli::option('no-timestamps', false))
 		{
-			$field_str .= "\t\t\t'created_at' => array('constraint' => 11, 'type' => 'int'),";
-			$field_str .= PHP_EOL."\t\t\t'updated_at' => array('constraint' => 11, 'type' => 'int'),";
+			if ( ! isset($defined_columns['created_at']))
+			{
+				$field_str .= "\t\t\t'created_at' => array('constraint' => 11, 'type' => 'int'),".PHP_EOL;
+			}
+
+			if ( ! isset($definied_columns['updated_at']))
+			{
+				$field_str .= "\t\t\t'updated_at' => array('constraint' => 11, 'type' => 'int'),";
+			}
+
 		}
 
 		$up = <<<UP
