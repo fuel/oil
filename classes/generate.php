@@ -118,20 +118,23 @@ CONF;
 	public static function controller($args, $build = true)
 	{
 		$args = self::_clear_args($args);
-		$singular = strtolower(array_shift($args));
+		
+		if ( ! ($name = \Str::lower(array_shift($args))))
+		{
+			throw new Exception('No controller name was provided.');
+		}
+		
 		$actions = $args;
 
-		$plural = \Inflector::pluralize($singular);
+		$filename = trim(str_replace(array('_', '-'), DS, $name), DS);
 
-		$filename = trim(str_replace(array('_', '-'), DS, $plural), DS);
-
-		$filepath = APPPATH . 'classes/controller/'.$filename.'.php';
+		$filepath = APPPATH.'classes'.DS.'controller'.DS.$filename.'.php';
 
 		// Uppercase each part of the class name and remove hyphens
-		$class_name = \Inflector::classify($plural, false);
+		$class_name = \Inflector::classify($name, false);
 
-		// Stick "blogs" to the start of the array
-		array_unshift($args, $plural);
+		// Stick "blog" to the start of the array
+		array_unshift($args, $filename);
 
 		// Create views folder and each view file
 		static::views($args, false);
@@ -144,7 +147,7 @@ CONF;
 			$action_str .= '
 	public function action_'.$action.'()
 	{
-		$this->template->title = \'' . \Inflector::humanize($singular) .' &raquo; ' . \Inflector::humanize($action) . '\';
+		$this->template->title = \'' . \Inflector::humanize($name) .' &raquo; ' . \Inflector::humanize($action) . '\';
 		$this->template->content = View::forge(\''.$filename.'/' . $action .'\');
 	}'.PHP_EOL;
 		}
