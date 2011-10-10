@@ -93,7 +93,7 @@ CONF;
 
 		$path = APPPATH.'config'.DS.$file.'.php';
 
-		if (!$overwrite and is_file($path))
+		if ( ! $overwrite and is_file($path))
 		{
 			throw new Exception("APPPATH/config/{$file}.php already exist, please use -overwrite option to force update");
 		}
@@ -105,7 +105,7 @@ CONF;
 			\File::update($path['dirname'], $path['basename'], $content);
 			\Cli::write("Created config: APPPATH/config/{$file}.php", 'green');
 		}
-		catch (\File_Exception $e)
+		catch (\FileException $e)
 		{
 			throw new Exception("APPPATH/config/{$file}.php could not be written.");
 		}
