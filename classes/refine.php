@@ -37,7 +37,7 @@ class Refine
 		$task = ucfirst(strtolower($task));
 
 		// Find the task
-		if ( ! $file = \Fuel::find_file('tasks', $task))
+		if ( ! $file = \Finder::search('tasks', $task))
 		{
 			$files = \Fuel::list_files('tasks');
 			$possibilities = array();
@@ -49,7 +49,7 @@ class Refine
 			}
 
 			ksort($possibilities);
-			
+
 			if ($possibilities and current($possibilities) <= 5)
 			{
 				throw new Exception(sprintf('Task "%s" does not exist. Did you mean "%s"?', strtolower($task), current($possibilities)));
@@ -58,7 +58,7 @@ class Refine
 			{
 				throw new Exception(sprintf('Task "%s" does not exist.', strtolower($task)));
 			}
-			
+
 			return;
 		}
 
@@ -87,7 +87,7 @@ class Refine
 		if (count($tasks) > 0)
 		{
 			$output_available_tasks = "";
-			
+
 			foreach ($tasks as $task => $options)
 			{
 				foreach ($options as $option)
@@ -99,7 +99,7 @@ class Refine
 		} else {
 			$output_available_tasks = "    (none found)";
 		}
-		
+
 		$output = <<<HELP
 
 Usage:
@@ -116,7 +116,7 @@ HELP;
 		\Cli::write($output);
 
 	}
-	
+
 	/**
 	 * Find all of the task classes in the system and use reflection to discover the
 	 * commands we can call.
@@ -126,23 +126,23 @@ HELP;
 	protected static function _discover_tasks() {
 		$result = array();
 		$files = \Fuel::list_files('tasks');
-		
+
 		if (count($files) > 0)
 		{
 			foreach ($files as $file)
 			{
 				$task_name = str_replace('.php', '', basename($file));
 				$class_name = '\\Fuel\\Tasks\\'.$task_name;
-				
+
 				require $file;
-				
+
 				$reflect = new \ReflectionClass($class_name);
-				
+
 				// Ensure we only pull out the public methods
 				$methods = $reflect->getMethods(\ReflectionMethod::IS_PUBLIC);
-				
+
 				$result[$task_name] = array();
-				
+
 				if (count($methods) > 0)
 				{
 					foreach ($methods as $method)
@@ -152,7 +152,7 @@ HELP;
 				}
 			}
 		}
-		
+
 		return $result;
 	}
 }

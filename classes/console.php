@@ -21,7 +21,8 @@ namespace Oil;
  * @author		Phil Sturgeon
  */
 
-class Console {
+class Console
+{
 
 	public function __construct()
 	{

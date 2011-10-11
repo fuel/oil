@@ -20,7 +20,8 @@ namespace Oil;
  * @category	Core
  * @author		Phil Sturgeon
  */
-class Exception extends \Exception {
+class Exception extends \Exception
+{
 
 //	public function __toString()
 //	{

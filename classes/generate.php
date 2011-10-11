@@ -32,16 +32,16 @@ class Generate
 		'char' => 255,
 		'int' => 11
 	);
-	
+
 	public static function config($args, $build = true)
 	{
 		$args = self::_clear_args($args);
 		$file = strtolower(array_shift($args));
-		
+
 		$config = array();
-		
+
 		// load the config
-		if ($paths = \Fuel::find_file('config', $file, '.php', true))
+		if ($paths = \Finder::search('config', $file, '.php', true))
 		{
 			// Reverse the file list so that we load the core configs first and
 			// the app can override anything.
@@ -51,9 +51,9 @@ class Generate
 				$config = \Fuel::load($path) + $config;
 			}
 		}
-		
+
 		unset($path);
-		
+
 		// We always pass in fields to a config, so lets sort them out here.
 		foreach ($args as $conf)
 		{
@@ -66,9 +66,9 @@ class Generate
 				$config[$parts[0]] = $parts[1];
 			}
 		}
-		
+
 		$overwrite = \Cli::option('o') or \Cli::option('overwrite');
-		
+
 		$content = <<<CONF
 <?php
 /**
@@ -97,9 +97,9 @@ CONF;
 		{
 			throw new Exception("APPPATH/config/{$file}.php already exist, please use -overwrite option to force update");
 		}
-		
+
 		$path = pathinfo($path);
-		
+
 		try
 		{
 			\File::update($path['dirname'], $path['basename'], $content);
@@ -110,7 +110,7 @@ CONF;
 			throw new Exception("Invalid basepath, cannot update at ".APPPATH."config".DS."{$file}.php");
 		}
 		catch (\FileAccessException $e)
-		{ 
+		{
 			throw new Exception(APPPATH."config".DS.$file.".php could not be written.");
 		}
 	}
@@ -118,12 +118,12 @@ CONF;
 	public static function controller($args, $build = true)
 	{
 		$args = self::_clear_args($args);
-		
+
 		if ( ! ($name = \Str::lower(array_shift($args))))
 		{
 			throw new Exception('No controller name was provided.');
 		}
-		
+
 		$actions = $args;
 
 		$filename = trim(str_replace(array('_', '-'), DS, $name), DS);
