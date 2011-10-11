@@ -24,6 +24,8 @@ class Refine
 {
 	public static function run($task, $args)
 	{
+		$task = strtolower($task);
+
 		// Make sure something is set
 		if ($task === null OR $task === 'help')
 		{
@@ -33,8 +35,6 @@ class Refine
 
 		// Just call and run() or did they have a specific method in mind?
 		list($task, $method)=array_pad(explode(':', $task), 2, 'run');
-
-		$task = ucfirst(strtolower($task));
 
 		// Find the task
 		if ( ! $file = \Finder::search('tasks', $task))
@@ -52,11 +52,11 @@ class Refine
 
 			if ($possibilities and current($possibilities) <= 5)
 			{
-				throw new Exception(sprintf('Task "%s" does not exist. Did you mean "%s"?', strtolower($task), current($possibilities)));
+				throw new Exception(sprintf('Task "%s" does not exist. Did you mean "%s"?', $task, current($possibilities)));
 			}
 			else
 			{
-				throw new Exception(sprintf('Task "%s" does not exist.', strtolower($task)));
+				throw new Exception(sprintf('Task "%s" does not exist.', $task));
 			}
 
 			return;
@@ -64,7 +64,7 @@ class Refine
 
 		require_once $file;
 
-		$task = '\\Fuel\\Tasks\\'.$task;
+		$task = '\\Fuel\\Tasks\\'.ucfirst($task);
 
 		$new_task = new $task;
 
