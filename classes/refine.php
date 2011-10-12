@@ -27,7 +27,7 @@ class Refine
 		$task = strtolower($task);
 
 		// Make sure something is set
-		if ($task === null OR $task === 'help')
+		if (empty($task) or $task === 'help')
 		{
 			static::help();
 			return;
@@ -96,7 +96,10 @@ class Refine
 					$output_available_tasks .= "    php oil refine $task$option\n";
 				}
 			}
-		} else {
+		}
+		
+		else
+		{
 			$output_available_tasks = "    (none found)";
 		}
 
@@ -123,7 +126,8 @@ HELP;
 	 *
 	 * @return array $taskname => array($taskmethods)
 	 **/
-	protected static function _discover_tasks() {
+	protected static function _discover_tasks()
+	{
 		$result = array();
 		$files = \Fuel::list_files('tasks');
 
