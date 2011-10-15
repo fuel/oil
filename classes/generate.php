@@ -228,7 +228,11 @@ CONTENTS;
 			$model = <<<MODEL
 <?php
 
-class Model_{$class_name} extends Orm\Model
+namespace Model;
+
+use \Orm\Model;
+
+class {$class_name} extends Orm\Model
 {
 {$contents}
 }
