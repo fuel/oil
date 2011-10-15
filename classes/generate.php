@@ -173,7 +173,9 @@ CONTROLLER;
 
 	public static function model($args, $build = true)
 	{
-		$singular = \Str::lower(array_shift($args));
+		$name = \Str::lower(array_shift($args));
+	
+		$singular = \Inflector::singularize($name);
 
 		if (empty($args))
 		{
@@ -187,7 +189,7 @@ CONTROLLER;
 		$filepath = APPPATH . 'classes/model/'.$filename.'.php';
 
 		// Uppercase each part of the class name and remove hyphens
-		$class_name = \Inflector::classify($plural, false);
+		$class_name = \Inflector::classify($name, false);
 
 		if ( ! \Cli::option('orm', false))
 		{

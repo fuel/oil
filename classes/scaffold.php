@@ -56,13 +56,13 @@ class Scaffold
 		$full_underscores = str_replace(DS, '_', $full_thing);
 
 		// Either something[s] or folder/something[s]
-		$data['controller_uri'] = $controller_uri = \Inflector::pluralize(\Str::lower($full_thing));
-		$data['controller'] = 'Controller_'.\Inflector::pluralize(\Inflector::classify($full_underscores));
+		$data['controller_uri'] = $controller_uri = \Str::lower($full_thing);
+		$data['controller'] = 'Controller_'.\Inflector::classify($full_underscores, false);
 
 		// If a folder is used, the entity is the last part
 		$parts = explode(DS, $full_thing);
 		$data['singular'] = $singular = \Inflector::singularize(end($parts));
-		$data['model'] = $model_name = \Inflector::classify($full_underscores);
+		$data['model'] = $model_name = \Inflector::classify($full_underscores, false);
 		$data['plural'] = $plural = \Inflector::pluralize($singular);
 		$data['fields'] = $fields;
 
