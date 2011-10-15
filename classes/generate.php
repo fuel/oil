@@ -184,7 +184,7 @@ CONTROLLER;
 
 		$plural = \Inflector::pluralize($singular);
 
-		$filename = trim(str_replace(array('_', '-'), DS, $singular), DS);
+		$filename = trim(str_replace(array('_', '-'), DS, $name), DS);
 
 		$filepath = APPPATH . 'classes/model/'.$filename.'.php';
 
