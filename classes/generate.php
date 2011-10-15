@@ -189,12 +189,14 @@ CONTROLLER;
 		// Uppercase each part of the class name and remove hyphens
 		$class_name = \Inflector::classify($plural);
 
-		$contents = <<<CONTENTS
+		if ( ! \Cli::option('orm', false))
+		{
+			$contents = <<<CONTENTS
 
 	protected static \$_table_name = '{$plural}';
 
 CONTENTS;
-		$model = <<<MODEL
+			$model = <<<MODEL
 <?php
 
 namespace Model;
@@ -207,6 +209,32 @@ class {$class_name} extends Model_Crud
 }
 
 MODEL;
+		}
+		else
+		{
+			$contents = '';
+
+			if ( ! \Cli::option('no-timestamp', false)) 
+			{
+				$contents = <<<CONTENTS
+	
+	protected static \$_observers = array(
+		'Orm\Observer_CreatedAt' => array('before_insert'),
+		'Orm\Observer_UpdatedAt' => array('before_save'),
+	);
+CONTENTS;
+			}
+
+			$model = <<<MODEL
+<?php
+
+class Model_{$class_name} extends Orm\Model
+{
+{$contents}
+}
+
+MODEL;
+		}
 
 		// Build the model
 		static::create($filepath, $model, 'model');
