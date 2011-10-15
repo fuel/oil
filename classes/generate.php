@@ -187,7 +187,7 @@ CONTROLLER;
 		$filepath = APPPATH . 'classes/model/'.$filename.'.php';
 
 		// Uppercase each part of the class name and remove hyphens
-		$class_name = \Inflector::classify($plural);
+		$class_name = \Inflector::classify($plural, false);
 
 		if ( ! \Cli::option('orm', false))
 		{
@@ -230,9 +230,7 @@ CONTENTS;
 
 namespace Model;
 
-use \Orm\Model;
-
-class {$class_name} extends Orm\Model
+class {$class_name} extends \Orm\Model
 {
 {$contents}
 }
