@@ -56,16 +56,16 @@ class Scaffold
 		$full_underscores = str_replace(DS, '_', $full_thing);
 
 		// Either something[s] or folder/something[s]
-		$data['controller_uri'] = $controller_uri = \Str::lower($full_thing);
-		$data['controller'] = 'Controller_'.\Inflector::classify($full_underscores, false);
+		$data['controller_uri'] = $controller_uri = \Inflector::pluralize(\Str::lower($full_thing));
+		$data['controller'] = 'Controller_'.\Inflector::classify(\Inflector::pluralize($full_underscores), false);
 
 		// If a folder is used, the entity is the last part
 		$parts = explode(DS, $full_thing);
 		$data['singular'] = $singular = \Inflector::singularize(end($parts));
-		$data['model'] = $model_name = \Inflector::classify($full_underscores, false);
+		$data['model'] = $model_name = \Inflector::classify($full_underscores);
 		$data['plural'] = $plural = \Inflector::pluralize($singular);
 		$data['fields'] = $fields;
-
+		
 		$filepath = APPPATH.'classes/controller/'.trim(str_replace(array('_', '-'), DS, $controller_uri), DS).'.php';
 		$controller = \View::forge($subfolder.'/scaffold/controller', $data);
 

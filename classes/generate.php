@@ -131,7 +131,7 @@ CONF;
 		$filepath = APPPATH.'classes'.DS.'controller'.DS.$filename.'.php';
 
 		// Uppercase each part of the class name and remove hyphens
-		$class_name = \Inflector::classify($name, false);
+		$class_name = \Inflector::classify($name);
 
 		// Stick "blog" to the start of the array
 		array_unshift($args, $filename);
@@ -173,9 +173,7 @@ CONTROLLER;
 
 	public static function model($args, $build = true)
 	{
-		$name = \Str::lower(array_shift($args));
-	
-		$singular = \Inflector::singularize($name);
+		$singular = \Inflector::singularize(\Str::lower(array_shift($args)));
 
 		if (empty($args))
 		{
@@ -184,12 +182,12 @@ CONTROLLER;
 
 		$plural = \Inflector::pluralize($singular);
 
-		$filename = trim(str_replace(array('_', '-'), DS, $name), DS);
+		$filename = trim(str_replace(array('_', '-'), DS, $singular), DS);
 
 		$filepath = APPPATH . 'classes/model/'.$filename.'.php';
 
 		// Uppercase each part of the class name and remove hyphens
-		$class_name = \Inflector::classify($name, false);
+		$class_name = \Inflector::classify($singular, false);
 
 		if ( ! \Cli::option('orm', false))
 		{
