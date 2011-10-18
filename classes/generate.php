@@ -131,7 +131,7 @@ CONF;
 		$filepath = APPPATH.'classes'.DS.'controller'.DS.$filename.'.php';
 
 		// Uppercase each part of the class name and remove hyphens
-		$class_name = \Inflector::classify($name, false);
+		$class_name = \Inflector::classify($name);
 
 		// Stick "blog" to the start of the array
 		array_unshift($args, $filename);
@@ -173,7 +173,7 @@ CONTROLLER;
 
 	public static function model($args, $build = true)
 	{
-		$singular = \Str::lower(array_shift($args));
+		$singular = \Inflector::singularize(\Str::lower(array_shift($args)));
 
 		if (empty($args))
 		{
@@ -187,14 +187,16 @@ CONTROLLER;
 		$filepath = APPPATH . 'classes/model/'.$filename.'.php';
 
 		// Uppercase each part of the class name and remove hyphens
-		$class_name = \Inflector::classify($plural);
+		$class_name = \Inflector::classify($singular, false);
 
-		$contents = <<<CONTENTS
+		if ( ! \Cli::option('orm', false))
+		{
+			$contents = <<<CONTENTS
 
 	protected static \$_table_name = '{$plural}';
 
 CONTENTS;
-		$model = <<<MODEL
+			$model = <<<MODEL
 <?php
 
 namespace Model;
@@ -207,6 +209,34 @@ class {$class_name} extends Model_Crud
 }
 
 MODEL;
+		}
+		else
+		{
+			$contents = '';
+
+			if ( ! \Cli::option('no-timestamp', false)) 
+			{
+				$contents = <<<CONTENTS
+	
+	protected static \$_observers = array(
+		'Orm\Observer_CreatedAt' => array('before_insert'),
+		'Orm\Observer_UpdatedAt' => array('before_save'),
+	);
+CONTENTS;
+			}
+
+			$model = <<<MODEL
+<?php
+
+namespace Model;
+
+class {$class_name} extends \Orm\Model
+{
+{$contents}
+}
+
+MODEL;
+		}
 
 		// Build the model
 		static::create($filepath, $model, 'model');
