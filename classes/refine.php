@@ -33,13 +33,35 @@ class Refine
 			return;
 		}
 
+		$module = false;
+		list($module, $task) = array_pad(explode('::', $task), 2, null);
+
+		if ($task === null)
+		{
+			$task = $module;
+			$module = false;
+		}
+
+		if ($module)
+		{
+			try
+			{
+				$path = \Fuel::add_module($module);
+				\Finder::instance()->add_path($path);
+			}
+			catch (\FuelException $e)
+			{
+				throw new Exception(sprintf('Module "%s" does not exist.', $module));
+			}
+		}
+
 		// Just call and run() or did they have a specific method in mind?
-		list($task, $method)=array_pad(explode(':', $task), 2, 'run');
+		list($task, $method) = array_pad(explode(':', $task), 2, 'run');
 
 		// Find the task
 		if ( ! $file = \Finder::search('tasks', $task))
 		{
-			$files = \Fuel::list_files('tasks');
+			$files = \Finder::instance()->list_files('tasks');
 			$possibilities = array();
 			foreach($files as $file)
 			{
@@ -97,7 +119,7 @@ class Refine
 				}
 			}
 		}
-		
+
 		else
 		{
 			$output_available_tasks = "    (none found)";
@@ -129,7 +151,7 @@ HELP;
 	protected static function _discover_tasks()
 	{
 		$result = array();
-		$files = \Fuel::list_files('tasks');
+		$files = \Finder::instance()->list_files('tasks');
 
 		if (count($files) > 0)
 		{
@@ -160,5 +182,3 @@ HELP;
 		return $result;
 	}
 }
-
-/* End of file oil/classes/refine.php */
