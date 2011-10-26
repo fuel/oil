@@ -8,21 +8,17 @@
 
 			if ($<?php echo $singular_name; ?>->save())
 			{
-				Session::set_flash('notice', 'Updated <?php echo $singular_name; ?> #' . $id);
+				Session::set_flash('success', 'Updated <?php echo $singular_name; ?> #' . $id);
 
 				Response::redirect('<?php echo $uri; ?>');
 			}
 
 			else
 			{
-				Session::set_flash('notice', 'Could not update <?php echo $singular_name; ?> #' . $id);
+				Session::set_flash('error', 'Nothing updated.');
 			}
 		}
 
-		else
-		{
-			$this->template->set_global('<?php echo $singular_name; ?>', $<?php echo $singular_name; ?>, false);
-		}
-
+		$this->template->set_global('<?php echo $singular_name; ?>', $<?php echo $singular_name; ?>, false);
 		$this->template->title = "<?php echo ucfirst($plural_name); ?>";
 		$this->template->content = View::forge('<?php echo $view_path; ?>/edit');

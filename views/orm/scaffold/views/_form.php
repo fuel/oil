@@ -1,27 +1,30 @@
-<?php echo '<?php echo Form::open(); ?>' ?>
+<?php echo '<?php echo Form::open(array(\'class\' => \'form-stacked\')); ?>' ?>
 
+
+	<fieldset>
 <?php foreach ($fields as $field): ?>
-	<p>
-		<?php
-			echo "<?php echo Form::label('". \Inflector::humanize($field['name']) ."', '{$field['name']}'); ?>\n";
+		<div class="clearfix">
+			<?php echo "<?php echo Form::label('". \Inflector::humanize($field['name']) ."', '{$field['name']}'); ?>\n"; ?>
 
-			switch($field['type']):
+			<div class="input">
+<?php switch($field['type']):
 
 				case 'text':
-					echo "<?php echo Form::textarea('{$field['name']}', Input::post('{$field['name']}', isset(\${$singular_name}) ? \${$singular_name}->{$field['name']} : ''), array('cols' => 60, 'rows' => 8)); ?>";
+					echo "\t\t\t\t<?php echo Form::textarea('{$field['name']}', Input::post('{$field['name']}', isset(\${$singular_name}) ? \${$singular_name}->{$field['name']} : ''), array('class' => 'span10', 'rows' => 8)); ?>\n";
 				break;
 
 				default:
-					echo "<?php echo Form::input('{$field['name']}', Input::post('{$field['name']}', isset(\${$singular_name}) ? \${$singular_name}->{$field['name']} : '')); ?>";
+					echo "\t\t\t\t<?php echo Form::input('{$field['name']}', Input::post('{$field['name']}', isset(\${$singular_name}) ? \${$singular_name}->{$field['name']} : ''), array('class' => 'span6')); ?>\n";
 
-			endswitch;
-		?>
+endswitch; ?>
 
-	</p>
+			</div>
+		</div>
 <?php endforeach; ?>
+		<div class="actions">
+			<?php echo '<?php'; ?> echo Form::submit('submit', 'Save', array('class' => 'btn primary')); <?php echo '?>'; ?>
 
-	<div class="actions">
-		<?php echo '<?php echo Form::submit(); ?>'; ?>
-	</div>
 
-<?php echo '<?php echo Form::close(); ?>' ?>
+		</div>
+	</fieldset>
+<?php echo '<?php'; ?> echo Form::close(); <?php echo '?>'; ?>
