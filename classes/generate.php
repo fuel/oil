@@ -549,6 +549,7 @@ Examples:
   php oil g migration <migrationname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]
   php oil g scaffold <modelname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]
   php oil g scaffold/template_subfolder <modelname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]
+  php oil g config <filename> [<key1>:<value1> |<key2>:<value2> |..]
 
 Note that the next two lines are equivalent:
   php oil g scaffold <modelname> ...
