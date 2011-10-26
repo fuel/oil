@@ -54,7 +54,7 @@ class Command
 
 					$action = isset($args[2]) ? $args[2]: 'help';
 
-					$subfolder = 'default';
+					$subfolder = 'orm';
 					if (is_int(strpos($action, 'scaffold/')))
 					{
 						$subfolder = str_replace('scaffold/', '', $action);

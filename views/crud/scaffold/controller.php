@@ -1,8 +1,7 @@
 <?php echo '<?php' ?>
 
-use Model\<?php echo $model; ?>;
+class Controller_<?php echo $controller_class; ?> extends <?php echo \Cli::option('extends', 'Controller_Template') ?>
 
-class <?php echo $controller; ?> extends <?php echo \Cli::option('extends', 'Controller_Template') ?>
 {
 
 <?php foreach ($actions as $action): ?>

@@ -8,11 +8,11 @@
 			switch($field['type']):
 
 				case 'text':
-					echo "<?php echo Form::textarea('{$field['name']}', Input::post('{$field['name']}', isset(\${$singular}) ? \${$singular}->{$field['name']} : ''), array('cols' => 60, 'rows' => 8)); ?>";
+					echo "<?php echo Form::textarea('{$field['name']}', Input::post('{$field['name']}', isset(\${$singular_name}) ? \${$singular_name}->{$field['name']} : ''), array('cols' => 60, 'rows' => 8)); ?>";
 				break;
 
 				default:
-					echo "<?php echo Form::input('{$field['name']}', Input::post('{$field['name']}', isset(\${$singular}) ? \${$singular}->{$field['name']} : '')); ?>";
+					echo "<?php echo Form::input('{$field['name']}', Input::post('{$field['name']}', isset(\${$singular_name}) ? \${$singular_name}->{$field['name']} : '')); ?>";
 
 			endswitch;
 		?>
