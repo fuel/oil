@@ -84,7 +84,7 @@ CONF;
 /* End of file $file.php */
 CONF;
 		
-		$module = \Cli::option('module');
+		$module = \Cli::option('module', \Cli::option('m'));
 		
 		// get the namespace path (if available)
 		if ( ! empty($module) and $path = \Autoloader::namespace_path('\\'.ucfirst($module)))
