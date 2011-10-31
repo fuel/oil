@@ -71,8 +71,6 @@ class Generate
 
 		// strip whitespace and add tab
 		$export = str_replace(array('  ', 'array ('), array("\t", 'array('), var_export($config, true));
-		// strip out the key of numeric array
-		$export = preg_replace("/(\d{1,10})\s=>\s/", "", $export);
 
 		$content = <<<CONF
 <?php
