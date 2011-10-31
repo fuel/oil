@@ -69,33 +69,40 @@ class Generate
 
 		$overwrite = \Cli::option('o') or \Cli::option('overwrite');
 
+		// strip whitespace and add tab
+		$export = str_replace(array('  ', 'array ('), array("\t", 'array('), var_export($config, true));
+
 		$content = <<<CONF
 <?php
-/**
- * Fuel is a fast, lightweight, community driven PHP5 framework.
- *
- * @package		Fuel
- * @version		1.0
- * @author		Fuel Development Team
- * @license		MIT License
- * @copyright	2011 Fuel Development Team
- * @link		http://fuelphp.com
- */
-
 
 CONF;
-		$content .= 'return '.str_replace('  ', "\t", var_export($config, true)).';';
+
+		$content .= PHP_EOL.'return '.$export.';';
 		$content .= <<<CONF
 
 
 /* End of file $file.php */
 CONF;
-
-		$path = APPPATH.'config'.DS.$file.'.php';
+		
+		$module = \Cli::option('module', \Cli::option('m'));
+		
+		// get the namespace path (if available)
+		if ( ! empty($module) and $path = \Autoloader::namespace_path('\\'.ucfirst($module)))
+		{
+			// strip the classes directory as we need the module root
+			// and construct the filename
+			$path = substr($path,0, -8).'config'.DS.$file.'.php';
+			$path_name = "\\".ucfirst($module).'::';
+		}
+		else
+		{
+			$path = APPPATH.'config'.DS.$file.'.php';
+			$path_name = 'APPPATH/';
+		}
 
 		if ( ! $overwrite and is_file($path))
 		{
-			throw new Exception("APPPATH/config/{$file}.php already exist, please use -overwrite option to force update");
+			throw new Exception("{$path_name}config/{$file}.php already exist, please use -overwrite option to force update");
 		}
 
 		$path = pathinfo($path);
@@ -103,15 +110,15 @@ CONF;
 		try
 		{
 			\File::update($path['dirname'], $path['basename'], $content);
-			\Cli::write("Created config: APPPATH/config/{$file}.php", 'green');
+			\Cli::write("Created config: {$path_name}config/{$file}.php", 'green');
 		}
 		catch (\InvalidPathException $e)
 		{
-			throw new Exception("Invalid basepath, cannot update at ".APPPATH."config".DS."{$file}.php");
+			throw new Exception("Invalid basepath, cannot update at ".$path_name."config".DS."{$file}.php");
 		}
 		catch (\FileAccessException $e)
 		{
-			throw new Exception(APPPATH."config".DS.$file.".php could not be written.");
+			throw new Exception($path_name."config".DS.$file.".php could not be written.");
 		}
 	}
 
@@ -540,6 +547,7 @@ Examples:
   php oil g migration <migrationname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]
   php oil g scaffold <modelname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]
   php oil g scaffold/template_subfolder <modelname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]
+  php oil g config <filename> [<key1>:<value1> |<key2>:<value2> |..]
 
 Note that the next two lines are equivalent:
   php oil g scaffold <modelname> ...
