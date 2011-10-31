@@ -67,7 +67,7 @@ class Generate
 			}
 		}
 
-		$overwrite = \Cli::option('o') or \Cli::option('overwrite');
+		$overwrite = (\Cli::option('o') or \Cli::option('overwrite')) ? true : false;
 
 		$content = <<<CONF
 <?php
@@ -95,7 +95,7 @@ CONF;
 
 		if ( ! $overwrite and is_file($path))
 		{
-			throw new Exception("APPPATH/config/{$file}.php already exist, please use -overwrite option to force update");
+			throw new Exception("APPPATH/config/{$file}.php already exist, please use --overwrite option to force update");
 		}
 
 		$path = pathinfo($path);
