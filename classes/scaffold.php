@@ -18,7 +18,6 @@ namespace Oil;
  * @package		Fuel
  * @subpackage	Oil
  * @category	Core
- * @author		Dan Horrigan
  */
 class Scaffold
 {
@@ -32,9 +31,9 @@ class Scaffold
 		$data = array();
 
 		$subfolder = trim($subfolder, '/');
-		if ( ! is_dir( PKGPATH.'oil/views/'.$subfolder))
+		if ( ! is_dir(PKGPATH.'oil/views/'.$subfolder))
 		{
-			throw new Exception('The subfolder for scaffolding templates doesn\'t exist or is spelled wrong: '.$subfolder.' ');
+			throw new Exception('The subfolder for scaffolding templates does not exist or is spelled wrong: '.$subfolder.' ');
 		}
 
 		// Go through all arguments after the first and make them into field arrays

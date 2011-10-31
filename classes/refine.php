@@ -18,7 +18,6 @@ namespace Oil;
  * @package		Fuel
  * @subpackage	Oil
  * @category	Core
- * @author		Phil Sturgeon
  */
 class Refine
 {

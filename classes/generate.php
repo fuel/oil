@@ -144,7 +144,7 @@ CONF;
 		array_unshift($args, $filename);
 
 		// Create views folder and each view file
-		static::views($args, false);
+		static::views($args, 'crud', false);
 
 		$actions or $actions = array('index');
 
@@ -235,8 +235,6 @@ CONTENTS;
 			$model = <<<MODEL
 <?php
 
-namespace Model;
-
 class {$class_name} extends \Orm\Model
 {
 {$contents}
@@ -263,7 +261,7 @@ MODEL;
 	}
 
 
-	public static function views($args, $build = true)
+	public static function views($args, $subfolder, $build = true)
 	{
 		$args = self::_clear_args($args);
 		$controller = strtolower(array_shift($args));
@@ -279,7 +277,7 @@ MODEL;
 		// Add the default template if it doesnt exist
 		if ( ! file_exists($app_template = APPPATH.'views/template.php'))
 		{
-			static::create($app_template, file_get_contents(PKGPATH.'oil/views/default/template.php'), 'view');
+			static::create($app_template, file_get_contents(PKGPATH.'oil/views/'.$subfolder.'/template.php'), 'view');
 		}
 
 		foreach ($args as $action)
@@ -551,7 +549,7 @@ Examples:
 
 Note that the next two lines are equivalent:
   php oil g scaffold <modelname> ...
-  php oil g scaffold/default <modelname> ...
+  php oil g scaffold/crud <modelname> ...
 
 Documentation:
   http://fuelphp.com/docs/packages/oil/generate.html

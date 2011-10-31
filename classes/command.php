@@ -18,7 +18,6 @@ namespace Oil;
  * @package		Fuel
  * @subpackage	Oil
  * @category	Core
- * @author		Phil Sturgeon
  */
 class Command
 {
@@ -60,17 +59,25 @@ class Command
 						$subfolder = str_replace('scaffold/', '', $action);
 						$action = 'scaffold';
 					}
+					elseif (is_int(strpos($action, 'views/')))
+					{
+						$subfolder = str_replace('views/', '', $action);
+						$action = 'views';
+					}
 
 					switch ($action)
 					{
 						case 'config':
 						case 'controller':
 						case 'model':
-						case 'views':
 						case 'migration':
 							call_user_func('Oil\Generate::'.$action, array_slice($args, 3));
 						break;
-
+						
+						case 'views':
+							call_user_func('Oil\Generate::views', array_slice($args, 3), $subfolder);
+						break;
+						
 						case 'scaffold':
 							call_user_func('Oil\Scaffold::generate', array_slice($args, 3), $subfolder);
 						break;
