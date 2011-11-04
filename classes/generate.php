@@ -226,8 +226,14 @@ MODEL;
 				$contents = <<<CONTENTS
 	
 	protected static \$_observers = array(
-		'Orm\Observer_CreatedAt' => array('before_insert'),
-		'Orm\Observer_UpdatedAt' => array('before_save'),
+		'Orm\Observer_CreatedAt' => array(
+			'events' => array('before_insert'),
+			'mysql_timestamp' => false,
+		),
+		'Orm\Observer_UpdatedAt' => array(
+			'events' => array('before_save'),
+			'mysql_timestamp' => false,
+		),
 	);
 CONTENTS;
 			}
