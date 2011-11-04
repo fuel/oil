@@ -235,7 +235,7 @@ CONTENTS;
 			$model = <<<MODEL
 <?php
 
-class {$class_name} extends \Orm\Model
+class Model_{$class_name} extends \Orm\Model
 {
 {$contents}
 }
