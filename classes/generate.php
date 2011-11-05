@@ -221,7 +221,7 @@ MODEL;
 		{
 			// Go through all arguments after the first and make them into field arrays
 			$fields = array();
-			foreach (array_slice($args, 1) as $arg)
+			foreach ($args as $arg)
 			{
 				// Parse the argument for each field in a pattern of name:type[constraint]
 				preg_match('/([a-z0-9_]+):([a-z0-9_]+)(\[([0-9]+)\])?/i', $arg, $matches);
