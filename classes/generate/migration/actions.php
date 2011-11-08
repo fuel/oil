@@ -66,7 +66,7 @@ class Generate_Migration_Actions
 		// ID Field
  		$field_str = "\t\t\t'id' => array('constraint' => 11, 'type' => 'int', 'auto_increment' => true),".PHP_EOL . $field_str;
 
-		if ( ! \Cli::option('no-timestamps', false))
+		if ( ! \Cli::option('no-timestamp', false))
 		{
 			if ( ! isset($defined_columns['created_at']))
 			{
