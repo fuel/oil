@@ -427,7 +427,7 @@ VIEW;
 						$field_array['name'] = array_shift($parts);
 						foreach ($parts as $part_i => $part)
 						{
-							preg_match('/([a-z0-9_-]+)(?:\[([a-z0-9]+)\])?/i', $part, $part_matches);
+							preg_match('/([a-z0-9_-]+)(?:\[([0-9a-z\,\s]+)\])?/i', $part, $part_matches);
 							array_shift($part_matches);
 
 							if (count($part_matches) < 1)
@@ -464,7 +464,24 @@ VIEW;
 									}
 									else
 									{
-										$field_array['constraint'] = (int) $option[1];
+										// should support field_name:enum[value1,value2]
+										if ($type === 'enum')
+										{
+											$values = explode(',', $option[1]);
+											$option[1] = '"'.implode('","', $values).'"';
+
+											$field_array['constraint'] = $option[1];
+										}
+										// should support field_name:decimal[10,2]
+										elseif (in_array($type, array('decimal', 'float')))
+										{
+											$field_array['constraint'] = $option[1];
+										}
+										else
+										{
+											$field_array['constraint'] = (int) $option[1];
+										}
+										
 									}
 								}
 								$option = $type;
