@@ -33,10 +33,15 @@ class Generate
 		'int' => 11
 	);
 
-	public static function config($args, $build = true)
+	public static function config($args)
 	{
 		$args = self::_clear_args($args);
 		$file = strtolower(array_shift($args));
+
+		if ( ! $file)
+		{
+			throw new Exception('No config name was provided.');
+		}
 
 		$config = array();
 
