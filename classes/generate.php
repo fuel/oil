@@ -107,7 +107,7 @@ CONF;
 
 		if ( ! $overwrite and is_file($path))
 		{
-			throw new Exception("{$path_name}config/{$file}.php already exist, please use -overwrite option to force update");
+			throw new Exception("{$path_name}config/{$file}.php already exist, please use --overwrite option to force update");
 		}
 
 		$path = pathinfo($path);
