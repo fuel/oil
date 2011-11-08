@@ -73,7 +73,7 @@ class Generate_Migration_Actions
 				$field_str .= "\t\t\t'created_at' => array('constraint' => 11, 'type' => 'int'),".PHP_EOL;
 			}
 
-			if ( ! isset($definied_columns['updated_at']))
+			if ( ! isset($defined_columns['updated_at']))
 			{
 				$field_str .= "\t\t\t'updated_at' => array('constraint' => 11, 'type' => 'int'),";
 			}
