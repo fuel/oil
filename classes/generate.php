@@ -72,7 +72,7 @@ class Generate
 			}
 		}
 
-		$overwrite = \Cli::option('o') or \Cli::option('overwrite');
+		$overwrite = (\Cli::option('o') or \Cli::option('overwrite'));
 
 		// strip whitespace and add tab
 		$export = str_replace(array('  ', 'array ('), array("\t", 'array('), var_export($config, true));
