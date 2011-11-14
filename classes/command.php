@@ -187,7 +187,7 @@ class Command
 		echo <<<HELP
 
 Usage:
-  php oil [cells|console|generate|help|test]
+  php oil [cells|console|generate|refine|help|test]
 
 Runtime options:
   -f, [--force]    # Overwrite files that already exist
