@@ -187,6 +187,11 @@ CONTROLLER;
 	{
 		$singular = \Inflector::singularize(\Str::lower(array_shift($args)));
 
+		if (empty($singular) or strpos($singular, ':'))
+		{
+			throw new Exception("Command is invalid.".PHP_EOL."\tphp oil g model <modelname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]");
+		}
+
 		if (empty($args))
 		{
 			throw new Exception('No fields have been provided, the model will not know how to build the table.');
@@ -201,9 +206,26 @@ CONTROLLER;
 		// Uppercase each part of the class name and remove hyphens
 		$class_name = \Inflector::classify($singular, false);
 
+		$contents = '';
+		
+		// Turn foo:string into "id", "foo",
+		$properties = implode("',\n\t\t'", array_merge(array('id'), array_map(function($field) {
+			return strstr($field, ':', true);
+		}, $args)));
+		
+		if ( ! \Cli::option('no-properties')) 
+		{
+			$contents .= <<<CONTENTS
+	protected static \$_properties = array(
+		'{$properties}',
+	);
+		
+CONTENTS;
+		}
+
 		if ( ! \Cli::option('orm', false))
 		{
-			$contents = <<<CONTENTS
+			$contents .= <<<CONTENTS
 
 	protected static \$_table_name = '{$plural}';
 
@@ -211,11 +233,7 @@ CONTENTS;
 			$model = <<<MODEL
 <?php
 
-namespace Model;
-
-use \Model_Crud;
-
-class {$class_name} extends Model_Crud
+class {$class_name} extends \Model_Crud
 {
 {$contents}
 }
@@ -224,11 +242,9 @@ MODEL;
 		}
 		else
 		{
-			$contents = '';
-
-			if ( ! \Cli::option('no-timestamp', false)) 
+			if ( ! \Cli::option('no-timestamp')) 
 			{
-				$contents = <<<CONTENTS
+				$contents .= <<<CONTENTS
 	
 	protected static \$_observers = array(
 		'Orm\Observer_CreatedAt' => array(
@@ -310,6 +326,11 @@ VIEW;
 	{
 		// Get the migration name
 		$migration_name = \Str::lower(str_replace(array('-', '/'), '_', array_shift($args)));
+
+		if (empty($migration_name) or strpos($migration_name, ':'))
+		{
+			throw new Exception("Command is invalid.".PHP_EOL."\tphp oil g migration <migrationname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]");
+		}
 
 		// Check if a migration with this name already exists
 		if (count($duplicates = glob(APPPATH."migrations/*_{$migration_name}*")) > 0)
