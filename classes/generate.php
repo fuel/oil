@@ -224,10 +224,29 @@ MODEL;
 		}
 		else
 		{
+			// Go through all arguments after the first and make them into field arrays
+			$fields = array();
+			foreach ($args as $arg)
+			{
+				// Parse the argument for each field in a pattern of name:type[constraint]
+				preg_match('/([a-z0-9_]+):([a-z0-9_]+)(\[([0-9]+)\])?/i', $arg, $matches);
+
+				array_push($fields, \Str::lower($matches[1]));
+			}
+			
 			$contents = '';
 
 			if ( ! \Cli::option('no-timestamp', false)) 
 			{
+				// Only add created_at or updated_at when it not passed as an arguments
+				foreach(array('created_at', 'updated_at') as $field)
+				{
+					if ( ! in_array($field, $fields))
+					{
+						array_push($fields, $field);
+					}
+				}
+
 				$contents = <<<CONTENTS
 	
 	protected static \$_observers = array(
@@ -242,6 +261,32 @@ MODEL;
 	);
 CONTENTS;
 			}
+
+			// Add id as the default primary key
+			if ( ! in_array('id', $fields))
+			{
+				array_unshift($fields, 'id');
+			}
+
+			// Start generate properties list
+			$field_contents = '';
+
+			foreach ($fields as $field)
+			{
+				if (empty($field))
+				{
+					continue;
+				}
+
+				$field_contents .= "\t\t'{$field}',".PHP_EOL;
+			}
+
+			$contents = <<<CONTENTS
+	protected static \$_properties = array(
+{$field_contents}
+	);
+{$contents}
+CONTENTS;
 
 			$model = <<<MODEL
 <?php
