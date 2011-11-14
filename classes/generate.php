@@ -209,15 +209,21 @@ CONTROLLER;
 		$contents = '';
 		
 		// Turn foo:string into "id", "foo",
-		$properties = implode("',\n\t\t'", array_merge(array('id'), array_map(function($field) {
-			return strstr($field, ':', true);
-		}, $args)));
+		$properties = implode(",\n\t\t", array_map(function($field) {
+			
+			// Only take valid fields
+			if (($field = strstr($field, ':', true)))
+			{
+				return "'".$field."'";
+			}
+			
+		}, array_merge(array('id:int'), $args)));
 		
 		if ( ! \Cli::option('no-properties')) 
 		{
 			$contents .= <<<CONTENTS
 	protected static \$_properties = array(
-		'{$properties}',
+		{$properties}
 	);
 		
 CONTENTS;
@@ -233,7 +239,7 @@ CONTENTS;
 			$model = <<<MODEL
 <?php
 
-class {$class_name} extends \Model_Crud
+class Model_{$class_name} extends \Model_Crud
 {
 {$contents}
 }
