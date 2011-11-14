@@ -32,7 +32,7 @@
 
 <?php echo '<?php else: ?>'; ?>
 
-<p>No Entries.</p>
+<p>No <?php echo \Str::ucfirst($plural_name); ?>.</p>
 
 <?php echo '<?php endif; ?>'; ?>
 <p>
