@@ -20,7 +20,7 @@
 	<div class="topbar">
 	    <div class="fill">
 	        <div class="container">
-	            <h3><a href="#">My Site</a></h3>
+	            <h3><a href="/">My Site</a></h3>
 	            <ul>
 	                <li class="<?php echo Uri::segment(2) == '' ? 'active' : '' ?>">
 						<?php echo Html::anchor('admin', 'Dashboard') ?>
