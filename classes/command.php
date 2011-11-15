@@ -53,16 +53,10 @@ class Command
 
 					$action = isset($args[2]) ? $args[2]: 'help';
 
-					$subfolder = 'orm';
-					if (is_int(strpos($action, 'scaffold/')))
+					$subfolder = 'crud';
+					if (is_int(strpos($action, '/')))
 					{
-						$subfolder = str_replace('scaffold/', '', $action);
-						$action = 'scaffold';
-					}
-					elseif (is_int(strpos($action, 'views/')))
-					{
-						$subfolder = str_replace('views/', '', $action);
-						$action = 'views';
+						list($action, $subfolder)=explode('/', $action);
 					}
 
 					switch ($action)
@@ -77,9 +71,13 @@ class Command
 						case 'views':
 							call_user_func('Oil\Generate::views', array_slice($args, 3), $subfolder);
 						break;
-						
+
+						case 'admin':
+							call_user_func('Oil\Generate_Admin::forge', array_slice($args, 3), $subfolder);
+						break;
+
 						case 'scaffold':
-							call_user_func('Oil\Scaffold::generate', array_slice($args, 3), $subfolder);
+							call_user_func('Oil\Generate_Scaffold::forge', array_slice($args, 3), $subfolder);
 						break;
 
 						default:
