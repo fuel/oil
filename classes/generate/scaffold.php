@@ -168,7 +168,7 @@ class Generate_Scaffold
 		// Add the default template if it doesnt exist
 		if ( ! file_exists($app_template = APPPATH.'views/template.php'))
 		{
-			Generate::create($app_template, file_get_contents(PKGPATH.'oil/views/'.static::$view_subdir.$subfolder.'/template.php'), 'view');
+			Generate::create($app_template, file_get_contents(PKGPATH.'oil/views/'.static::$view_subdir.$subfolder.'/views/template.php'), 'view');
 		}
 
 		Generate::build();
