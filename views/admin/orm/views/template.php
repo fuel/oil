@@ -5,7 +5,7 @@
 	<title><?php echo $title; ?></title>
 	<?php echo Asset::css('bootstrap.css'); ?>
 	<style>
-		body { margin: 40px; }
+		body { margin: 50px; }
 	</style>
 	<?php echo Asset::js(array(
 		'http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js',
@@ -17,44 +17,41 @@
 </head>
 <body>
 	
+	<?php if ($current_user): ?>
 	<div class="topbar">
 	    <div class="fill">
 	        <div class="container">
-	            <h3><a href="/">My Site</a></h3>
+	            <h3><a href="#">My Site</a></h3>
 	            <ul>
 	                <li class="<?php echo Uri::segment(2) == '' ? 'active' : '' ?>">
 						<?php echo Html::anchor('admin', 'Dashboard') ?>
 					</li>
 	                
-					<?php foreach (glob(APPPATH.'') as $controller): ?>
+					<?php foreach (glob(APPPATH.'classes/controller/admin/*.php') as $controller): ?>
 						
 						<?php
 						$section_segment = basename($controller, '.php');
 						$section_title = Inflector::humanize($section_segment);
 						?>
 						
-	                <li class="<?php echo Uri::segment(2) ==  ? 'active' : '' ?>">
+	                <li class="<?php echo Uri::segment(2) == $section_segment ? 'active' : '' ?>">
 						<?php echo Html::anchor('admin/'.$section_segment, $section_title) ?>
 					</li>
 					<?php endforeach; ?>
 	          </ul>
-	          <form action="">
-	            <input type="text" placeholder="Search" />
-	          </form>
+
 	          <ul class="nav secondary-nav">
 	            <li class="menu">
-	                <a href="#" class="menu">Lorem ipsum</a>
+	                <a href="#" class="menu"><?php echo $current_user->username ?></a>
 	                <ul class="menu-dropdown">
-	                    <li><a href="#">Dolor sit</a></li>
-	                    <li><a href="#">Amet Consequeter</a></li>
-	                    <li class="divider"></li>
-	                    <li><a href="#">Enough with the Latin</a></li>
+	                    <li><?php echo Html::anchor('admin/logout', 'Logout') ?></li>
 	                </ul>
 	            </li>
 	          </ul>
 	        </div>
 	    </div>
 	</div>
+	<?php endif; ?>
 	
 	<div class="container">
 		<div class="row">
