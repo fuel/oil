@@ -198,7 +198,7 @@ Description:
   testing your application and for running Tasks.
 
 Documentation:
-  http://fuelphp.com/docs/packages/oil/intro.html
+  http://docs.fuelphp.com/packages/oil/intro.html
 
 HELP;
 

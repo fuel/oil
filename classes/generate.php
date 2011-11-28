@@ -38,11 +38,11 @@ class Generate
 		$args = self::_clear_args($args);
 		$file = strtolower(array_shift($args));
 
-		if ( ! $file)
+		if (empty($file))
 		{
-			throw new Exception('No config name was provided.');
+			throw new Exception('No config filename has been provided.');
 		}
-
+		
 		$config = array();
 
 		// load the config
@@ -56,7 +56,6 @@ class Generate
 				$config = \Fuel::load($path) + $config;
 			}
 		}
-
 		unset($path);
 
 		// We always pass in fields to a config, so lets sort them out here.
@@ -77,12 +76,8 @@ class Generate
 		// strip whitespace and add tab
 		$export = str_replace(array('  ', 'array ('), array("\t", 'array('), var_export($config, true));
 
-		$content = <<<CONF
-<?php
-
-CONF;
-
-		$content .= PHP_EOL.'return '.$export.';';
+		$content = '<?php'.PHP_EOL.PHP_EOL;
+		$content .= 'return '.str_replace('  ', "\t", var_export($config, true)).';';
 		$content .= <<<CONF
 
 
@@ -107,7 +102,7 @@ CONF;
 
 		if ( ! $overwrite and is_file($path))
 		{
-			throw new Exception("{$path_name}config/{$file}.php already exist, please use --overwrite option to force update");
+			throw new Exception("APPPATH/config/{$file}.php already exist, please use --overwrite option to force update");
 		}
 
 		$path = pathinfo($path);
@@ -170,7 +165,8 @@ CONF;
 		$controller = <<<CONTROLLER
 <?php
 
-class Controller_{$class_name} extends {$extends} {
+class Controller_{$class_name} extends {$extends}
+{
 {$action_str}
 }
 
@@ -562,8 +558,8 @@ VIEW;
 
 namespace Fuel\Migrations;
 
-class {$migration_name} {
-
+class {$migration_name}
+{
 	public function up()
 	{
 {$up}
@@ -614,7 +610,7 @@ Note that the next two lines are equivalent:
   php oil g scaffold/crud <modelname> ...
 
 Documentation:
-  http://fuelphp.com/docs/packages/oil/generate.html
+  http://docs.fuelphp.com/packages/oil/generate.html
 HELP;
 
 		\Cli::write($output);

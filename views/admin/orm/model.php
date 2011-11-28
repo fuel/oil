@@ -1,8 +1,6 @@
 <?php echo '<?php' ?>
 
-use Orm\Model;
-
-class Model_<?php echo $model_name; ?> extends Model
+class Model_<?php echo $model_class; ?> extends \Orm\Model
 {
 	protected static $_properties = array(
 		'id',

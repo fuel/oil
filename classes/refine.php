@@ -135,7 +135,7 @@ Description:
 Available tasks:
 $output_available_tasks
 Documentation:
-    http://fuelphp.com/docs/packages/oil/refine.html
+    http://docs.fuelphp.com/packages/oil/refine.html
 HELP;
 		\Cli::write($output);
 
