@@ -207,6 +207,13 @@ CONTROLLER;
 		$class_name = \Inflector::classify($singular, false);
 
 		$contents = '';
+
+		$timestamp_properties = array();
+
+		if ( ! \Cli::option('no-timestamp'))
+		{
+			$timestamp_properties = array('created_at:int', 'updated_at:int');
+		}
 		
 		// Turn foo:string into "id", "foo",
 		$properties = implode(",\n\t\t", array_map(function($field) {
@@ -217,7 +224,7 @@ CONTROLLER;
 				return "'".$field."'";
 			}
 			
-		}, array_merge(array('id:int'), $args)));
+		}, array_merge(array('id:int'), $args, $timestamp_properties)));
 		
 		if ( ! \Cli::option('no-properties')) 
 		{
