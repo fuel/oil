@@ -91,13 +91,6 @@ CONF;
 		{
 			list($module, $file) = explode('::', $file);
 		}
-
-		if (strpos($file, '::') !== false)
-		{
-			$fragment = explode('::', $file);
-			$module = $fragment[0];
-			$file = $fragment[1];
-		}
 		
 		// get the namespace path (if available)
 		if ( ! empty($module) and $path = \Autoloader::namespace_path('\\'.ucfirst($module)))
