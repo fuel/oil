@@ -76,8 +76,7 @@ class Generate
 		// strip whitespace and add tab
 		$export = str_replace(array('  ', 'array ('), array("\t", 'array('), var_export($config, true));
 
-		$content = '<?php'.PHP_EOL.PHP_EOL;
-		$content .= 'return '.str_replace('  ', "\t", var_export($config, true)).';';
+		$content = '<?php'.PHP_EOL.PHP_EOL.'return '.$export.';';
 		$content .= <<<CONF
 
 
