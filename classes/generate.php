@@ -85,6 +85,19 @@ CONF;
 		
 		$module = \Cli::option('module', \Cli::option('m'));
 		
+		// add support for `php oil g config module::file arg1:value1`
+		if (strpos($file, '::') !== false)
+		{
+			list($module, $file) = explode('::', $file);
+		}
+
+		if (strpos($file, '::') !== false)
+		{
+			$fragment = explode('::', $file);
+			$module = $fragment[0];
+			$file = $fragment[1];
+		}
+		
 		// get the namespace path (if available)
 		if ( ! empty($module) and $path = \Autoloader::namespace_path('\\'.ucfirst($module)))
 		{
@@ -92,6 +105,10 @@ CONF;
 			// and construct the filename
 			$path = substr($path,0, -8).'config'.DS.$file.'.php';
 			$path_name = "\\".ucfirst($module).'::';
+		}
+		elseif ( ! empty($module))
+		{
+			throw new Exception("{$module} need to be loaded first, please use config always_load.modules.");
 		}
 		else
 		{
@@ -101,7 +118,7 @@ CONF;
 
 		if ( ! $overwrite and is_file($path))
 		{
-			throw new Exception("APPPATH/config/{$file}.php already exist, please use --overwrite option to force update");
+			throw new Exception("{$path_name}/config/{$file}.php already exist, please use --overwrite option to force update");
 		}
 
 		$path = pathinfo($path);
