@@ -35,14 +35,13 @@ class Generate
 
 	public static function config($args)
 	{
-		$args = self::_clear_args($args);
 		$file = strtolower(array_shift($args));
 
 		if (empty($file))
 		{
 			throw new Exception('No config filename has been provided.');
 		}
-		
+
 		$config = array();
 
 		// load the config
@@ -82,15 +81,15 @@ class Generate
 
 /* End of file $file.php */
 CONF;
-		
+
 		$module = \Cli::option('module', \Cli::option('m'));
-		
+
 		// add support for `php oil g config module::file arg1:value1`
 		if (strpos($file, '::') !== false)
 		{
 			list($module, $file) = explode('::', $file);
 		}
-		
+
 		// get the namespace path (if available)
 		if ( ! empty($module) and $path = \Autoloader::namespace_path('\\'.ucfirst($module)))
 		{
@@ -133,8 +132,6 @@ CONF;
 
 	public static function controller($args, $build = true)
 	{
-		$args = self::_clear_args($args);
-
 		if ( ! ($name = \Str::lower(array_shift($args))))
 		{
 			throw new Exception('No controller name was provided.');
@@ -219,25 +216,25 @@ CONTROLLER;
 		{
 			$timestamp_properties = array('created_at:int', 'updated_at:int');
 		}
-		
+
 		// Turn foo:string into "id", "foo",
 		$properties = implode(",\n\t\t", array_map(function($field) {
-			
+
 			// Only take valid fields
 			if (($field = strstr($field, ':', true)))
 			{
 				return "'".$field."'";
 			}
-			
+
 		}, array_merge(array('id:int'), $args, $timestamp_properties)));
-		
-		if ( ! \Cli::option('no-properties')) 
+
+		if ( ! \Cli::option('no-properties'))
 		{
 			$contents .= <<<CONTENTS
 	protected static \$_properties = array(
 		{$properties}
 	);
-		
+
 CONTENTS;
 		}
 
@@ -260,10 +257,10 @@ MODEL;
 		}
 		else
 		{
-			if ( ! \Cli::option('no-timestamp')) 
+			if ( ! \Cli::option('no-timestamp'))
 			{
 				$contents .= <<<CONTENTS
-	
+
 	protected static \$_observers = array(
 		'Orm\Observer_CreatedAt' => array(
 			'events' => array('before_insert'),
@@ -308,7 +305,6 @@ MODEL;
 
 	public static function views($args, $subfolder, $build = true)
 	{
-		$args = self::_clear_args($args);
 		$controller = strtolower(array_shift($args));
 		$controller_title = \Inflector::humanize($controller);
 
@@ -520,7 +516,7 @@ VIEW;
 										{
 											$field_array['constraint'] = (int) $option[1];
 										}
-										
+
 									}
 								}
 								$option = $type;
@@ -723,19 +719,6 @@ HELP;
 		$contents = preg_replace("#('version'[ \t]+=>)[ \t]+([0-9]+),#i", "$1 $version,", $contents);
 
 		static::create($app_path, $contents, 'config');
-	}
-
-	private static function _clear_args($actions = array())
-	{
- 		foreach ($actions as $key => $action)
-		{
-			if (substr($action, 0, 1) === '-')
-			{
-				unset($actions[$key]);
-			}
-		}
-
-		return $actions;
 	}
 }
 
