@@ -140,7 +140,7 @@ DOWN;
     return array($up, $down);
 	}
 	
-	// rename_field_{table}_{fieldname}_to_{newfieldname}
+	// rename_field_{fieldname}_to_{newfieldname}_in_{table}
 	public static function rename_field($subjects, $fields)
 	{
 		$column_list = \DB::list_columns($subjects[0], $subjects[1]);
