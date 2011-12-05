@@ -24,13 +24,7 @@ class Command
 	public static function init($args)
 	{
 		// Remove flag options from the main argument list
-		for ($i = 0; $i < count($args); $i++)
-		{
-			if (strpos($args[$i], '-') === 0)
-			{
-				unset($args[$i]);
-			}
-		}
+		$args = self::_clear_args($args);
 
 		try
 		{
@@ -67,7 +61,7 @@ class Command
 						case 'migration':
 							call_user_func('Oil\Generate::'.$action, array_slice($args, 3));
 						break;
-						
+
 						case 'views':
 							call_user_func('Oil\Generate::views', array_slice($args, 3), $subfolder);
 						break;
@@ -203,6 +197,19 @@ Documentation:
 HELP;
 
 	}
+
+	private static function _clear_args($actions = array())
+	{
+		foreach ($actions as $key => $action)
+		{
+			if (substr($action, 0, 1) === '-')
+			{
+				unset($actions[$key]);
+			}
+		}
+
+		return $actions;
+	}
 }
 
-/* End of file oil/classes/cli.php */
+/* End of file oil/classes/command.php */
