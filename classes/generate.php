@@ -248,7 +248,7 @@ CONTROLLER;
 CONTENTS;
 		}
 
-		if ( ! \Cli::option('orm', false))
+		if (\Cli::option('crud'))
 		{
 			$contents .= <<<CONTENTS
 

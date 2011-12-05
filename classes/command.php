@@ -24,7 +24,7 @@ class Command
 	public static function init($args)
 	{
 		// Remove flag options from the main argument list
-		for ($i =0; $i < count($args); $i++)
+		for ($i = 0; $i < count($args); $i++)
 		{
 			if (strpos($args[$i], '-') === 0)
 			{
@@ -53,7 +53,7 @@ class Command
 
 					$action = isset($args[2]) ? $args[2]: 'help';
 
-					$subfolder = 'crud';
+					$subfolder = 'orm';
 					if (is_int(strpos($action, '/')))
 					{
 						list($action, $subfolder)=explode('/', $action);
