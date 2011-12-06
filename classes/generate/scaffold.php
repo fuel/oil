@@ -20,14 +20,14 @@ namespace Oil;
  * @category	Core
  */
 class Generate_Scaffold
-{	
+{
 	public static $fields_regex = '/([a-z0-9_]+):([a-z0-9_]+)(\[([0-9]+)\])?/i';
-	
+
 	public static $view_subdir = 'scaffolding/';
-	
+
 	public static $controller_prefix = '';
 	public static $model_prefix = '';
-	
+
 	public static $controller_parent = 'Controller_Template';
 
 	public static function _init()
@@ -47,7 +47,7 @@ class Generate_Scaffold
 		$data = array();
 
 		$subfolder = trim($subfolder, '/');
-		
+
 		if ( ! is_dir(PKGPATH.'oil/views/'.static::$view_subdir.$subfolder))
 		{
 			throw new Exception('The subfolder for admin templates does not exist or is spelled wrong: '.$subfolder.' ');
@@ -68,15 +68,15 @@ class Generate_Scaffold
 		}
 
 		$name = array_shift($args);
-		
+
 		// Replace / with _ and classify the rest. DO NOT singularize
 		$controller_name = \Inflector::classify(static::$controller_prefix.str_replace(DS, '_', $name), false);
-		
+
 		// Replace / with _ and classify the rest. Singularize
 		$model_name = \Inflector::classify(static::$model_prefix.str_replace(DS, '_', $name));
 
 		// Either foo or folder/foo
-		$view_path = $controller_path = str_replace(
+		$controller_path = str_replace(
 			array('_', '-'),
 			DS,
 			\Str::lower($controller_name)
@@ -89,9 +89,9 @@ class Generate_Scaffold
 			\Str::lower($model_name)
 		);
 
-		// It's the same thing really, uri and folder matches
-		$uri = $controller_path;
-		
+		// uri's have forward slashes, DS is a backslash on Windows
+		$uri = str_replace(DS, '/', $controller_path);
+
 		$data['include_timestamps'] = ( ! \Cli::option('no-timestamp', false));
 
 		// If a folder is used, the entity is the last part
@@ -108,10 +108,10 @@ class Generate_Scaffold
 
 		// Merge some other data in
 		$data = array_merge(compact(array('controller_name', 'model_name', 'model_path', 'view_path', 'uri')), $data);
-		
+
 		/** Generate the Model **/
 		$model = \View::forge(static::$view_subdir.$subfolder.'/model', $data);
-		
+
 		Generate::create(
 			APPPATH.'classes/model/'.$model_path.'.php',
 			$model,
@@ -120,7 +120,7 @@ class Generate_Scaffold
 
 		/** Generate the Controller **/
 		$controller = \View::forge(static::$view_subdir.$subfolder.'/controller', $data);
-		
+
 		$controller->actions = array(
 			array(
 				'name'   => 'index',
@@ -148,7 +148,7 @@ class Generate_Scaffold
 				'code'   => \View::forge(static::$view_subdir.$subfolder.'/actions/delete', $data),
 			),
 		);
-		
+
 		Generate::create(
 			APPPATH.'classes/controller/'.$controller_path.'.php',
 			$controller,
