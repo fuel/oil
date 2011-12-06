@@ -2,20 +2,35 @@
 
 		if (Input::method() == 'POST')
 		{
+			$val = Model_<?php echo $model_name; ?>::validate('edit');
+			
+			if ($val->run())
+			{
 <?php foreach ($fields as $field): ?>
-			$<?php echo $singular_name; ?>-><?php echo $field['name']; ?> = Input::post('<?php echo $field['name']; ?>');
+				$<?php echo $singular_name; ?>-><?php echo $field['name']; ?> = Input::post('<?php echo $field['name']; ?>');
 <?php endforeach; ?>
 
-			if ($<?php echo $singular_name; ?>->save())
-			{
-				Session::set_flash('success', 'Updated <?php echo $singular_name; ?> #' . $id);
+				if ($<?php echo $singular_name; ?>->save())
+				{
+					Session::set_flash('success', 'Updated <?php echo $singular_name; ?> #' . $id);
 
-				Response::redirect('<?php echo $uri; ?>');
+					Response::redirect('<?php echo $uri; ?>');
+				}
+
+				else
+				{
+					Session::set_flash('error', 'Could not update <?php echo $singular_name; ?> #' . $id);
+				}
 			}
-
 			else
 			{
-				Session::set_flash('error', 'Could not update <?php echo $singular_name; ?> #' . $id);
+<?php foreach ($fields as $field): ?>
+				$<?php echo $singular_name; ?>-><?php echo $field['name']; ?> = Input::post('<?php echo $field['name']; ?>');
+<?php endforeach; ?>
+				
+				$this->template->set_global('<?php echo $singular_name; ?>', $<?php echo $singular_name; ?>, false);
+				
+				Session::set_flash('error', $val->show_errors());
 			}
 		}
 
