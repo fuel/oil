@@ -76,7 +76,7 @@ class Generate_Scaffold
 		$model_name = \Inflector::classify(static::$model_prefix.str_replace(DS, '_', $name));
 
 		// Either foo or folder/foo
-		$controller_path = str_replace(
+		$view_path = $controller_path = str_replace(
 			array('_', '-'),
 			DS,
 			\Str::lower($controller_name)

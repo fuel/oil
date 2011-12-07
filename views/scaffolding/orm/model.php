@@ -39,7 +39,7 @@ class Model_<?php echo $model_name; ?> extends Model
 		if ($field['name'] === 'email')
 		{
 			$rules[] = 'valid_email';
-			$rules[] = !is_null($field['constraint']) ? "max_length[{$field['constraint']}]" : 'max_length[255]';
+			$rules[] = ! is_null($field['constraint']) ? "max_length[{$field['constraint']}]" : 'max_length[255]';
 		}
 		
 		elseif ($field['type'] === 'varchar' or $field['type'] === 'string')
