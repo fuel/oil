@@ -28,4 +28,42 @@ class Model_<?php echo $model_name; ?> extends Model
 	);
 <?php endif; ?>
 
+	public static function validate($factory)
+	{
+		$val = Validation::forge($factory);
+
+<?php foreach ($fields as $field): ?>
+<?php
+		$rules = array('required');
+		
+		if ($field['name'] === 'email')
+		{
+			$rules[] = 'valid_email';
+			$rules[] = ! is_null($field['constraint']) ? "max_length[{$field['constraint']}]" : 'max_length[255]';
+		}
+		
+		elseif ($field['type'] === 'varchar' or $field['type'] === 'string' or $field['type'] === 'char')
+		{
+			$rules[] = 'valid_string';
+			$rules[] = ! is_null($field['constraint']) ? "max_length[{$field['constraint']}]" : 'max_length[255]';
+		}
+		
+		elseif ($field['type'] === 'text')
+		{
+			$rules[] = 'valid_string';
+		}
+		
+		elseif ($field['type'] === 'int' or $field['type'] === 'intenger')
+		{
+			$rules[] = 'valid_string[intenger]';
+		}
+		
+		$rules = implode('|', $rules);
+?>
+		$val->add_field('<?php echo $field['name']; ?>', '<?php echo ucwords(str_replace('_', ' ', $field['name'])); ?>', '<?php echo $rules; ?>');
+<?php endforeach; ?>
+
+		return $val;
+	}
+
 }
