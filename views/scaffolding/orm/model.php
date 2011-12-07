@@ -42,15 +42,20 @@ class Model_<?php echo $model_name; ?> extends Model
 			$rules[] = ! is_null($field['constraint']) ? "max_length[{$field['constraint']}]" : 'max_length[255]';
 		}
 		
-		elseif ($field['type'] === 'varchar' or $field['type'] === 'string')
+		elseif ($field['type'] === 'varchar' or $field['type'] === 'string' or $field['type'] === 'char')
 		{
 			$rules[] = 'valid_string';
-			$rules[] = !is_null($field['constraint']) ? "max_length[{$field['constraint']}]" : 'max_length[255]';
+			$rules[] = ! is_null($field['constraint']) ? "max_length[{$field['constraint']}]" : 'max_length[255]';
+		}
+		
+		elseif ($field['type'] === 'text')
+		{
+			$rules[] = 'valid_string';
 		}
 		
 		elseif ($field['type'] === 'int' or $field['type'] === 'intenger')
 		{
-			$rules[] = 'is_int';
+			$rules[] = 'valid_string[intenger]';
 		}
 		
 		$rules = implode('|', $rules);
