@@ -1,6 +1,7 @@
 		$<?php echo $singular_name; ?> = Model_<?php echo $model_name; ?>::find($id);
+		$val = Model_<?php echo $model_name; ?>::validate('edit');
 
-		if (Input::method() == 'POST')
+		if ($val->run())
 		{
 <?php foreach ($fields as $field): ?>
 			$<?php echo $singular_name; ?>-><?php echo $field['name']; ?> = Input::post('<?php echo $field['name']; ?>');
@@ -21,6 +22,15 @@
 
 		else
 		{
+			if (Input::method() == 'POST')
+			{
+<?php foreach ($fields as $field): ?>
+				$<?php echo $singular_name; ?>-><?php echo $field['name']; ?> = $val->validated('<?php echo $field['name']; ?>');
+<?php endforeach; ?>
+
+				Session::set_flash('error', $val->show_errors());
+			}
+			
 			$this->template->set_global('<?php echo $singular_name; ?>', $<?php echo $singular_name; ?>, false);
 		}
 

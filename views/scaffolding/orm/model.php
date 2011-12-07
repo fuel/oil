@@ -28,4 +28,15 @@ class Model_<?php echo $model_name; ?> extends Model
 	);
 <?php endif; ?>
 
+	public static function validate($factory)
+	{
+		$val = Validation::forge($factory);
+
+<?php foreach ($fields as $field): ?>
+		$val->add_field('<?php echo $field['name']; ?>', '<?php echo ucwords(str_replace('_', ' ', $field['name'])); ?>', 'required');
+<?php endforeach; ?>
+
+		return $val;
+	}
+
 }
