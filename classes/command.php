@@ -88,7 +88,9 @@ class Command
 				case 'refine':
 
 					// Developers of third-party tasks may not be displaying PHP errors. Report any error and quit
-					set_error_handler(function($errno, $errstr, $errfile, $errline){
+					set_error_handler(function($errno, $errstr, $errfile, $errline) {
+						if (!error_reporting()) return; // If the error was supressed with an @ then we ignore it!
+						
 						\Cli::error("Error: {$errstr} in $errfile on $errline");
 						\Cli::beep();
 						exit;
