@@ -18,20 +18,13 @@ namespace Oil;
  * @package		Fuel
  * @subpackage	Oil
  * @category	Core
- * @author		Phil Sturgeon
  */
 class Command
 {
 	public static function init($args)
 	{
 		// Remove flag options from the main argument list
-		for ($i =0; $i < count($args); $i++)
-		{
-			if (strpos($args[$i], '-') === 0)
-			{
-				unset($args[$i]);
-			}
-		}
+		$args = self::_clear_args($args);
 
 		try
 		{
@@ -54,11 +47,10 @@ class Command
 
 					$action = isset($args[2]) ? $args[2]: 'help';
 
-					$subfolder = 'default';
-					if (is_int(strpos($action, 'scaffold/')))
+					$subfolder = 'orm';
+					if (is_int(strpos($action, '/')))
 					{
-						$subfolder = str_replace('scaffold/', '', $action);
-						$action = 'scaffold';
+						list($action, $subfolder)=explode('/', $action);
 					}
 
 					switch ($action)
@@ -66,13 +58,20 @@ class Command
 						case 'config':
 						case 'controller':
 						case 'model':
-						case 'views':
 						case 'migration':
 							call_user_func('Oil\Generate::'.$action, array_slice($args, 3));
 						break;
 
+						case 'views':
+							call_user_func('Oil\Generate::views', array_slice($args, 3), $subfolder);
+						break;
+
+						case 'admin':
+							call_user_func('Oil\Generate_Admin::forge', array_slice($args, 3), $subfolder);
+						break;
+
 						case 'scaffold':
-							call_user_func('Oil\Scaffold::generate', array_slice($args, 3), $subfolder);
+							call_user_func('Oil\Generate_Scaffold::forge', array_slice($args, 3), $subfolder);
 						break;
 
 						default:
@@ -89,7 +88,9 @@ class Command
 				case 'refine':
 
 					// Developers of third-party tasks may not be displaying PHP errors. Report any error and quit
-					set_error_handler(function($errno, $errstr, $errfile, $errline){
+					set_error_handler(function($errno, $errstr, $errfile, $errline) {
+						if (!error_reporting()) return; // If the error was supressed with an @ then we ignore it!
+						
 						\Cli::error("Error: {$errstr} in $errfile on $errline");
 						\Cli::beep();
 						exit;
@@ -180,7 +181,7 @@ class Command
 		echo <<<HELP
 
 Usage:
-  php oil [cells|console|generate|help|test]
+  php oil [cells|console|generate|refine|help|test]
 
 Runtime options:
   -f, [--force]    # Overwrite files that already exist
@@ -193,11 +194,24 @@ Description:
   testing your application and for running Tasks.
 
 Documentation:
-  http://fuelphp.com/docs/packages/oil/intro.html
+  http://docs.fuelphp.com/packages/oil/intro.html
 
 HELP;
 
 	}
+
+	private static function _clear_args($actions = array())
+	{
+		foreach ($actions as $key => $action)
+		{
+			if (substr($action, 0, 1) === '-')
+			{
+				unset($actions[$key]);
+			}
+		}
+
+		return $actions;
+	}
 }
 
-/* End of file oil/classes/cli.php */
+/* End of file oil/classes/command.php */

@@ -66,14 +66,14 @@ class Generate_Migration_Actions
 		// ID Field
  		$field_str = "\t\t\t'id' => array('constraint' => 11, 'type' => 'int', 'auto_increment' => true),".PHP_EOL . $field_str;
 
-		if ( ! \Cli::option('no-timestamps', false))
+		if ( ! \Cli::option('no-timestamp', false))
 		{
 			if ( ! isset($defined_columns['created_at']))
 			{
 				$field_str .= "\t\t\t'created_at' => array('constraint' => 11, 'type' => 'int'),".PHP_EOL;
 			}
 
-			if ( ! isset($definied_columns['updated_at']))
+			if ( ! isset($defined_columns['updated_at']))
 			{
 				$field_str .= "\t\t\t'updated_at' => array('constraint' => 11, 'type' => 'int'),";
 			}
@@ -140,7 +140,7 @@ DOWN;
     return array($up, $down);
 	}
 	
-	// rename_field_{table}_{fieldname}_to_{newfieldname}
+	// rename_field_{fieldname}_to_{newfieldname}_in_{table}
 	public static function rename_field($subjects, $fields)
 	{
 		$column_list = \DB::list_columns($subjects[0], $subjects[1]);
