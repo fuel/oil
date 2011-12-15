@@ -16,8 +16,10 @@ class Controller_Admin extends Controller_Base {
 	
 	public function action_login()
 	{
-		// Already logged in
-		Auth::check() and Response::redirect('admin');
+		if (Auth::check()) 
+		{
+			Response::redirect('admin');
+		}
 
 		$val = Validation::forge();
 
@@ -43,7 +45,6 @@ class Controller_Admin extends Controller_Base {
 				{
 					$this->template->set_global('login_error', 'Fail');
 				}
-
 			}
 		}
 
