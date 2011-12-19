@@ -47,7 +47,7 @@ class Command
 
 					$action = isset($args[2]) ? $args[2]: 'help';
 
-					$subfolder = 'orm';
+					$subfolder = 'crud';
 					if (is_int(strpos($action, '/')))
 					{
 						list($action, $subfolder)=explode('/', $action);
