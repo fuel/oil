@@ -25,7 +25,7 @@ class Command
 	{
 		//set up the environment
 		$env = \Cli::option('env', false);
-		if( $env )
+		if ($env)
 		{
 			\Fuel::$env = constant('\Fuel::'. strtoupper($env)) ?: \Fuel::DEVELOPMENT;
 		}
