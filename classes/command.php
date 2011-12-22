@@ -24,7 +24,7 @@ class Command
 	public static function init($args)
 	{
 		//set up the environment
-		$env = \Cli::option('env', false);
+		$env = \Cli::option('env');
 		if ($env)
 		{
 			\Fuel::$env = constant('\Fuel::'. strtoupper($env)) ?: \Fuel::DEVELOPMENT;
