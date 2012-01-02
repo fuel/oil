@@ -23,6 +23,12 @@ class Command
 {
 	public static function init($args)
 	{
+		//set up the environment
+		if (($env = \Cli::option('env')))
+		{
+			\Fuel::$env = constant('\Fuel::'. strtoupper($env)) ?: \Fuel::DEVELOPMENT;
+		}
+		
 		// Remove flag options from the main argument list
 		$args = self::_clear_args($args);
 
@@ -188,6 +194,7 @@ Runtime options:
   -s, [--skip]     # Skip files that already exist
   -q, [--quiet]    # Supress status output
   -t, [--speak]    # Speak errors in a robot voice
+  --env            # Specify the fuel environment
 
 Description:
   The 'oil' command can be used in several ways to facilitate quick development, help with
