@@ -144,7 +144,7 @@ CONF;
 		$filepath = APPPATH.'classes'.DS.'controller'.DS.$filename.'.php';
 
 		// Uppercase each part of the class name and remove hyphens
-		$class_name = \Inflector::classify($name);
+		$class_name = \Inflector::classify($name, false);
 
 		// Stick "blog" to the start of the array
 		array_unshift($args, $filename);
