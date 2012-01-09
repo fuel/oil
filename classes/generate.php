@@ -354,7 +354,12 @@ VIEW;
 		}
 
 		// Check if a migration with this name already exists
-		if (count($duplicates = glob(APPPATH."migrations/*_{$migration_name}*")) > 0)
+		if (($duplicates = glob(APPPATH."migrations/*_{$migration_name}*")) === false)
+		{
+			throw new Exception("Unable to read existing migrations. Do you have an 'open_basedir' defined?");
+		}
+
+		if (count($duplicates) > 0)
 		{
 			// Don't override a file
 			if (\Cli::option('s', \Cli::option('skip')) === true)
