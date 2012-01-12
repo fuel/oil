@@ -232,7 +232,7 @@ CONTENTS;
 
 			if($updated_at = \Cli::option('updated-at'))
 			{
-				is_string($updated_at) or $updated_at = 'created_at';
+				is_string($updated_at) or $updated_at = 'updated_at';
 
 				$contents .= <<<CONTENTS
 
