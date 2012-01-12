@@ -217,36 +217,39 @@ CONTROLLER;
 
 		$contents = '';
 
-		$timestamp_properties = array();
-
-		if ( ! \Cli::option('no-timestamp'))
-		{
-			$timestamp_properties = array('created_at:int', 'updated_at:int');
-		}
-
-		// Turn foo:string into "id", "foo",
-		$properties = implode(",\n\t\t", array_map(function($field) {
-
-			// Only take valid fields
-			if (($field = strstr($field, ':', true)))
-			{
-				return "'".$field."'";
-			}
-
-		}, array_merge(array('id:int'), $args, $timestamp_properties)));
-
-		if ( ! \Cli::option('no-properties'))
-		{
-			$contents .= <<<CONTENTS
-	protected static \$_properties = array(
-		{$properties}
-	);
-
-CONTENTS;
-		}
-
 		if (\Cli::option('crud'))
 		{
+			if($created_at = \Cli::option('created-at'))
+			{
+				is_string($created_at) or $created_at = 'created_at';
+
+				$contents .= <<<CONTENTS
+
+	protected static \$_created_at = '$created_at';
+
+CONTENTS;
+			}
+
+			if($updated_at = \Cli::option('updated-at'))
+			{
+				is_string($updated_at) or $updated_at = 'created_at';
+
+				$contents .= <<<CONTENTS
+
+	protected static \$_updated_at = '$updated_at';
+
+CONTENTS;
+			}
+
+			if(\Cli::option('mysql-timestamp'))
+			{
+				$contents .= <<<CONTENTS
+
+	protected static \$_mysql_timestamp = true;
+
+CONTENTS;
+			}
+
 			$contents .= <<<CONTENTS
 
 	protected static \$_table_name = '{$plural}';
@@ -264,6 +267,34 @@ MODEL;
 		}
 		else
 		{
+			$timestamp_properties = array();
+
+			if ( ! \Cli::option('no-timestamp'))
+			{
+				$timestamp_properties = array('created_at:int', 'updated_at:int');
+			}
+
+			// Turn foo:string into "id", "foo",
+			$properties = implode(",\n\t\t", array_map(function($field) {
+
+				// Only take valid fields
+				if (($field = strstr($field, ':', true)))
+				{
+					return "'".$field."'";
+				}
+
+			}, array_merge(array('id:int'), $args, $timestamp_properties)));
+
+			if ( ! \Cli::option('no-properties'))
+			{
+				$contents .= <<<CONTENTS
+	protected static \$_properties = array(
+		{$properties}
+	);
+
+CONTENTS;
+			}
+
 			if ( ! \Cli::option('no-timestamp'))
 			{
 				$contents .= <<<CONTENTS
