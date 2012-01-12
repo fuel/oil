@@ -134,7 +134,7 @@ class Generate_Scaffold
 			),
 			array(
 				'name'   => 'create',
-				'params' => '$id = null',
+				'params' => '',
 				'code'   => \View::forge(static::$view_subdir.$subfolder.'/actions/create', $data),
 			),
 			array(
