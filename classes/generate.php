@@ -297,16 +297,17 @@ CONTENTS;
 
 			if ( ! \Cli::option('no-timestamp'))
 			{
+				$mysql_timestamp = (\Cli::option('mysql-timestamp')) ? 'true' : 'false';
 				$contents .= <<<CONTENTS
 
 	protected static \$_observers = array(
 		'Orm\Observer_CreatedAt' => array(
 			'events' => array('before_insert'),
-			'mysql_timestamp' => false,
+			'mysql_timestamp' => $mysql_timestamp,
 		),
 		'Orm\Observer_UpdatedAt' => array(
 			'events' => array('before_save'),
-			'mysql_timestamp' => false,
+			'mysql_timestamp' => $mysql_timestamp,
 		),
 	);
 CONTENTS;
