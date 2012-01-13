@@ -358,15 +358,18 @@ MODEL;
 		// Build the model
 		static::create($filepath, $model, 'model');
 
-		if ( ! empty($args) and ! \Cli::option('no-migration'))
+		if ( ! \Cli::option('no-migration'))
 		{
-			array_unshift($args, 'create_'.$plural);
-			static::migration($args, false);
-		}
-
-		else
-		{
-			throw new \Exception('Not enough arguments to create this migration.');
+			if ( ! empty($args))
+			{
+				array_unshift($args, 'create_'.$plural);
+				static::migration($args, false);
+			}
+	
+			else
+			{
+				throw new \Exception('Not enough arguments to create this migration.');
+			}
 		}
 
 		$build and static::build();
