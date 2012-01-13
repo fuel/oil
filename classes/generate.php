@@ -267,11 +267,17 @@ MODEL;
 		}
 		else
 		{
-			$timestamp_properties = array();
-
 			if ( ! \Cli::option('no-timestamp'))
 			{
-				$timestamp_properties = array('created_at:int', 'updated_at:int');
+				$created_at = \Cli::option('created-at', 'created_at');
+				is_string($created_at) or $created_at = 'created_at';
+				$updated_at = \Cli::option('updated-at', 'updated_at');
+				is_string($updated_at) or $updated_at = 'updated_at';
+
+				$time_type = (\Cli::option('mysql-timestamp')) ? 'timestamp' : 'int';
+
+				$timestamp_properties = array($created_at.':'.$time_type, $updated_at.':'.$time_type);
+				$args = array_merge($args, $timestamp_properties);
 			}
 
 			// Turn foo:string into "id", "foo",
@@ -283,7 +289,7 @@ MODEL;
 					return "'".$field."'";
 				}
 
-			}, array_merge(array('id:int'), $args, $timestamp_properties)));
+			}, array_merge(array('id:int'), $args)));
 
 			if ( ! \Cli::option('no-properties'))
 			{
@@ -298,16 +304,41 @@ CONTENTS;
 			if ( ! \Cli::option('no-timestamp'))
 			{
 				$mysql_timestamp = (\Cli::option('mysql-timestamp')) ? 'true' : 'false';
+
+				if(($created_at = \Cli::option('created-at')) and is_string($created_at))
+				{
+					$created_at = <<<CONTENTS
+
+			'property' => '$created_at',
+CONTENTS;
+				}
+				else
+				{
+					$created_at = '';
+				}
+
+				if(($updated_at = \Cli::option('updated-at')) and is_string($updated_at))
+				{
+					$updated_at = <<<CONTENTS
+
+			'property' => '$updated_at',
+CONTENTS;
+				}
+				else
+				{
+					$updated_at = '';
+				}
+
 				$contents .= <<<CONTENTS
 
 	protected static \$_observers = array(
 		'Orm\Observer_CreatedAt' => array(
 			'events' => array('before_insert'),
-			'mysql_timestamp' => $mysql_timestamp,
+			'mysql_timestamp' => $mysql_timestamp,$created_at
 		),
 		'Orm\Observer_UpdatedAt' => array(
 			'events' => array('before_save'),
-			'mysql_timestamp' => $mysql_timestamp,
+			'mysql_timestamp' => $mysql_timestamp,$updated_at
 		),
 	);
 CONTENTS;
@@ -327,7 +358,7 @@ MODEL;
 		// Build the model
 		static::create($filepath, $model, 'model');
 
-		if ( ! empty($args))
+		if ( ! empty($args) and ! \Cli::option('no-migration'))
 		{
 			array_unshift($args, 'create_'.$plural);
 			static::migration($args, false);
@@ -335,7 +366,7 @@ MODEL;
 
 		else
 		{
-			throw new Exception('Not enough arguments to create this migration.');
+			throw new \Exception('Not enough arguments to create this migration.');
 		}
 
 		$build and static::build();
@@ -716,7 +747,7 @@ HELP;
 			$result = @fwrite($handle, $file['contents']);
 
 			// Write $somecontent to our opened file.
-			if ($result === FALSE)
+			if ($result === false)
 			{
 				throw new Exception('Cannot write to file: '. $file['path']);
 			}
@@ -756,7 +787,7 @@ HELP;
 		}
 		else
 		{
-			throw new Exception('Config file core/config/migrations.php');
+			throw new \Exception('Config file core/config/migrations.php');
 			exit;
 		}
 
