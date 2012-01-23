@@ -1,4 +1,7 @@
+		is_null($id) and Response::redirect('<?php echo $singular_name ?>');
+
 		$<?php echo $singular_name; ?> = Model_<?php echo $model_name; ?>::find($id);
+
 		$val = Model_<?php echo $model_name; ?>::validate('edit');
 
 		if ($val->run())
@@ -30,7 +33,7 @@
 
 				Session::set_flash('error', $val->show_errors());
 			}
-			
+
 			$this->template->set_global('<?php echo $singular_name; ?>', $<?php echo $singular_name; ?>, false);
 		}
 
