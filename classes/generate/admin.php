@@ -20,17 +20,17 @@ namespace Oil;
  * @category	Core
  */
 class Generate_Admin extends Generate_Scaffold
-{	
+{
 	public static $view_subdir = 'admin/';
-	
+
 	public static $controller_prefix = 'Admin_';
 	public static $model_prefix = '';
-	
+
 	public static $controller_parent = 'Controller_Admin';
-	
+
 	public static function forge($args, $subfolder)
 	{
-		
+
 		$default_files = array(
 			array(
 				'source' => $subfolder.'/controllers/base.php',
@@ -58,15 +58,23 @@ class Generate_Admin extends Generate_Scaffold
 				'type' => 'views',
 			),
 		);
-		
+
 		foreach ($default_files as $file)
 		{
 			if ( ! file_exists($content = APPPATH.$file['location']))
 			{
-				Generate::create($content, file_get_contents(PKGPATH.'oil/views/'.static::$view_subdir.$file['source']), $file['type']);
+				// check if there's a template in app, and if so, use that
+				if (file_exists(APPPATH.'views/'.static::$view_subdir.$file['source']))
+				{
+					Generate::create($content, file_get_contents(APPPATH.'views/'.static::$view_subdir.$file['source']), $file['type']);
+				}
+				else
+				{
+					Generate::create($content, file_get_contents(PKGPATH.'oil/views/'.static::$view_subdir.$file['source']), $file['type']);
+				}
 			}
 		}
-		
+
 		parent::forge($args, $subfolder);
 	}
 }
