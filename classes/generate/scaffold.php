@@ -103,6 +103,21 @@ class Generate_Scaffold
 
 		/** Generate the Migration **/
 		$migration_args = $args;
+
+		// add timestamps to the table if needded
+		if ($data['include_timestamps'])
+		{
+			if (\Cli::option('mysql-timestamp', false))
+			{
+				$migration_args[] = 'created_at:date';
+				$migration_args[] = 'updated_at:date';
+			}
+			else
+			{
+				$migration_args[] = 'created_at:int';
+				$migration_args[] = 'updated_at:int';
+			}
+		}
 		array_unshift($migration_args, 'create_'.\Inflector::pluralize(\Str::lower($name)));
 		Generate::migration($migration_args, false);
 
