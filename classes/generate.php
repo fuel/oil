@@ -365,7 +365,7 @@ MODEL;
 				array_unshift($args, 'create_'.$plural);
 				static::migration($args, false);
 			}
-	
+
 			else
 			{
 				throw new \Exception('Not enough arguments to create this migration.');
@@ -496,6 +496,15 @@ VIEW;
 					 implode('_', array_slice($matches, array_search('in', $matches)+1)),
 					 implode('_', array_slice($matches, 0, array_search('to', $matches))),
 					 implode('_', array_slice($matches, array_search('to', $matches)+1, array_search('in', $matches)-2))
+				  );
+				}
+
+				// rename_table
+				else if ($method_name == 'rename_table')
+				{
+					$subjects = array(
+					 implode('_', array_slice($matches, 0, array_search('to', $matches))),
+					 implode('_', array_slice($matches, array_search('to', $matches)+1))
 				  );
 				}
 
