@@ -47,7 +47,7 @@ class Controller_Admin extends Controller_Base {
 		}
 
 		$this->template->title = 'Login';
-		$this->template->content = View::forge('admin/login', array('val' => $val));
+		$this->template->content = View::forge('admin/login', array('val' => $val), false);
 	}
 
 	/**
