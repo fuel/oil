@@ -43,7 +43,7 @@ class Generate_Admin extends Generate_Scaffold
 				'type' => 'controller',
 			),
 			array(
-				'source' => $subfolder.'/views/template.php',
+				'source' => 'template.php',
 				'location' => 'views/admin/template.php',
 				'type' => 'views',
 			),
