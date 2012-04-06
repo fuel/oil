@@ -60,6 +60,11 @@ class Generate_Scaffold
 			// Parse the argument for each field in a pattern of name:type[constraint]
 			preg_match(static::$fields_regex, $arg, $matches);
 
+			if ( ! isset($matches[1]))
+			{
+				throw new Exception('One or more fields were badly specified. Ensure they are name:type');
+			}
+
 			$data['fields'][] = array(
 				'name'       => \Str::lower($matches[1]),
 				'type'       => isset($matches[2]) ? $matches[2] : 'string',
