@@ -38,7 +38,8 @@ class Controller_Admin extends Controller_Base {
 				if (Auth::check() or $auth->login(Input::post('email'), Input::post('password')))
 				{
 					// credentials ok, go right in
-					Session::set_flash('notice', 'Welcome, '.$current_user->username);
+					$current_user = Model_User::find_by_username(Auth::get_screen_name());
+					Session::set_flash('success', 'Welcome, '.$current_user->username);
 					Response::redirect('admin');
 				}
 				else
