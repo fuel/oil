@@ -90,6 +90,24 @@ class Command
 				case 'console':
 					new Console;
 
+				case 'p':
+				case 'package':
+
+					$action = isset($args[2]) ? $args[2]: 'help';
+
+					switch ($action)
+					{
+						case 'install':
+						case 'uninstall':
+							call_user_func_array('Oil\Package::'.$action, array_slice($args, 3));
+						break;
+
+						default:
+							Package::help();
+					}
+
+				break;
+
 				case 'r':
 				case 'refine':
 
@@ -187,7 +205,7 @@ class Command
 		echo <<<HELP
 
 Usage:
-  php oil [cell|console|generate|refine|help|test]
+  php oil [cell|console|generate|package|refine|help|test]
 
 Runtime options:
   -f, [--force]    # Overwrite files that already exist

@@ -20,6 +20,7 @@ Autoloader::add_classes(array(
 	'Oil\\Generate_Migration_Actions'	=> __DIR__.'/classes/generate/migration/actions.php',
 	'Oil\\Generate_Admin'				=> __DIR__.'/classes/generate/admin.php',
 	'Oil\\Generate_Scaffold'			=> __DIR__.'/classes/generate/scaffold.php',
+	'Oil\\Package'					 	=> __DIR__.'/classes/package.php',
 	'Oil\\Refine'					 	=> __DIR__.'/classes/refine.php',
 ));
 
