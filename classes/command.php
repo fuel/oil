@@ -167,8 +167,18 @@ class Command
 						throw new Exception('PHPUnit does not appear to be installed.'.PHP_EOL.PHP_EOL."\tPlease visit http://phpunit.de and install.");
 					}
 
-					// CD to the root of Fuel and call up phpunit with a path to our config
-					$command = 'cd '.DOCROOT.'; phpunit -c "'.COREPATH.'phpunit.xml"';
+					// Check for a custom phpunit config, but default to the one from core
+					if (file_exists(APPPATH.'phpunit.xml'))
+					{
+						$phpunit_config = APPPATH.'phpunit.xml';
+					}
+					else
+					{
+						$phpunit_config = COREPATH.'phpunit.xml';
+					}
+
+					// CD to the root of Fuel and call up phpunit with the path to our config
+					$command = 'cd '.DOCROOT.'; phpunit -c "'.$phpunit_config.'"';
 
 					// Respect the group option
 					\Cli::option('group') and $command .= ' --group '.\Cli::option('group');
