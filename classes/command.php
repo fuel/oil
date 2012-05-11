@@ -23,6 +23,8 @@ class Command
 {
 	public static function init($args)
 	{
+    \Config::load('oil', true);
+    
 		//set up the environment
 		if (($env = \Cli::option('env')))
 		{
@@ -45,6 +47,13 @@ class Command
 				static::help();
 				return;
 			}
+      
+      //Should we prompt user before continuing?
+      if (in_array($args[1], \Config::get('oil.confirm_commands', array())) and (isset($args[2]) ? $args[2]: '') != 'help')
+      {
+        $confirm = \Cli::prompt('Are you sure you wish to proceed?', array('n', 'y'));
+        if ($confirm === 'n') return;
+      }
 
 			switch ($args[1])
 			{
