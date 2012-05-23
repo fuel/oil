@@ -2,7 +2,7 @@
 <br>
 <?php echo "<?php if (\${$plural_name}): ?>"; ?>
 
-<table class="zebra-striped">
+<table class="table-striped">
 	<thead>
 		<tr>
 <?php foreach ($fields as $field): ?>

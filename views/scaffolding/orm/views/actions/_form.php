@@ -22,7 +22,7 @@ endswitch; ?>
 		</div>
 <?php endforeach; ?>
 		<div class="actions">
-			<?php echo '<?php'; ?> echo Form::submit('submit', 'Save', array('class' => 'btn primary')); <?php echo '?>'; ?>
+			<?php echo '<?php'; ?> echo Form::submit('submit', 'Save', array('class' => 'btn btn-primary')); <?php echo '?>'; ?>
 
 
 		</div>
