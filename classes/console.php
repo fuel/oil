@@ -206,7 +206,7 @@ class Console
 		ob_end_clean();
 
 		$x = strip_tags($x);
-		$x = explode(PHP_EOL, $x);
+		$x = explode("\n", $x);	// PHP_EOL doesn't work on Windows
 		$s = array('Build Date => ', 'Build Date ');
 
 		foreach ($x as $i)
