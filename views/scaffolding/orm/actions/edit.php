@@ -31,7 +31,7 @@
 				$<?php echo $singular_name; ?>-><?php echo $field['name']; ?> = $val->validated('<?php echo $field['name']; ?>');
 <?php endforeach; ?>
 
-				Session::set_flash('error', $val->show_errors());
+				Session::set_flash('error', $val->error());
 			}
 
 			$this->template->set_global('<?php echo $singular_name; ?>', $<?php echo $singular_name; ?>, false);
