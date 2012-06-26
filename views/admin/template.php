@@ -68,7 +68,7 @@
 <?php if (Session::get_flash('error')): ?>
 				<div class="alert alert-error">
 					<button class="close" data-dismiss="alert">×</button>
-					<p><?php echo implode('</p><p>', (array) Session::get_flash('success')); ?></p>
+					<p><?php echo implode('</p><p>', (array) Session::get_flash('error')); ?></p>
 				</div>
 <?php endif; ?>
 			</div>
