@@ -48,7 +48,7 @@ class Generate_Scaffold
 
 		$subfolder = trim($subfolder, '/');
 
-		if ( ! is_dir(PKGPATH.'oil/views/'.static::$view_subdir.$subfolder))
+		if ( ! is_dir(\Package::exists('oil').'views/'.static::$view_subdir.$subfolder))
 		{
 			throw new Exception('The subfolder for admin templates does not exist or is spelled wrong: '.$subfolder.' ');
 		}
@@ -195,7 +195,7 @@ class Generate_Scaffold
 			}
 			else
 			{
-				Generate::create($app_template, file_get_contents(PKGPATH.'oil/views/'.static::$view_subdir.'template.php'), 'view');
+				Generate::create($app_template, file_get_contents(\Package::exists('oil').'views/'.static::$view_subdir.'template.php'), 'view');
 			}
 		}
 
