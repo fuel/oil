@@ -28,6 +28,6 @@
 			}
 		}
 
-		$this->template->set_global('<?php echo $singular_name; ?>', $<?php echo $singular_name; ?>, false);
+		$this->template->set_global('<?php echo $singular_name; ?>', $<?php echo $singular_name; ?>);
 		$this->template->title = "<?php echo ucfirst($plural_name); ?>";
 		$this->template->content = View::forge('<?php echo $view_path; ?>/edit');
