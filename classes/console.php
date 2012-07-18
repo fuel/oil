@@ -95,6 +95,7 @@ class Console
 			catch(\Exception $e)
 			{
 				$ret = false;
+				$__line = $e->getMessage();
 			}
 
 			// Error was returned
