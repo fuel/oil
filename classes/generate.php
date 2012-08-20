@@ -781,9 +781,6 @@ HELP;
 
 	private static function _find_migration_number()
 	{
-		$glob = glob(APPPATH .'migrations/*_*.php');
-		list($last) = explode('_', basename(end($glob)));
-
 		return time();
 	}
 
