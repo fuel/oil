@@ -182,11 +182,16 @@ class Command
 
 					\Cli::write('Tests Running...This may take a few moments.', 'green');
 
+					$retCode = 0; // Assume success
 					foreach(explode(';', $command) as $c)
 					{
-						passthru($c);
+						$retTmp = 0;
+						passthru($c,$retTmp);
+						if($retTmp !== 0)
+							$retCode = 1;
 					}
-
+					if (php_sapi_name() == 'cli')
+						exit($retCode);
 				break;
 
 				default:
