@@ -111,7 +111,7 @@ class Command
 
 						\Cli::error("Error: {$errstr} in $errfile on $errline");
 						\Cli::beep();
-						exit;
+						exit(1);
 					});
 
 					$task = isset($args[2]) ? $args[2] : null;
@@ -182,11 +182,16 @@ class Command
 
 					\Cli::write('Tests Running...This may take a few moments.', 'green');
 
+					$retCode = 0; // Assume success
 					foreach(explode(';', $command) as $c)
 					{
-						passthru($c);
+						$retTmp = 0;
+						passthru($c,$retTmp);
+						if($retTmp !== 0)
+							$retCode = 1;
 					}
-
+					if (php_sapi_name() == 'cli')
+						exit($retCode);
 				break;
 
 				default:
@@ -201,6 +206,7 @@ class Command
 			\Cli::beep();
 
 			\Cli::option('speak') and `say --voice="Trinoids" "{$e->getMessage()}"`;
+			exit(1);
 		}
 	}
 
