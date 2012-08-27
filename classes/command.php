@@ -111,7 +111,7 @@ class Command
 
 						\Cli::error("Error: {$errstr} in $errfile on $errline");
 						\Cli::beep();
-						exit;
+						exit(1);
 					});
 
 					$task = isset($args[2]) ? $args[2] : null;
@@ -182,11 +182,14 @@ class Command
 
 					\Cli::write('Tests Running...This may take a few moments.', 'green');
 
+					$return_code = 0;
 					foreach(explode(';', $command) as $c)
 					{
-						passthru($c);
+						passthru($c, $return_code_task);
+						// Return failure if any subtask fails
+						$return_code |= $return_code_task;
 					}
-
+					exit($return_code);
 				break;
 
 				default:
@@ -201,6 +204,7 @@ class Command
 			\Cli::beep();
 
 			\Cli::option('speak') and `say --voice="Trinoids" "{$e->getMessage()}"`;
+			exit(1);
 		}
 	}
 
