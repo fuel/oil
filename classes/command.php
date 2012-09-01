@@ -179,6 +179,9 @@ class Command
 
 					// Respect the coverage-html option
 					\Cli::option('coverage-html') and $command .= ' --coverage-html '.\Cli::option('coverage-html');
+					\Cli::option('coverage-clover') and $command .= ' --coverage-clover '.\Cli::option('coverage-clover');
+					\Cli::option('coverage-text') and $command .= ' --coverage-text='.\Cli::option('coverage-text');
+					\Cli::option('coverage-php') and $command .= ' --coverage-php '.\Cli::option('coverage-php');
 
 					\Cli::write('Tests Running...This may take a few moments.', 'green');
 
