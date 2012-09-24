@@ -673,6 +673,118 @@ MIGRATION;
 	}
 
 
+
+	public static function task($args, $build = true)
+	{
+
+		if ( ! ($name = \Str::lower(array_shift($args))))
+		{
+			throw new Exception('No task name was provided.');
+		}
+
+		if (empty($args))
+		{
+			\Cli::write("\tNo tasks actions have been provided, the TASK will only create default task.", 'red');
+		}
+
+		$actions = $args;
+		$actions or $actions = array('index');
+
+		// Uppercase each part of the class name and remove hyphens
+		$class_name = \Inflector::classify($name, false);
+
+		$filename = trim(str_replace(array('_', '-'), DS, $name), DS);
+		$filepath = APPPATH.'tasks'.DS.$filename.'.php';
+
+
+
+		$action_str = '';
+
+		foreach ($actions as $action)
+		{
+			$task_path = '\\'.\Inflector::humanize($name).'\\'.\Inflector::humanize($action);
+
+			if (!ctype_alpha($action[0])) {
+				throw new Exception('An action does not start with alphabet character.  ABORTING');
+			}
+
+			$action_str .= '
+	/**
+	 * This method gets ran when a valid method name is not used in the command.
+	 *
+	 * Usage (from command line):
+	 *
+	 * php oil r '.$action.' "arguments"
+	 *
+	 * @return string
+	 */
+	public static function '.$action.'($args = NULL)
+	{
+		echo "\n===========================================";
+		echo "\nRunning DEFAULT task ['.\Inflector::humanize($name).':'. \Inflector::humanize($action) . ']";
+		echo "\n-------------------------------------------\n\n";
+
+		/***************************
+		 Put in TASK DETAILS HERE
+		 **************************/
+	}'.PHP_EOL;
+
+			$message = \Cli::color("\t\tPreparing task method [", 'green');
+			$message .= \Cli::color(\Inflector::humanize($action), 'cyan');
+			$message .= \Cli::color("]", 'green');
+			\Cli::write($message);
+		}
+
+		// Default RUN task action
+		$action = 'run';
+		$default_action_str = '
+	/**
+	 * This method gets ran when a valid method name is not used in the command.
+	 *
+	 * Usage (from command line):
+	 *
+	 * php oil r robots
+	 *
+	 * or
+	 *
+	 * php oil r robots "Kill all Mice"
+	 *
+	 * @return string
+	 */
+	public static function run($args = NULL)
+	{
+		echo "\n===========================================";
+		echo "\nRunning DEFAULT task ['.\Inflector::humanize($name).':'. \Inflector::humanize($action) . ']";
+		echo "\n-------------------------------------------\n\n";
+
+		/***************************
+		 Put in TASK DETAILS HERE
+		 **************************/
+	}'.PHP_EOL;
+
+		// Build Controller
+		$task_class = <<<CONTROLLER
+<?php
+
+namespace Fuel\Tasks;
+
+class {$class_name}
+{
+{$default_action_str}
+
+{$action_str}
+}
+/* End of file tasks/{$name}.php */
+
+CONTROLLER;
+
+		// Write controller
+		static::create($filepath, $task_class, 'tasks');
+
+		$build and static::build();
+	}
+
+
 	public static function help()
 	{
 		$output = <<<HELP
