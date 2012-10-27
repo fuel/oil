@@ -37,7 +37,7 @@ class Console
 		{
 			 ob_end_clean();
 		}
-		
+
 		ob_implicit_flush(true);
 
 		// And, go!
@@ -88,18 +88,19 @@ class Console
 			ob_start();
 
 			// Unset the previous line and execute the new one
+			$random_ret = \Str::random();
 			try
 			{
 				$ret = eval("unset(\$__line); $__line;");
 			}
 			catch(\Exception $e)
 			{
-				$ret = false;
+				$ret = $random_ret;
 				$__line = $e->getMessage();
 			}
 
 			// Error was returned
-			if ($ret === false)
+			if ($ret === $random_ret)
 			{
 				\Cli::error('Parse Error - ' . $__line);
 				\Cli::beep();
