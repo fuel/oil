@@ -752,14 +752,14 @@ MIGRATION;
 	 *
 	 * Usage (from command line):
 	 *
-	 * php oil r '.$action.' "arguments"
+	 * php oil r '.$name.':'.$action.' "arguments"
 	 *
 	 * @return string
 	 */
 	public static function '.$action.'($args = NULL)
 	{
 		echo "\n===========================================";
-		echo "\nRunning DEFAULT task ['.\Inflector::humanize($name).':'. \Inflector::humanize($action) . ']";
+		echo "\nRunning task ['.\Inflector::humanize($name).':'. \Inflector::humanize($action) . ']";
 		echo "\n-------------------------------------------\n\n";
 
 		/***************************
@@ -781,7 +781,7 @@ MIGRATION;
 	 *
 	 * Usage (from command line):
 	 *
-	 * php oil r '.$action.'
+	 * php oil r '.$name.'
 	 *
 	 * @return string
 	 */
