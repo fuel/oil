@@ -137,7 +137,10 @@ CONF;
 			throw new Exception('No controller name was provided.');
 		}
 
-		$actions = $args;
+		// Do we want a view or a viewmodel?
+		$with_viewmodel = \Cli::option('with-viewmodel');
+
+ 		$actions = $args;
 
 		$filename = trim(str_replace(array('_', '-'), DS, $name), DS);
 
@@ -187,6 +190,32 @@ CONTROLLER;
 
 		// Write controller
 		static::create($filepath, $controller, 'controller');
+
+
+		// Do you want a viewmodel with that?
+		if ($with_viewmodel)
+		{
+			$viewmodel_filepath = APPPATH.'classes'.DS.'view'.DS.$filename;
+
+			// One ViewModel per action
+			foreach ($actions as $action)
+			{
+				$viewmodel = <<<VIEWMODEL
+<?php
+
+class View_{$class_name}_{$action} extends Viewmodel
+{
+	public function view()
+	{
+		\$this->content = "{$class_name} &raquo; {$action}";
+	}
+}
+VIEWMODEL;
+
+				// Write viewmodel
+				static::create($viewmodel_filepath.DS.$action.'.php', $viewmodel, 'viewmodel');
+			}
+		}
 
 		$build and static::build();
 	}
@@ -396,7 +425,8 @@ MODEL;
 
 		foreach ($args as $action)
 		{
-			$view_title = \Inflector::humanize($action);
+			$view_title = \Cli::option('with-viewmodel') ? '<?php echo $content; ?>' : \Inflector::humanize($action);
+
 			$view = <<<VIEW
 <p>{$view_title}</p>
 VIEW;
