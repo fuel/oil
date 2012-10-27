@@ -722,8 +722,7 @@ MIGRATION;
 			\Cli::write("\tNo tasks actions have been provided, the TASK will only create default task.", 'red');
 		}
 
-		$actions = $args;
-		$actions or $actions = array('index');
+		$args or $args = array('index');
 
 		// Uppercase each part of the class name and remove hyphens
 		$class_name = \Inflector::classify($name, false);
@@ -731,11 +730,9 @@ MIGRATION;
 		$filename = trim(str_replace(array('_', '-'), DS, $name), DS);
 		$filepath = APPPATH.'tasks'.DS.$filename.'.php';
 
-
-
 		$action_str = '';
 
-		foreach ($actions as $action)
+		foreach ($args as $action)
 		{
 			$task_path = '\\'.\Inflector::humanize($name).'\\'.\Inflector::humanize($action);
 
@@ -778,11 +775,7 @@ MIGRATION;
 	 *
 	 * Usage (from command line):
 	 *
-	 * php oil r robots
-	 *
-	 * or
-	 *
-	 * php oil r robots "Kill all Mice"
+	 * php oil r '.$action.'
 	 *
 	 * @return string
 	 */
