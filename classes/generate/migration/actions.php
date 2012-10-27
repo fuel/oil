@@ -83,7 +83,7 @@ DOWN;
 	}
 
 	// add_{thing}_to_{tablename}
-	public static function add($subjects, $fields)
+	public static function add($subjects, $fields, $reverse = false)
 	{
 		$field_up_str = '';
 
@@ -130,7 +130,13 @@ UP;
 $field_down_str
 		));
 DOWN;
-		return array($up, $down);
+		return $reverse ? array($down, $up) : array($up, $down);
+	}
+
+	// delete_{thing}_from_{tablename}
+	public static function delete($subjects, $fields, $reverse = false)
+	{
+		return static::add($subjects, $fields, true);
 	}
 
 	// rename_field_{fieldname}_to_{newfieldname}_in_{table}

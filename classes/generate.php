@@ -524,6 +524,12 @@ VIEW;
 					$subjects = array($matches[0], $matches[2]);
 				}
 
+				// delete_{field}_from_{table}
+				else if (count($matches) == 3 && $matches[1] == 'from')
+				{
+					$subjects = array($matches[0], $matches[2]);
+				}
+
 				// rename_field_{field}_to_{field}_in_{table} (with underscores in field names)
 				else if (count($matches) >= 5 && in_array('to', $matches) && in_array('in', $matches))
 				{
