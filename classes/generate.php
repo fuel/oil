@@ -244,7 +244,33 @@ VIEWMODEL;
 		// Uppercase each part of the class name and remove hyphens
 		$class_name = \Inflector::classify($singular, false);
 
-		$contents = '';
+		// Turn foo:string into "id", "foo",
+		$properties = implode(",\n\t\t", array_map(function($field) {
+
+			// Only take valid fields
+			if (($field = strstr($field, ':', true)))
+			{
+				return "'".$field."'";
+			}
+
+		}, $args));
+
+		// Make sure an id is present
+		strpos($properties, "'id'") === false and $properties = "'id',\n\t\t".$properties;
+
+		if ( ! \Cli::option('no-properties'))
+		{
+			$contents = <<<CONTENTS
+	protected static \$_properties = array(
+		{$properties}
+	);
+
+CONTENTS;
+		}
+		else
+		{
+			$contents = '';
+		}
 
 		if (\Cli::option('crud'))
 		{
@@ -307,27 +333,6 @@ MODEL;
 
 				$timestamp_properties = array($created_at.':'.$time_type, $updated_at.':'.$time_type);
 				$args = array_merge($args, $timestamp_properties);
-			}
-
-			// Turn foo:string into "id", "foo",
-			$properties = implode(",\n\t\t", array_map(function($field) {
-
-				// Only take valid fields
-				if (($field = strstr($field, ':', true)))
-				{
-					return "'".$field."'";
-				}
-
-			}, array_merge(array('id:int'), $args)));
-
-			if ( ! \Cli::option('no-properties'))
-			{
-				$contents .= <<<CONTENTS
-	protected static \$_properties = array(
-		{$properties}
-	);
-
-CONTENTS;
 			}
 
 			if ( ! \Cli::option('no-timestamp'))

@@ -23,21 +23,24 @@ namespace Oil;
  */
 class Generate_Migration_Actions
 {
-	
+
 	/**
 	 * Each migration action should return an array with two items, 0 being the up and 1 the being down.
 	 */
-	
+
 	// create_{tablename}
 	public static function create($subjects, $fields)
 	{
 		$field_str = '';
 		$defined_columns = array();
+		$have_id = false;
 
 		foreach($fields as $field)
 		{
 			$name = array_shift($field);
-			
+
+			$name === 'id' and $have_id = true;
+
 			$field_opts = array();
 			foreach($field as $option => $val)
 			{
@@ -58,13 +61,13 @@ class Generate_Migration_Actions
 				}
 			}
 			$field_opts = implode(', ', $field_opts);
-			
+
 			$field_str .= "\t\t\t'$name' => array({$field_opts}),".PHP_EOL;
 			$defined_columns[$name] = true;
 		}
-		
+
 		// ID Field
-		$field_str = "\t\t\t'id' => array('constraint' => 11, 'type' => 'int', 'auto_increment' => true),".PHP_EOL . $field_str;
+		$have_id or $field_str = "\t\t\t'id' => array('constraint' => 11, 'type' => 'int', 'auto_increment' => true),".PHP_EOL . $field_str;
 
 		$up = <<<UP
 		\DBUtil::create_table('{$subjects[1]}', array(
@@ -75,21 +78,21 @@ UP;
 		$down = <<<DOWN
 		\DBUtil::drop_table('{$subjects[1]}');
 DOWN;
-		
+
 		return array($up, $down);
 	}
-	
+
 	// add_{thing}_to_{tablename}
 	public static function add($subjects, $fields)
 	{
 		$field_up_str = '';
-	
+
 		foreach($fields as $field)
 		{
 			$name = array_shift($field);
-			
+
 			$field_opts = array();
-			
+
 			foreach($field as $option => $val)
 			{
 				if($val === true)
@@ -110,7 +113,7 @@ DOWN;
 			}
 
 			$field_opts = implode(', ', $field_opts);
-			
+
 			$field_up_str .= "\t\t\t'$name' => array({$field_opts}),".PHP_EOL;
 			$field_down[] = "\t\t\t'$name'".PHP_EOL;
 		}
@@ -120,16 +123,16 @@ DOWN;
 		$up = <<<UP
 		\DBUtil::add_fields('{$subjects[1]}', array(
 $field_up_str
-		));	
+		));
 UP;
 		$down = <<<DOWN
 		\DBUtil::drop_fields('{$subjects[1]}', array(
-$field_down_str    
+$field_down_str
 		));
 DOWN;
 		return array($up, $down);
 	}
-	
+
 	// rename_field_{fieldname}_to_{newfieldname}_in_{table}
 	public static function rename_field($subjects, $fields)
 	{
@@ -176,30 +179,30 @@ UP;
 DOWN;
 		return array($up, $down);
 	}
-	
+
 	// rename_table_{tablename}_to_{newtablename}
 	public static function rename_table($subjects, $fields)
 	{
-		
+
 		$up = <<<UP
 		\DBUtil::rename_table('{$subjects[0]}', '{$subjects[1]}');
 UP;
 		$down = <<<DOWN
 		\DBUtil::rename_table('{$subjects[1]}', '{$subjects[0]}');
 DOWN;
-		
+
 		return array($up, $down);
 	}
-	
+
 	// drop_{tablename}
 	public static function drop($subjects, $fields)
-	{	
+	{
 		$up = <<<UP
 		\DBUtil::drop_table('{$subjects[1]}');
 UP;
 		$field_str = '';
 		$column_list = \DB::list_columns($subjects[1]);
-		
+
 		foreach ($column_list as $column)
 		{
 			switch ($column['type'])
@@ -219,7 +222,7 @@ UP;
 						case 'varchar':
 							$constraint = $column['character_maximum_length'];
 						break;
-	  
+
 						case 'enum':
 						case 'set':
 							$constraint = '"\''.implode('\',\'',$column['options']).'\'"';
@@ -227,15 +230,15 @@ UP;
 					}
 				break;
 			}
-			
+
 			$constraint_str = isset($constraint) ? ", 'constraint' => $constraint" : '';
 			$auto_increment = $column['extra'] == 'auto_increment' ? ", 'auto_increment' => true" : '';
 			$default_str = $column['default'] != null ? ", 'default' => '{$column['default']}'" : ", 'null' => true";
-			
+
 			if ($column['key'] == 'PRI')
 			{
 			  $primary_keys[] = "'{$column['name']}'";
-			} 
+			}
 			else if ($column['key'] == 'MUL')
 			{
 			  $indexes[] = $column['name'];
@@ -252,7 +255,7 @@ $field_str
 		), array($primary_keys));
 DOWN;
 		$down .= PHP_EOL;
-		
+
 		$active_db = \Config::get('db.active');
 		$table_prefix = \Config::get('db.'.$active_db.'.table_prefix');
 
@@ -266,5 +269,5 @@ DOWN;
 
 		return array($up, $down);
 	}
-	
+
 }
