@@ -75,6 +75,10 @@ class Command
 							call_user_func('Oil\Generate_Scaffold::forge', array_slice($args, 3), $subfolder);
 						break;
 
+						case 'testcase':
+							call_user_func('Oil\Generate::'.$action, array_slice($args, 3));
+						break;
+
 						default:
 							Generate::help();
 					}
