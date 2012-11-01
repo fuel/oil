@@ -811,7 +811,7 @@ CONTROLLER;
 		$class_root = $split_name[0];
 
 		$filename = trim(str_replace(array('_', '-'), DS, $name), DS);
-		$filepath = APPPATH.'tasks'.DS.$filename.'.php';
+		$filepath = APPPATH.'tests'.DS.$filename.'.php';
 
 		$action_str = '';
 
