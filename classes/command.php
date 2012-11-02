@@ -32,7 +32,7 @@ class Command
 			{
 				if (\Cli::option('v', \Cli::option('version')))
 				{
-					\Cli::write('Fuel: '.\Fuel::VERSION);
+					\Cli::write('Fuel: '.\Fuel::VERSION.' running in "'.\Fuel::$env.'" mode');
 					return;
 				}
 
