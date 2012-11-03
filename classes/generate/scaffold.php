@@ -102,7 +102,8 @@ class Generate_Scaffold
 		// If a folder is used, the entity is the last part
 		$name_parts = explode(DS, $name);
 		$data['singular_name'] = \Inflector::singularize(end($name_parts));
-		$data['plural_name'] = \Inflector::pluralize($data['singular_name']);
+		$data['plural_name'] = \Cli::option('singular')? $data['singular_name'] : \Inflector::pluralize($data['plural_name']);
+
 		$data['table'] = \Inflector::tableize($model_name);
 		$data['controller_parent'] = static::$controller_parent;
 
