@@ -235,7 +235,7 @@ VIEWMODEL;
 			throw new Exception('No fields have been provided, the model will not know how to build the table.');
 		}
 
-		$plural = \Clio::option('singular') ? $singular : \Inflector::pluralize($singular);
+		$plural = \Cli::option('singular') ? $singular : \Inflector::pluralize($singular);
 
 		$filename = trim(str_replace(array('_', '-'), DS, $singular), DS);
 
