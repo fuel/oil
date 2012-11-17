@@ -48,28 +48,34 @@ class Package
 
 		foreach ($config['sources'] as $source)
 		{
-			$zip_url = 'http://' . rtrim($source, '/').'/fuel-'.$package.'/zipball/'.$version;
+			$zips = array(
+				'http://' . rtrim($source, '/').'/fuel-'.$package.'/zipball/'.$version,
+				'http://' . rtrim($source, '/').'/'.$package.'/zipball/'.$version,
+			);
 
-			if ($fp = @fopen($zip_url, 'r'))
+			foreach ($zips as $zip_url)
 			{
-				// We don't actually need this, just checking the file is there
-				fclose($fp);
-
-				// Now, lets get this package
-
-				// If a direct download is requested, or git is unavailable, download it!
-				if (\Cli::option('direct') OR static::_use_git() === false)
+				if ($fp = @fopen($zip_url, 'r'))
 				{
-					static::_download_package_zip($zip_url, $package, $version);
-				}
+					// We don't actually need this, just checking the file is there
+					fclose($fp);
 
-				// Otherwise, get your clone on baby!
-				else
-				{
-					static::_clone_package_repo($source, $package, $version);
-				}
+					// Now, lets get this package
 
-				exit;
+					// If a direct download is requested, or git is unavailable, download it!
+					if (\Cli::option('direct') OR static::_use_git() === false)
+					{
+						static::_download_package_zip($zip_url, $package, $version);
+						exit;
+					}
+
+					// Otherwise, get your clone on baby!
+					else
+					{
+						static::_clone_package_repo($source, $package, $version);
+						exit;
+					}
+				}
 			}
 		}
 
