@@ -147,7 +147,7 @@ CONF;
 		$filepath = APPPATH.'classes'.DS.'controller'.DS.$filename.'.php';
 
 		// Uppercase each part of the class name and remove hyphens
-		$class_name = \Inflector::classify($name, false);
+		$class_name = \Inflector::classify(str_replace(array('\\', '/'), '_', $name), false);
 
 		// Stick "blog" to the start of the array
 		array_unshift($args, $filename);
@@ -239,10 +239,10 @@ VIEWMODEL;
 
 		$filename = trim(str_replace(array('_', '-'), DS, $singular), DS);
 
-		$filepath = APPPATH . 'classes/model/'.$filename.'.php';
+		$filepath = APPPATH.'classes'.DS.'model'.DS.$filename.'.php';
 
 		// Uppercase each part of the class name and remove hyphens
-		$class_name = \Inflector::classify($singular, false);
+		$class_name = \Inflector::classify(str_replace(array('\\', '/'), '_', $singular), false);
 
 		// Turn foo:string into "id", "foo",
 		$properties = implode(",\n\t\t", array_map(function($field) {
