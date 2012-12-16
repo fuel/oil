@@ -256,24 +256,22 @@ VIEWMODEL;
 		}, $args));
 
 		// Make sure an id is present
-		strpos($properties, "'id'") === false and $properties = "'id',\n\t\t".$properties;
+		strpos($properties, "'id'") === false and $properties = "'id',\n\t\t\t".$properties;
 
-		if ( ! \Cli::option('no-properties'))
-		{
-			$contents = <<<CONTENTS
-	protected static \$_properties = array(
-		{$properties}
-	);
-
-CONTENTS;
-		}
-		else
-		{
-			$contents = '';
-		}
+		$contents = '';
 
 		if (\Cli::option('crud'))
 		{
+			if ( ! \Cli::option('no-properties'))
+			{
+				$contents = <<<CONTENTS
+		protected static \$_properties = array(
+			{$properties}
+		);
+
+CONTENTS;
+			}
+
 			if($created_at = \Cli::option('created-at'))
 			{
 				is_string($created_at) or $created_at = 'created_at';
@@ -326,13 +324,26 @@ MODEL;
 			{
 				$created_at = \Cli::option('created-at', 'created_at');
 				is_string($created_at) or $created_at = 'created_at';
+				$properties .= "\n\t\t\t'".$created_at."',";
+
 				$updated_at = \Cli::option('updated-at', 'updated_at');
 				is_string($updated_at) or $updated_at = 'updated_at';
+				$properties .= "\n\t\t\t'".$updated_at."',";
 
 				$time_type = (\Cli::option('mysql-timestamp')) ? 'timestamp' : 'int';
 
 				$timestamp_properties = array($created_at.':'.$time_type, $updated_at.':'.$time_type);
 				$args = array_merge($args, $timestamp_properties);
+			}
+
+			if ( ! \Cli::option('no-properties'))
+			{
+				$contents = <<<CONTENTS
+		protected static \$_properties = array(
+			{$properties}
+		);
+
+CONTENTS;
 			}
 
 			if ( ! \Cli::option('no-timestamp'))
