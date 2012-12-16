@@ -23,6 +23,8 @@ class Command
 {
 	public static function init($args)
 	{
+		\Config::load('oil', true);
+		
 		// Remove flag options from the main argument list
 		$args = self::_clear_args($args);
 
@@ -154,7 +156,8 @@ class Command
 
 					// Suppressing this because if the file does not exist... well thats a bad thing and we can't really check
 					// I know that supressing errors is bad, but if you're going to complain: shut up. - Phil
-					@include_once('PHPUnit/Autoload.php');
+					$phpunit_autoload_path = \Config::get('oil.phpunit.autoload_path', 'PHPUnit/Autoload.php' );
+					@include_once($phpunit_autoload_path);
 
 					// Attempt to load PHUnit.  If it fails, we are done.
 					if ( ! class_exists('PHPUnit_Framework_TestCase'))
@@ -173,7 +176,8 @@ class Command
 					}
 
 					// CD to the root of Fuel and call up phpunit with the path to our config
-					$command = 'cd '.DOCROOT.'; phpunit -c "'.$phpunit_config.'"';
+					$phpunit_command = \Config::get('oil.phpunit.binary_path', 'phpunit');
+					$command = 'cd '.DOCROOT.'; '.$phpunit_command.' -c "'.$phpunit_config.'"';
 
 					// Respect the group options
 					\Cli::option('group') and $command .= ' --group '.\Cli::option('group');
