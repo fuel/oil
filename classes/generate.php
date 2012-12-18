@@ -819,6 +819,88 @@ CONTROLLER;
 	}
 
 
+
+	public static function testcase($args, $build = true)
+	{
+		if ( ! ($name = \Str::lower(array_shift($args))))
+		{
+			throw new Exception('No test class name was provided.');
+		}
+		
+		$name = str_replace('-', '_',$name);
+
+		if (empty($args))
+		{
+			\Cli::write("\tNo test actions have been provided, the TESTCASE will only create default test FOO.", 'red');
+		}
+
+		$actions = $args;
+		$actions or $actions = array('foo');
+
+		// Uppercase each part of the class name and remove hyphens
+		$class_name = \Inflector::classify($name, false);
+		$testclass_name = "Test_".$class_name;
+
+		$split_name = explode("_",$class_name);
+		$class_root = $split_name[0];
+
+		$filename = trim(str_replace(array('_', '-'), DS, $name), DS);
+		$filepath = APPPATH.'tests'.DS.$filename.'.php';
+
+		$action_str = '';
+
+		foreach ($actions as $action)
+		{
+			$task_path = '\\'.\Inflector::humanize($name).'\\'.\Inflector::humanize($action);
+
+			if (!ctype_alpha($action[0])) {
+				throw new Exception('An action does not start with alphabet character.  ABORTING');
+			}
+
+			$action_str .= '
+	/**
+	 * Test '.$action.'
+	 */
+	public function '.'test_'.$action.'()
+	{
+		/***************************
+		 Put in TESTCASE HERE
+		 **************************/
+	}'.PHP_EOL;
+
+			$message = \Cli::color("\t\tPreparing test function [", 'green');
+			$message .= \Cli::color("test_".\Inflector::humanize($action), 'cyan');
+			$message .= \Cli::color("]", 'green');
+			\Cli::write($message);
+		}
+
+		// Build TESTCLASS
+		$test_class = <<<TESTCLASS
+<?php
+
+namespace Fuel\App;
+
+/**
+ * {$class_name} class tests
+ *
+ * @group App
+ * @group {$class_root}
+ */
+class {$testclass_name} extends TestCase
+{
+{$action_str}
+}
+/* End of file tests/{$filename}.php */
+
+TESTCLASS;
+
+		// Write controller
+		static::create($filepath, $test_class, 'tests');
+
+		$build and static::build();
+	}
+
+
 	public static function help()
 	{
 		$output = <<<HELP
@@ -842,6 +924,7 @@ Examples:
   php oil g scaffold <modelname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]
   php oil g scaffold/template_subfolder <modelname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]
   php oil g config <filename> [<key1>:<value1> |<key2>:<value2> |..]
+  php oil g testcase <fullclassname> [<testcase1> |<testcase2> |..]
 
 Note that the next two lines are equivalent:
   php oil g scaffold <modelname> ...
