@@ -8,7 +8,15 @@ class Controller_Admin extends Controller_Base {
 	{
 		parent::before();
 
-		if ( ! Auth::member(100) and Request::active()->action != 'login')
+		if (Auth::check())
+		{
+			if ( ! Auth::member(100) and ! in_array(Request::active()->action, array('login', 'logout')))
+			{
+				Session::set_flash('error', e('You don\'t have access to the admin panel'));
+				Response::redirect('/');
+			}
+		}
+		else
 		{
 			Response::redirect('admin/login');
 		}
@@ -16,10 +24,8 @@ class Controller_Admin extends Controller_Base {
 
 	public function action_login()
 	{
-		if (Auth::check())
-		{
-			Response::redirect('admin');
-		}
+		// Already logged in
+		Auth::check() and Response::redirect('admin');
 
 		$val = Validation::forge();
 
