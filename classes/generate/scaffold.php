@@ -50,7 +50,11 @@ class Generate_Scaffold
 
 		if ( ! is_dir(\Package::exists('oil').'views/'.static::$view_subdir.$subfolder))
 		{
-			throw new Exception('The subfolder for admin templates does not exist or is spelled wrong: '.$subfolder.' ');
+			//  throw exception if subfolder doesn't exist in app views directory
+			if ( defined('APPPATH') and ! is_dir(APPPATH . 'views/' . static::$view_subdir.$subfolder))
+			{
+				throw new Exception('The subfolder for admin templates does not exist or is spelled wrong: '.$subfolder.' ');
+			}
 		}
 
 		// Go through all arguments after the first and make them into field arrays
