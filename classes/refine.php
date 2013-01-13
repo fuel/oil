@@ -173,7 +173,7 @@ HELP;
 				{
 					foreach ($methods as $method)
 					{
-						$result[$task_name][] = $method->name;
+						strpos($method->name, '_') !== 0 and $result[$task_name][] = $method->name;
 					}
 				}
 			}
