@@ -26,7 +26,7 @@ class Fromdb
 	/**
 	 * Class initialization
 	 */
-	public static function _init()
+	public function __construct()
 	{
 		// load the migrations config
 		\Config::load('migrations', true);
