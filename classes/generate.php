@@ -256,7 +256,7 @@ VIEWMODEL;
 		}, $args));
 
 		// Make sure an id is present
-		strpos($properties, "'id'") === false and $properties = "'id',\n\t\t\t".$properties;
+		strpos($properties, "'id'") === false and $properties = "'id',\n\t\t".$properties.',';
 
 		$contents = '';
 
@@ -265,9 +265,9 @@ VIEWMODEL;
 			if ( ! \Cli::option('no-properties'))
 			{
 				$contents = <<<CONTENTS
-		protected static \$_properties = array(
-			{$properties}
-		);
+	protected static \$_properties = array(
+		{$properties}
+	);
 
 CONTENTS;
 			}
@@ -324,11 +324,11 @@ MODEL;
 			{
 				$created_at = \Cli::option('created-at', 'created_at');
 				is_string($created_at) or $created_at = 'created_at';
-				$properties .= "\n\t\t\t'".$created_at."',";
+				$properties .= "\n\t\t'".$created_at."',";
 
 				$updated_at = \Cli::option('updated-at', 'updated_at');
 				is_string($updated_at) or $updated_at = 'updated_at';
-				$properties .= "\n\t\t\t'".$updated_at."',";
+				$properties .= "\n\t\t'".$updated_at."',";
 
 				$time_type = (\Cli::option('mysql-timestamp')) ? 'timestamp' : 'int';
 
@@ -339,9 +339,9 @@ MODEL;
 			if ( ! \Cli::option('no-properties'))
 			{
 				$contents = <<<CONTENTS
-		protected static \$_properties = array(
-			{$properties}
-		);
+	protected static \$_properties = array(
+		{$properties}
+	);
 
 CONTENTS;
 			}
