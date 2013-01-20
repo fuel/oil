@@ -332,7 +332,7 @@ MODEL;
 
 				$time_type = (\Cli::option('mysql-timestamp')) ? 'timestamp' : 'int';
 
-				$timestamp_properties = array($created_at.':'.$time_type, $updated_at.':'.$time_type);
+				$timestamp_properties = array($created_at.':'.$time_type.':null[1]', $updated_at.':'.$time_type.':null[1]');
 				$args = array_merge($args, $timestamp_properties);
 			}
 
@@ -673,6 +673,16 @@ VIEW;
 								{
 									$option = true;
 								}
+							}
+
+							// deal with some special cases
+							switch ($option_name)
+							{
+								case 'auto_increment':
+								case 'null':
+								case 'unsigned':
+									$option = (bool) $option;
+									break;
 							}
 
 							$field_array[$option_name] = $option;

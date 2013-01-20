@@ -115,13 +115,13 @@ class Generate_Scaffold
 		{
 			if (\Cli::option('mysql-timestamp', false))
 			{
-				$migration_args[] = 'created_at:date';
-				$migration_args[] = 'updated_at:date';
+				$migration_args[] = 'created_at:date:null[1]';
+				$migration_args[] = 'updated_at:date:null[1]';
 			}
 			else
 			{
-				$migration_args[] = 'created_at:int';
-				$migration_args[] = 'updated_at:int';
+				$migration_args[] = 'created_at:int:null[1]';
+				$migration_args[] = 'updated_at:int:null[1]';
 			}
 		}
 		array_unshift($migration_args, 'create_'.\Inflector::pluralize(\Str::lower($name)));
