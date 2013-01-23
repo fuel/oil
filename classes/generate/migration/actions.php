@@ -67,7 +67,7 @@ class Generate_Migration_Actions
 		}
 
 		// ID Field
-		$have_id or $field_str = "\t\t\t'id' => array('constraint' => 11, 'type' => 'int', 'auto_increment' => true),".PHP_EOL . $field_str;
+		$have_id or $field_str = "\t\t\t'id' => array('constraint' => 11, 'type' => 'int', 'auto_increment' => true, 'unsigned' => true),".PHP_EOL . $field_str;
 
 		$up = <<<UP
 		\DBUtil::create_table('{$subjects[1]}', array(
