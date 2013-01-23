@@ -382,7 +382,7 @@ CONTENTS;
 			'mysql_timestamp' => $mysql_timestamp,$created_at
 		),
 		'Orm\Observer_UpdatedAt' => array(
-			'events' => array('before_save'),
+			'events' => array('before_update'),
 			'mysql_timestamp' => $mysql_timestamp,$updated_at
 		),
 	);
