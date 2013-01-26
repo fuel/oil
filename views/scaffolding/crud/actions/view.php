@@ -1,4 +1,4 @@
-		is_null($id) and Response::redirect('<?php echo $controller_name ?>');
+		is_null($id) and Response::redirect('<?php echo $uri ?>');
 
 		$data['<?php echo $singular_name ?>'] = Model_<?php echo $model_name ?>::find_by_pk($id);
 
