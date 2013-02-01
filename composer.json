@@ -1,0 +1,7 @@
+{
+	"name": "fuel/oil",
+	"type": "fuelphp-package",
+	"require": {
+		"composer/installers": "dev-fuelphp-support"
+	}
+}
