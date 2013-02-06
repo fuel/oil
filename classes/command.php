@@ -207,13 +207,27 @@ class Command
 			}
 		}
 
-		catch (Exception $e)
+		catch (\Exception $e)
 		{
-			\Cli::error('Error: '.$e->getMessage());
-			\Cli::beep();
-
-			\Cli::option('speak') and `say --voice="Trinoids" "{$e->getMessage()}"`;
+			static::print_exception($e);
 			exit(1);
+		}
+	}
+
+	private static function print_exception(\Exception $ex)
+	{
+		\Cli::error('Uncaught exception '.get_class($ex).': '.$ex->getMessage());
+		\Cli::error('Callstack: ');
+		\Cli::error($ex->getTraceAsString());
+		\Cli::beep();
+
+		\Cli::option('speak') and `say --voice="Trinoids" "{$ex->getMessage()}"`;
+
+		if (($previous = $ex->getPrevious()) != null)
+		{
+			\Cli::error('');
+			\Cli::error('Previous exception: ');
+			static::print_exception($previous);
 		}
 	}
 
