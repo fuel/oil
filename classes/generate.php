@@ -176,12 +176,13 @@ CONF;
 		}
 
 		$extends = \Cli::option('extends', 'Controller_Template');
+		$prefix = \Config::get('controller_prefix', 'Controller_');
 
 		// Build Controller
 		$controller = <<<CONTROLLER
 <?php
 
-class Controller_{$class_name} extends {$extends}
+class {$prefix}{$class_name} extends {$extends}
 {
 {$action_str}
 }

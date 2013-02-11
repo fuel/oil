@@ -26,7 +26,14 @@ class Generate_Admin extends Generate_Scaffold
 	public static $controller_prefix = 'Admin_';
 	public static $model_prefix = '';
 
-	public static $controller_parent = 'Controller_Admin';
+	public static $controller_parent = 'Admin';
+
+	public static function _init()
+	{
+		static::$controller_parent = \Config::get('controller_prefix', 'Controller_').static::$controller_parent;
+
+		parent::_init();
+	}
 
 	public static function forge($args, $subfolder)
 	{
