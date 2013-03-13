@@ -466,6 +466,11 @@ VIEW;
 			throw new Exception("Command is invalid.".PHP_EOL."\tphp oil g migration <migrationname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]");
 		}
 
+		// Keep the original migration name for the correct table name.
+		$original_migration_name = $migration_name;
+
+		$migration_name = str_replace('.', '_', $migration_name);
+
 		// Check if a migration with this name already exists
 		if (($duplicates = glob(APPPATH."migrations/*_{$migration_name}*")) === false)
 		{
@@ -522,70 +527,39 @@ VIEW;
 				 *
 				 */
 				$subjects = array(false, false);
-				$matches = explode('_', str_replace($method_name . '_', '', $migration_name));
 
-				// create_{table}
-				if (count($matches) == 1)
+				// Get the sentence of migration using original_migration_name.
+				$sentence = substr($original_migration_name, strlen($method_name) + 1);
+
+				// If the sentence doesn't contain "." then replaces "_" to "." for compatibility.
+				strpos($sentence, '.') === false and $sentence = str_replace('_', '.', $sentence);
+
+				// Processing based on the method_name.
+				switch ($method_name)
 				{
-					$subjects = array(false, $matches[0]);
+					case 'create':
+						$subjects = array(false, $sentence);
+						break;
+					case 'add':
+						$subjects = explode('.to.', $sentence);
+						break;
+					case 'delete':
+						$subjects = explode('.from.', $sentence);
+						break;
+					case 'rename_field':
+						$subjects = sscanf(str_replace('.', ' ', $sentence), '%s to %s in %s');
+						break;
+					case 'rename_table':
+						$subjects = explode('.to.', $sentence);
+						break;
+					case 'drop':
+						$subjects = array(false, $sentence);
+						break;
+					default:
+						break 2;
 				}
 
-				// add_{field}_to_{table}
-				else if (count($matches) == 3 && $matches[1] == 'to')
-				{
-					$subjects = array($matches[0], $matches[2]);
-				}
-
-				// delete_{field}_from_{table}
-				else if (count($matches) == 3 && $matches[1] == 'from')
-				{
-					$subjects = array($matches[0], $matches[2]);
-				}
-
-				// rename_field_{field}_to_{field}_in_{table} (with underscores in field names)
-				else if (count($matches) >= 5 && in_array('to', $matches) && in_array('in', $matches))
-				{
-					$subjects = array(
-					 implode('_', array_slice($matches, array_search('in', $matches)+1)),
-					 implode('_', array_slice($matches, 0, array_search('to', $matches))),
-					 implode('_', array_slice($matches, array_search('to', $matches)+1, array_search('in', $matches)-2))
-				  );
-				}
-
-				// rename_table
-				else if ($method_name == 'rename_table')
-				{
-					$subjects = array(
-					 implode('_', array_slice($matches, 0, array_search('to', $matches))),
-					 implode('_', array_slice($matches, array_search('to', $matches)+1))
-				  );
-				}
-
-				// create_{table} or drop_{table} (with underscores in table name)
-				else if (count($matches) !== 0)
-				{
-					$name = str_replace(array('create_', 'add_', '_to_'), array('create-', 'add-', '-to-'), $migration_name);
-
-    				if (preg_match('/^(create|add)\-([a-z0-9\_]*)(\-to\-)?([a-z0-9\_]*)?$/i', $name, $deep_matches))
-    				{
-    					switch ($deep_matches[1])
-    					{
-    						case 'create' :
-    							$subjects = array(false, $deep_matches[2]);
-    						break;
-
-    						case 'add' :
-    							$subjects = array($deep_matches[2], $deep_matches[4]);
-    						break;
-    					}
-    				}
-				}
-
-				// There is no subject here so just carry on with a normal empty migration
-				else
-				{
-					break;
-				}
+				$subjects = str_replace('.', '_', $subjects);
 
 				// We always pass in fields to a migration, so lets sort them out here.
 				$fields = array();
