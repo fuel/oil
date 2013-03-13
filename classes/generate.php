@@ -539,24 +539,24 @@ VIEW;
 				{
 					case 'create':
 						$subjects = array(false, $sentence);
-						break;
+					break;
 					case 'add':
 						$subjects = explode('.to.', $sentence);
-						break;
+					break;
 					case 'delete':
 						$subjects = explode('.from.', $sentence);
-						break;
+					break;
 					case 'rename_field':
 						$subjects = sscanf(str_replace('.', ' ', $sentence), '%s to %s in %s');
-						break;
+					break;
 					case 'rename_table':
 						$subjects = explode('.to.', $sentence);
-						break;
+					break;
 					case 'drop':
 						$subjects = array(false, $sentence);
-						break;
-					default:
-						break 2;
+					break;
+					default :
+					break 2;
 				}
 
 				$subjects = str_replace('.', '_', $subjects);
