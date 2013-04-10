@@ -334,6 +334,16 @@ MODEL;
 				$time_type = (\Cli::option('mysql-timestamp')) ? 'timestamp' : 'int';
 
 				$timestamp_properties = array($created_at.':'.$time_type.':null[1]', $updated_at.':'.$time_type.':null[1]');
+
+				if ( \Cli::option('soft-delete'))
+				{
+					$deleted_at = \Cli::option('deleted-at', 'deleted_at');
+					is_string($deleted_at) or $deleted_at = 'deleted_at';
+					$properties .= "\n\t\t'".$deleted_at."',";
+
+					$timestamp_properties = array_merge($timestamp_properties, array($deleted_at.':'.$time_type.':null[1]'));
+				}
+
 				$args = array_merge($args, $timestamp_properties);
 			}
 
@@ -388,9 +398,50 @@ CONTENTS;
 		),
 	);
 CONTENTS;
+
+				if ( \Cli::option('soft-delete'))
+				{
+					if(($deleted_at = \Cli::option('deleted-at')) and is_string($updated_at))
+					{
+						$deleted_at = <<<CONTENTS
+
+		'deleted_field' => '{$deleted_at}',
+CONTENTS;
+					}
+					else
+					{
+						$deleted_at = '';
+					}
+
+					$contents .= <<<CONTENTS
+
+
+	protected static \$_soft_delete = array(
+		'mysql_timestamp' => $mysql_timestamp,$deleted_at
+	);
+CONTENTS;
+
+				}
+
 			}
 
-			$model = <<<MODEL
+			$model = '';
+			if ( \Cli::option('soft-delete'))
+			{
+				$model .= <<<MODEL
+<?php
+
+class Model_{$class_name} extends \Orm\Model_Soft
+{
+{$contents}
+}
+
+MODEL;
+			}
+			else
+			{
+				$model .= <<<MODEL
+
 <?php
 
 class Model_{$class_name} extends \Orm\Model
@@ -399,6 +450,7 @@ class Model_{$class_name} extends \Orm\Model
 }
 
 MODEL;
+			}
 		}
 
 		// Build the model
