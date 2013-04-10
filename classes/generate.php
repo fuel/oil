@@ -595,13 +595,19 @@ VIEW;
 				}
 
 				// rename_field_{field}_to_{field}_in_{table} (with underscores in field names)
-				else if (count($matches) >= 5 && in_array('to', $matches) && in_array('in', $matches))
+				else if (count($matches) >= 5 &&
+						 in_array('to', $matches) &&
+						 in_array('in', $matches))
 				{
+					$topos = array_search('to', $matches);
+					$inpos = array_search('in', $matches);
+
 					$subjects = array(
-					 implode('_', array_slice($matches, array_search('in', $matches)+1)),
-					 implode('_', array_slice($matches, 0, array_search('to', $matches))),
-					 implode('_', array_slice($matches, array_search('to', $matches)+1, array_search('in', $matches)-2))
-				  );
+						implode('_', array_slice($matches, $inpos + 1)),
+						implode('_', array_slice($matches, 0, $topos)),
+						implode('_', array_slice($matches, $topos + 1,
+												 $inpos - $topos - 1)),
+						);
 				}
 
 				// rename_table
