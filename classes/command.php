@@ -202,6 +202,27 @@ class Command
 					exit($return_code);
 				break;
 
+				case 's':
+				case 'server':
+
+					if (version_compare(PHP_VERSION, '5.4.0') < 0)
+					{
+						\Cli::write('The PHP built-in webserver is only available on PHP 5.4+', 'red');
+						break;
+					}
+
+					$php = \Cli::option('php', 'php');
+					$port = \Cli::option('p', \Cli::option('port', '8000'));
+					$host = \Cli::option('h', \Cli::option('host', 'localhost'));
+					$docroot = \Cli::option('d', \Cli::option('docroot', 'public/'));
+					$router = \Cli::option('r', \Cli::option('router', __DIR__.DS.'..'.DS.'phpserver.php'));
+
+					\Cli::write("Listening on http://$host:$port");
+					\Cli::write("Document root is $docroot");
+					\Cli::write("Press Ctrl-C to quit.");
+					passthru("$php -S $host:$port -t $docroot $router");
+				break;
+
 				default:
 
 					static::help();
@@ -237,7 +258,7 @@ class Command
 		echo <<<HELP
 
 Usage:
-  php oil [cell|console|generate|package|refine|help|test]
+  php oil [cell|console|generate|package|refine|help|server|test]
 
 Runtime options:
   -f, [--force]    # Overwrite files that already exist
