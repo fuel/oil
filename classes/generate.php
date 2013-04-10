@@ -425,6 +425,12 @@ CONTENTS;
 
 			}
 
+			$contents .= <<<CONTENTS
+
+	protected static \$_table_name = '{$plural}';
+
+CONTENTS;
+
 			$model = '';
 			if ( \Cli::option('soft-delete'))
 			{
