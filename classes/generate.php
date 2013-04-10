@@ -548,7 +548,7 @@ VIEW;
 					$subjects = array(
 					 implode('_', array_slice($matches, array_search('in', $matches)+1)),
 					 implode('_', array_slice($matches, 0, array_search('to', $matches))),
-					 implode('_', array_slice($matches, array_search('to', $matches)+1, array_search('in', $matches)-2))
+					 implode('_', array_slice($matches, array_search('to', $matches)+1, array_search('in', $matches)-array_search('to', $matches)-1))
 				  );
 				}
 
