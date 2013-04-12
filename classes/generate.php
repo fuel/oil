@@ -525,10 +525,17 @@ VIEW;
 		}
 
 		// Check if a migration with this name already exists
-		if (($duplicates = glob(APPPATH."migrations/*_{$migration_name}*")) === false)
-		{
-			throw new Exception("Unable to read existing migrations. Do you have an 'open_basedir' defined?");
-		}
+        if (sizeof(array_filter(scandir(APPPATH . "migrations/"), function ($var) { return (substr($var, 0, 1) !== '.'); })) > 0)
+        {
+            if (($duplicates = glob(APPPATH . "migrations/*_{$migration_name}*")) === false)
+            {
+                throw new Exception("Unable to read existing migrations. Do you have an 'open_basedir' defined?");
+            }
+        }
+        else
+        {
+            $duplicates = array();
+        }
 
 		if (count($duplicates) > 0)
 		{
@@ -1005,13 +1012,21 @@ HELP;
 
 	// Helper methods
 
-	private static function _find_migration_number()
-	{
-		$glob = glob(APPPATH .'migrations/*_*.php');
-		list($last) = explode('_', basename(end($glob)));
+    private static function _find_migration_number()
+    {
+        $glob = glob(APPPATH . 'migrations/*_*.php');
 
-		return str_pad($last + 1, 3, '0', STR_PAD_LEFT);
-	}
+        if ($glob === false)
+        {
+            return '001';
+        }
+        else
+        {
+            list($last) = explode('_', basename(end($glob)));
+
+            return str_pad($last + 1, 3, '0', STR_PAD_LEFT);
+        }
+    }
 
 	private static function _update_current_version($version)
 	{
