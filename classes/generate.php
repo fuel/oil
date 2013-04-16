@@ -903,7 +903,7 @@ CONTROLLER;
 	{
 		$output = <<<HELP
 Usage:
-  php oil [g|generate] [controller|model|migration|scaffold|views] [options]
+  php oil [g|generate] [config|controller|views|model|migration|scaffold|admin|task] [options]
 
 Runtime options:
   -f, [--force]    # Overwrite files that already exist
@@ -922,10 +922,11 @@ Examples:
   php oil g scaffold <modelname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]
   php oil g scaffold/template_subfolder <modelname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]
   php oil g config <filename> [<key1>:<value1> |<key2>:<value2> |..]
+  php oil g task <taskname> [<cmd1> |<cmd2> |..]
 
 Note that the next two lines are equivalent:
   php oil g scaffold <modelname> ...
-  php oil g scaffold/crud <modelname> ...
+  php oil g scaffold/orm <modelname> ...
 
 Documentation:
   http://docs.fuelphp.com/packages/oil/generate.html
