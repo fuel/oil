@@ -170,8 +170,9 @@ CONF;
 			$action_str .= '
 	public function action_'.$action.'()
 	{
+		$data["subnav"] = array(\''.$action.'\'=> \'active\' );
 		$this->template->title = \'' . \Inflector::humanize($name) .' &raquo; ' . \Inflector::humanize($action) . '\';
-		$this->template->content = View::forge(\''.$filename.'/' . $action .'\');
+		$this->template->content = View::forge(\''.$filename.'/' . $action .'\', $data);
 	}'.PHP_EOL;
 		}
 
@@ -498,11 +499,20 @@ MODEL;
 			static::create($app_template, file_get_contents(\Package::exists('oil').'views/scaffolding/template.php'), 'view');
 		}
 
+		$subnav = '';
+		foreach($args as $nav_item)
+		{
+			$subnav .= "\t<li class='<?php echo Arr::get(\$subnav, \"{$nav_item}\" ); ?>'><?php echo Html::anchor('{$controller}/{$nav_item}','".\Inflector::humanize($nav_item)."');?></li>\n";
+		}
+
 		foreach ($args as $action)
 		{
 			$view_title = \Cli::option('with-viewmodel') ? '<?php echo $content; ?>' : \Inflector::humanize($action);
 
 			$view = <<<VIEW
+<ul class="nav nav-pills">
+{$subnav}
+</ul>
 <p>{$view_title}</p>
 VIEW;
 

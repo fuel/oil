@@ -1,30 +1,31 @@
-<?php echo '<?php echo Form::open(); ?>' ?>
+<?php echo '<?php echo Form::open(array("class"=>"form-horizontal")); ?>' ?>
 
 
 	<fieldset>
 <?php foreach ($fields as $field): ?>
-		<div class="clearfix">
-			<?php echo "<?php echo Form::label('". \Inflector::humanize($field['name']) ."', '{$field['name']}'); ?>\n"; ?>
+		<div class="control-group">
+			<?php echo "<?php echo Form::label('". \Inflector::humanize($field['name']) ."', '{$field['name']}', array('class'=>'control-label')); ?>\n"; ?>
 
-			<div class="input">
+			<div class="controls">
 <?php switch($field['type']):
 
 				case 'text':
-					echo "\t\t\t\t<?php echo Form::textarea('{$field['name']}', Input::post('{$field['name']}', isset(\${$singular_name}) ? \${$singular_name}->{$field['name']} : ''), array('class' => 'span8', 'rows' => 8)); ?>\n";
+					echo "\t\t\t\t<?php echo Form::textarea('{$field['name']}', Input::post('{$field['name']}', isset(\${$singular_name}) ? \${$singular_name}->{$field['name']} : ''), array('class' => 'span8', 'rows' => 8, 'placeholder'=>'".\Inflector::humanize($field['name'])."')); ?>\n";
 				break;
 
 				default:
-					echo "\t\t\t\t<?php echo Form::input('{$field['name']}', Input::post('{$field['name']}', isset(\${$singular_name}) ? \${$singular_name}->{$field['name']} : ''), array('class' => 'span4')); ?>\n";
+					echo "\t\t\t\t<?php echo Form::input('{$field['name']}', Input::post('{$field['name']}', isset(\${$singular_name}) ? \${$singular_name}->{$field['name']} : ''), array('class' => 'span4', 'placeholder'=>'".\Inflector::humanize($field['name'])."')); ?>\n";
 
 endswitch; ?>
 
 			</div>
 		</div>
 <?php endforeach; ?>
-		<div class="actions">
-			<?php echo '<?php'; ?> echo Form::submit('submit', 'Save', array('class' => 'btn btn-primary')); <?php echo '?>'; ?>
-
-
+		<div class="control-group">
+			<label class='control-label'>&nbsp;</label>
+			<div class='controls'>
+				<?php echo '<?php'; ?> echo Form::submit('submit', 'Save', array('class' => 'btn btn-primary')); <?php echo '?>'; ?>
+			</div>
 		</div>
 	</fieldset>
 <?php echo '<?php'; ?> echo Form::close(); <?php echo '?>'; ?>
