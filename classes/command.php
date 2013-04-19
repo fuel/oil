@@ -188,8 +188,8 @@ class Command
 					\Cli::option('coverage-clover') and $command .= ' --coverage-clover '.\Cli::option('coverage-clover');
 					\Cli::option('coverage-text') and $command .= ' --coverage-text='.\Cli::option('coverage-text');
 					\Cli::option('coverage-php') and $command .= ' --coverage-php '.\Cli::option('coverage-php');
-					\Cli::option('file') and $command .= ' '.\Cli::option('file');
 					\Cli::option('log-junit') and $command .= ' --log-junit '.\Cli::option('log-junit');
+					\Cli::option('file') and $command .= ' '.\Cli::option('file');
 
 					\Cli::write('Tests Running...This may take a few moments.', 'green');
 
