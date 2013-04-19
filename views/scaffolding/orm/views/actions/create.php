@@ -1,4 +1,4 @@
-<h2>New <?php echo \Str::ucfirst($singular_name); ?></h2>
+<h2>New <span class='muted'><?php echo \Str::ucfirst($singular_name); ?></span></h2>
 <br>
 
 <?php echo '<?php'; ?> echo render('<?php echo $view_path ?>/_form'); ?>
