@@ -108,18 +108,18 @@ class Command
 				case 'r':
 				case 'refine':
 
-					// Developers of third-party tasks may not be displaying PHP errors. Report any error and quit
-					set_error_handler(function($errno, $errstr, $errfile, $errline) {
-						if (!error_reporting()) return; // If the error was supressed with an @ then we ignore it!
-
-						\Cli::error("Error: {$errstr} in $errfile on $errline");
+					try
+					{
+						$task = isset($args[2]) ? $args[2] : null;
+						call_user_func('Oil\Refine::run', $task, array_slice($args, 3));
+					}
+					catch (\Exception $e)
+					{
+						\Cli::error("Error: ".$e->getMessage()." in ".$e->getFile()." on ".$e->getLine());
 						\Cli::beep();
 						exit(1);
-					});
+					}
 
-					$task = isset($args[2]) ? $args[2] : null;
-
-					call_user_func('Oil\Refine::run', $task, array_slice($args, 3));
 				break;
 
 				case 'cell':
