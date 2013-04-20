@@ -1,4 +1,4 @@
-<h2>Viewing #<?php echo '<?php'; ?> echo $<?php echo $singular_name; ?>->id; <?php echo '?>'; ?></h2>
+<h2>Viewing <span class='muted'>#<?php echo '<?php'; ?> echo $<?php echo $singular_name; ?>->id; <?php echo '?>'; ?></span></h2>
 
 <?php foreach ($fields as $field): ?>
 <p>
