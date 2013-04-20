@@ -108,17 +108,8 @@ class Command
 				case 'r':
 				case 'refine':
 
-					try
-					{
-						$task = isset($args[2]) ? $args[2] : null;
-						call_user_func('Oil\Refine::run', $task, array_slice($args, 3));
-					}
-					catch (\Exception $e)
-					{
-						\Cli::error("Error: ".$e->getMessage()." in ".$e->getFile()." on ".$e->getLine());
-						\Cli::beep();
-						exit(1);
-					}
+					$task = isset($args[2]) ? $args[2] : null;
+					call_user_func('Oil\Refine::run', $task, array_slice($args, 3));
 
 				break;
 
