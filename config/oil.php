@@ -37,9 +37,9 @@ return array(
 		 *
 		 * For example, if you've installed phpunit via Composer, your
 		 * autoload_path will probably be something like:
-		 *     'autoload_path' => DOCROOT.'vendor/phpunit/phpunit/PHPUnit/Autoload.php',
+		 *     'autoload_path' => VENDORPATH.'phpunit/phpunit/PHPUnit/Autoload.php',
 		 * and your binary path will probably be something like:
-		 *     'binary_path' => DOCROOT.'vendor/bin/phpunit',
+		 *     'binary_path' => VENDORPATH.'bin/phpunit',
 		 *
 		 * At present, there is no support for phpunit.phar.
 		 */
