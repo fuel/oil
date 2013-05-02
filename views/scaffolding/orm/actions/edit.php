@@ -1,45 +1,38 @@
-		is_null($id) and Response::redirect('<?php echo $uri ?>');
+<?php printf(
+'		is_null($id) and Response::redirect("%1$s");
 
-		if ( ! $<?php echo $singular_name; ?> = Model_<?php echo $model_name; ?>::find($id))
+		if ( ! $%2$s = Model_%4$s::find($id))
 		{
-			Session::set_flash('error', 'Could not find <?php echo $singular_name; ?> #'.$id);
-			Response::redirect('<?php echo $uri ?>');
+			Session::set_flash("error", "Could not find %3$s #$id");
+			Response::redirect("%1$s");
 		}
 
-		$val = Model_<?php echo $model_name; ?>::validate('edit');
+		$val = Model_%4$s::validate("edit");
 
 		if ($val->run())
 		{
-<?php foreach ($fields as $field): ?>
-			$<?php echo $singular_name; ?>-><?php echo $field['name']; ?> = Input::post('<?php echo $field['name']; ?>');
-<?php endforeach; ?>
-
-			if ($<?php echo $singular_name; ?>->save())
+', $uri, $singular_name, \Inflector::humanize($singular_name), $model_name);
+foreach ($fields as $field)
+{
+	printf('			$%s->%2$s = Input::post("%2$s");
+', $singular_name, $field['name']);
+}
+printf(
+'			if ($%1$s->save())
 			{
-				Session::set_flash('success', 'Updated <?php echo $singular_name; ?> #' . $id);
-
-				Response::redirect('<?php echo $uri ?>');
+				Session::set_flash("success", "Updated %2$s #$id");
+				Response::redirect("%3$s");
 			}
-
 			else
 			{
-				Session::set_flash('error', 'Could not update <?php echo $singular_name; ?> #' . $id);
+				Session::set_flash("error", "Could not update %2$s #$id");
 			}
 		}
-
 		else
 		{
-			if (Input::method() == 'POST')
-			{
-<?php foreach ($fields as $field): ?>
-				$<?php echo $singular_name; ?>-><?php echo $field['name']; ?> = $val->validated('<?php echo $field['name']; ?>');
-<?php endforeach; ?>
-
-				Session::set_flash('error', $val->error());
-			}
-
-			$this->template->set_global('<?php echo $singular_name; ?>', $<?php echo $singular_name; ?>, false);
+			Session::set_flash("error", $val->error());
 		}
-
-		$this->template->title = "<?php echo ucfirst($plural_name); ?>";
-		$this->template->content = View::forge('<?php echo $view_path; ?>/edit');
+		$this->template->set_global("%1$s", $%1$s, false);
+		$this->template->title = "%2$s";
+		$this->template->content = View::forge("%4$s/edit");
+', $singular_name, \Inflector::humanize($singular_name), $uri, $view_path);

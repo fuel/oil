@@ -1,15 +1,14 @@
-		is_null($id) and Response::redirect('<?php echo $uri ?>');
+<?php printf(
+'		is_null($id) and Response::redirect("%1$s");
 
-		if ($<?php echo $singular_name; ?> = Model_<?php echo $model_name; ?>::find($id))
+		if ($%2$s = Model_%3$s::find($id))
 		{
-			$<?php echo $singular_name; ?>->delete();
-
-			Session::set_flash('success', 'Deleted <?php echo $singular_name; ?> #'.$id);
+			$%2$s->delete();
+			Session::set_flash("success", "Deleted %4$s #$id");
 		}
-
 		else
 		{
-			Session::set_flash('error', 'Could not delete <?php echo $singular_name; ?> #'.$id);
+			Session::set_flash("error", "Could not delete %4$s #$id");
 		}
-
-		Response::redirect('<?php echo $uri; ?>');
+		Response::redirect("%1$s");
+', $uri, $singular_name, $model_name, \Inflector::humanize($singular_name));

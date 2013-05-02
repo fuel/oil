@@ -1,32 +1,34 @@
-		if (Input::method() == 'POST')
+<?php printf(
+'		if (Input::method() == "POST")
 		{
-			$val = Model_<?php echo $model_name; ?>::validate('create');
-			
+			$val = Model_%1$s::validate("create");
 			if ($val->run())
 			{
-				$<?php echo $singular_name; ?> = Model_<?php echo $model_name; ?>::forge(array(
-<?php foreach ($fields as $field): ?>
-					'<?php echo $field['name']; ?>' => Input::post('<?php echo $field['name']; ?>'),
-<?php endforeach; ?>
-				));
+				$%2$s = Model_%1$s::forge(array(
+', $model_name, $singular_name);
+foreach ($fields as $field)
+{
+	printf('					"%1$s" => Input::post("%1$s"),
+', $field['name']);
+}
+printf(
+'				));
 
-				if ($<?php echo $singular_name; ?> and $<?php echo $singular_name; ?>->save())
+				if ($%1$s and $%1$s->save())
 				{
-					Session::set_flash('success', 'Added <?php echo $singular_name; ?> #'.$<?php echo $singular_name; ?>->id.'.');
-
-					Response::redirect('<?php echo $uri; ?>');
+					Session::set_flash("success", "Added %2$s #{$%1$s->id}");
+					Response::redirect("%3$s");
 				}
-
 				else
 				{
-					Session::set_flash('error', 'Could not save <?php echo $singular_name; ?>.');
+					Session::set_flash("error", "Could not save %2$s");
 				}
 			}
 			else
 			{
-				Session::set_flash('error', $val->error());
+				Session::set_flash("error", $val->error());
 			}
 		}
-
-		$this->template->title = "<?php echo \Str::ucwords($plural_name); ?>";
-		$this->template->content = View::forge('<?php echo $view_path ?>/create');
+		$this->template->title = "%2$s";
+		$this->template->content = View::forge("%4$s/create");
+', $singular_name, \Inflector::humanize($singular_name), $uri, $view_path);

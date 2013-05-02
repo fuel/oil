@@ -1,3 +1,5 @@
-		$data['<?php echo $plural_name ?>'] = Model_<?php echo $model_name; ?>::find('all');
-		$this->template->title = "<?php echo ucfirst($plural_name); ?>";
-		$this->template->content = View::forge('<?php echo $view_path ?>/index', $data);
+<?php printf(
+'		$data["%s"] = Model_%s::find("all");
+		$this->template->title = "%s";
+		$this->template->content = View::forge("%s/index", $data);
+', $plural_name, $model_name, \Inflector::humanize($plural_name), $view_path);
