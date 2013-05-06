@@ -172,9 +172,8 @@ CONF;
 			$action_str .= '
 	public function action_'.$action.'()
 	{
-		$data["subnav"] = array(\''.$action.'\'=> \'active\' );
 		$this->template->title = \'' . \Inflector::humanize($name) .' &raquo; ' . \Inflector::humanize($action) . '\';
-		$this->template->content = View::forge(\''.$filename.'/' . $action .'\', $data);
+		$this->template->content = View::forge(\''.$filename.'/' . $action .'\');
 	}'.PHP_EOL;
 		}
 
@@ -504,7 +503,7 @@ MODEL;
 		$subnav = '';
 		foreach($args as $nav_item)
 		{
-			$subnav .= "\t<li class='<?php echo Arr::get(\$subnav, \"{$nav_item}\" ); ?>'><?php echo Html::anchor('{$controller}/{$nav_item}','".\Inflector::humanize($nav_item)."');?></li>\n";
+			$subnav .= "\t<li class='{{$nav_item}}'><?php echo Html::anchor('{$controller}/{$nav_item}','".\Inflector::humanize($nav_item)."');?></li>\n";
 		}
 
 		foreach ($args as $action)
@@ -517,6 +516,12 @@ MODEL;
 </ul>
 <p>{$view_title}</p>
 VIEW;
+	
+			//make the this page the active class
+			$view = str_ireplace('{'.$action.'}', 'active', $view);
+
+			//this page is not "active", blank the class
+			$view = preg_replace("@(class='\{?.*\}')@", "class=''", $view);
 
 			// Create this view
 			static::create($view_dir.$action.'.php', $view, 'view');
