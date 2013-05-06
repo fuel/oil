@@ -1,9 +1,11 @@
 <?php
 /**
+ * Fuel
+ *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
  * @package    Fuel
- * @version    1.5
+ * @version    1.6
  * @author     Fuel Development Team
  * @license    MIT License
  * @copyright  2010 - 2013 Fuel Development Team
@@ -108,18 +110,9 @@ class Command
 				case 'r':
 				case 'refine':
 
-					// Developers of third-party tasks may not be displaying PHP errors. Report any error and quit
-					set_error_handler(function($errno, $errstr, $errfile, $errline) {
-						if (!error_reporting()) return; // If the error was supressed with an @ then we ignore it!
-
-						\Cli::error("Error: {$errstr} in $errfile on $errline");
-						\Cli::beep();
-						exit(1);
-					});
-
 					$task = isset($args[2]) ? $args[2] : null;
-
 					call_user_func('Oil\Refine::run', $task, array_slice($args, 3));
+
 				break;
 
 				case 'cell':
@@ -188,6 +181,7 @@ class Command
 					\Cli::option('coverage-clover') and $command .= ' --coverage-clover '.\Cli::option('coverage-clover');
 					\Cli::option('coverage-text') and $command .= ' --coverage-text='.\Cli::option('coverage-text');
 					\Cli::option('coverage-php') and $command .= ' --coverage-php '.\Cli::option('coverage-php');
+					\Cli::option('log-junit') and $command .= ' --log-junit '.\Cli::option('log-junit');
 					\Cli::option('file') and $command .= ' '.\Cli::option('file');
 
 					\Cli::write('Tests Running...This may take a few moments.', 'green');
