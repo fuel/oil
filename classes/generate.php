@@ -1020,6 +1020,10 @@ HELP;
 
 	private static function _find_migration_number()
 	{
+		if(\Config::get('oil.generate.migration.number.use_date', false)){
+			return date('ymdHi');
+		}
+
 		$glob = glob(APPPATH .'migrations/*_*.php');
 		list($last) = explode('_', basename(end($glob)));
 

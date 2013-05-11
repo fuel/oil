@@ -48,5 +48,16 @@ return array(
 		'binary_path' => 'phpunit' ,
 
 	),
+	'generate' => array(
+		'migration' => array(
+			'number' => array(
+				/*
+				 * When true, migration number is date
+				 * ex)2013/04/05 12:34 -> 1304051234_create_bars.php
+				 */
+				'use_date' => false,
+			),
+		),
+	),
 );
 
