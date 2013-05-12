@@ -283,6 +283,9 @@ HELP;
 			{
 				unset($actions[$key]);
 			}
+
+			// get rid of any junk added by Powershell on Windows...
+			$actions[$key] = trim($actions[$key]);
 		}
 
 		return $actions;
