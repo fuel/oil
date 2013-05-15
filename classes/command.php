@@ -285,7 +285,7 @@ HELP;
 			}
 
 			// get rid of any junk added by Powershell on Windows...
-			$actions[$key] = trim($actions[$key]);
+			isset($actions[$key]) and $actions[$key] = trim($actions[$key]);
 		}
 
 		return $actions;
