@@ -848,7 +848,7 @@ MIGRATION;
 	 *
 	 * @return string
 	 */
-	public static function '.$action.'($args = NULL)
+	public function '.$action.'($args = NULL)
 	{
 		echo "\n===========================================";
 		echo "\nRunning task ['.\Inflector::humanize($name).':'. \Inflector::humanize($action) . ']";
@@ -877,7 +877,7 @@ MIGRATION;
 	 *
 	 * @return string
 	 */
-	public static function run($args = NULL)
+	public function run($args = NULL)
 	{
 		echo "\n===========================================";
 		echo "\nRunning DEFAULT task ['.\Inflector::humanize($name).':'. \Inflector::humanize($action) . ']";
