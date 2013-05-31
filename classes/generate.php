@@ -450,7 +450,6 @@ MODEL;
 			else
 			{
 				$model .= <<<MODEL
-
 <?php
 
 class Model_{$class_name} extends \Orm\Model
