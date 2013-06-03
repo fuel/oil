@@ -224,7 +224,7 @@ HELP;
 		$package_folder = reset($paths);
 
 		// Make the folder so we can extract the ZIP to it
-		mkdir($tmp_folder = APPPATH . 'tmp/' . $package . '-' . time());
+		mkdir($tmp_folder = APPPATH . 'tmp' . DS . $package . '-' . time());
 
 		$zip_file = $tmp_folder . '.zip';
 		@copy($zip_url, $zip_file);
@@ -233,7 +233,19 @@ HELP;
 		$files = $unzip->extract($zip_file, $tmp_folder);
 
 		// Grab the first folder out of it (we dont know what it's called)
-		list($tmp_package_folder) = glob($tmp_folder.'/*', GLOB_ONLYDIR);
+		foreach($pkgfolders = new \GlobIterator($tmp_folder.DS.'*') as $pkgfolder)
+		{
+			if ($pkgfolder->isDir())
+			{
+				$tmp_package_folder = $tmp_folder.DS.$pkgfolder->getFilename();
+				break;
+			}
+		}
+
+		if (empty($tmp_package_folder))
+		{
+			throw new \FuelException('The package zip file doesn\'t contain any install directory.');
+		}
 
 		// Move that folder into the packages folder
 		rename($tmp_package_folder, $package_folder);
