@@ -450,7 +450,6 @@ MODEL;
 			else
 			{
 				$model .= <<<MODEL
-
 <?php
 
 class Model_{$class_name} extends \Orm\Model
@@ -537,9 +536,18 @@ VIEW;
 		}
 
 		// Check if a migration with this name already exists
-		if (($duplicates = glob(APPPATH."migrations/*_{$migration_name}*")) === false)
+		$migrations = new \GlobIterator(APPPATH."migrations/*_{$migration_name}*");
+		try
 		{
-			throw new Exception("Unable to read existing migrations. Do you have an 'open_basedir' defined?");
+			$duplicates = array();
+			foreach($migrations as $migration)
+			{
+				$duplicates[] = $migration->getPathname();
+			}
+		}
+		catch (\LogicException $e)
+		{
+			throw new Exception("Unable to read existing migrations. Path does not exist, or you may have an 'open_basedir' defined");
 		}
 
 		if (count($duplicates) > 0)
@@ -848,7 +856,7 @@ MIGRATION;
 	 *
 	 * @return string
 	 */
-	public static function '.$action.'($args = NULL)
+	public function '.$action.'($args = NULL)
 	{
 		echo "\n===========================================";
 		echo "\nRunning task ['.\Inflector::humanize($name).':'. \Inflector::humanize($action) . ']";
@@ -877,7 +885,7 @@ MIGRATION;
 	 *
 	 * @return string
 	 */
-	public static function run($args = NULL)
+	public function run($args = NULL)
 	{
 		echo "\n===========================================";
 		echo "\nRunning DEFAULT task ['.\Inflector::humanize($name).':'. \Inflector::humanize($action) . ']";
@@ -1020,8 +1028,21 @@ HELP;
 
 	private static function _find_migration_number()
 	{
-		$glob = glob(APPPATH .'migrations/*_*.php');
-		list($last) = explode('_', basename(end($glob)));
+		$files = new \GlobIterator(APPPATH .'migrations/*_*.php');
+		try
+		{
+			$migrations = array();
+			foreach($files as $file)
+			{
+				$migrations[] = $file->getPathname();
+			}
+			sort($migrations);
+			list($last) = explode('_', basename(end($migrations)));
+		}
+		catch (\LogicException $e)
+		{
+			throw new Exception("Unable to read existing migrations. Path does not exist, or you may have an 'open_basedir' defined");
+		}
 
 		return str_pad($last + 1, 3, '0', STR_PAD_LEFT);
 	}

@@ -28,4 +28,7 @@ endswitch; ?>
 			</div>
 		</div>
 	</fieldset>
+<?php if ($csrf): ?>
+	<?php echo '<?php'; ?> echo Form::hidden(Config::get('security.csrf_token_key'), Security::fetch_token()); <?php echo '?>'; ?>
+<?php endif; ?>
 <?php echo '<?php'; ?> echo Form::close(); <?php echo '?>'; ?>

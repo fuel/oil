@@ -179,6 +179,9 @@ class Generate_Scaffold
 			'controller'
 		);
 
+		// do we want csrf protection in our forms?
+		$data['csrf'] = \Cli::option('csrf') ? true : false;
+
 		// Create each of the views
 		foreach (array('index', 'view', 'create', 'edit', '_form') as $view)
 		{

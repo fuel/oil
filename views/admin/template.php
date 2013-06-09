@@ -27,17 +27,19 @@
 						<?php echo Html::anchor('admin', 'Dashboard') ?>
 					</li>
 
-					<?php foreach (glob(APPPATH.'classes/controller/admin/*.php') as $controller): ?>
-
-						<?php
-						$section_segment = basename($controller, '.php');
-						$section_title = Inflector::humanize($section_segment);
-						?>
-
-	                <li class="<?php echo Uri::segment(2) == $section_segment ? 'active' : '' ?>">
-						<?php echo Html::anchor('admin/'.$section_segment, $section_title) ?>
-					</li>
-					<?php endforeach; ?>
+					<?php
+						$files = new GlobIterator(APPPATH.'classes/controller/admin/*.php');
+						foreach($files as $file)
+						{
+							$section_segment = $file->getBasename('.php');
+							$section_title = Inflector::humanize($section_segment);
+							?>
+							<li class="<?php echo Uri::segment(2) == $section_segment ? 'active' : '' ?>">
+								<?php echo Html::anchor('admin/'.$section_segment, $section_title) ?>
+							</li>
+							<?php
+						}
+					?>
 	          </ul>
 
 	          <ul class="nav pull-right">
