@@ -92,10 +92,15 @@ class Refine
 
 		$new_task = new $task;
 
-		// The help option hs been called, so call help instead
-		if (\Cli::option('help') && is_callable(array($new_task, 'help')))
+		// The help option has been called, so call help instead
+		if ((\Cli::option('help') or $method == 'help') and is_callable(array($new_task, 'help')))
 		{
 			$method = 'help';
+		}
+		else
+		{
+			// if the task has an init method, call it now
+			is_callable($task.'::_init') and $task::_init();
 		}
 
 		if ($return = call_user_func_array(array($new_task, $method), $args))
