@@ -147,13 +147,31 @@ class Command
 				case 't':
 				case 'test':
 
+					$phpunit_command = \Config::get('oil.phpunit.binary_path', 'phpunit');
+
+					// Check if we might be using the phar library
+					$is_phar = false;
+					foreach(explode(':', getenv('PATH')) as $path)
+					{
+						if (file_exists($path.DS.$phpunit_command))
+						{
+							$handle = fopen($path.DS.$phpunit_command, 'r');
+							$is_phar = fread($handle, 18) == '#!/usr/bin/env php';
+							fclose($handle);
+							if ($is_phar)
+							{
+								break;
+							}
+						}
+					}
+
 					// Suppressing this because if the file does not exist... well thats a bad thing and we can't really check
 					// I know that supressing errors is bad, but if you're going to complain: shut up. - Phil
 					$phpunit_autoload_path = \Config::get('oil.phpunit.autoload_path', 'PHPUnit/Autoload.php' );
 					@include_once($phpunit_autoload_path);
 
 					// Attempt to load PHUnit.  If it fails, we are done.
-					if ( ! class_exists('PHPUnit_Framework_TestCase'))
+					if ( ! $is_phar and ! class_exists('PHPUnit_Framework_TestCase'))
 					{
 						throw new Exception('PHPUnit does not appear to be installed.'.PHP_EOL.PHP_EOL."\tPlease visit http://phpunit.de and install.");
 					}
@@ -169,7 +187,6 @@ class Command
 					}
 
 					// CD to the root of Fuel and call up phpunit with the path to our config
-					$phpunit_command = \Config::get('oil.phpunit.binary_path', 'phpunit');
 					$command = 'cd '.DOCROOT.'; '.$phpunit_command.' -c "'.$phpunit_config.'"';
 
 					// Respect the group options
