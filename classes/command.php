@@ -234,6 +234,10 @@ class Command
 					passthru("$php -S $host:$port -t $docroot $router");
 				break;
 
+				case 'create':
+					\Cli::write('You can not use "oil create", a valid FuelPHP installation already exists in this directory', 'red');
+					break;
+
 				default:
 
 					static::help();
