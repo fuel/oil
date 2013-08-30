@@ -784,6 +784,13 @@ VIEW;
 		// Build the migration
 		list($up, $down)=$migration;
 
+		// If we don't have any, bail out
+		if (empty($up) and empty($down))
+		{
+			throw new \Exception('No migration could be generated. Please verify your command syntax.');
+			exit;
+		}
+
 		$migration_name = ucfirst(strtolower($migration_name));
 
 		$migration = <<<MIGRATION
