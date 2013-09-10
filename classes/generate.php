@@ -967,7 +967,7 @@ HELP;
 	{
 		$name       = str_replace(array('/', '_', '-'), '', \Str::lower(array_shift($args)));
 		$class_name = ucfirst($name);
-		$composer   = \Cli::option('composer', \Cli::option('c', false));
+		$vsc        = \Cli::option('vsc', \Cli::option('v', false));
 		$path       = \Cli::option('path', \Cli::option('p', PKGPATH));
 		$drivers    = \Cli::option('drivers', \Cli::option('d', ''));
 
@@ -989,7 +989,7 @@ HELP;
 			throw new \Exception('Package already exists.');
 		}
 
-		if ($composer)
+		if ($vsc)
 		{
 			$output = <<<COMPOSER
 {
@@ -1016,15 +1016,15 @@ HELP;
 COMPOSER;
 
 			static::create($path . 'composer.json', $output);
-		}
 
-		$output = <<<README
+			$output = <<<README
 # {$class_name} package
 Here comes some description
 
 README;
 
-		static::create($path . 'README.md', $output);
+			static::create($path . 'README.md', $output);
+		}
 
 		if ( ! empty($drivers))
 		{
