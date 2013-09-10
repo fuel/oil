@@ -64,6 +64,7 @@ class Command
 						case 'model':
 						case 'migration':
 						case 'task':
+						case 'package':
 							call_user_func('Oil\Generate::'.$action, array_slice($args, 3));
 						break;
 
