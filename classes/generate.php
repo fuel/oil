@@ -1028,7 +1028,7 @@ README;
 
 		if ( ! empty($drivers))
 		{
-			! ($drivers === true) && $drivers = explode(',', $drivers);
+			! ($drivers === true) and $drivers = explode(',', $drivers);
 
 			$output = <<<CLASS
 <?php
@@ -1072,7 +1072,7 @@ class {$class_name}
 	 */
 	public static function forge(\$instance = 'default', \$config = array())
 	{
-		! is_array(\$config) && \$config = array('driver' => \$config);
+		! is_array(\$config) and \$config = array('driver' => \$config);
 
 		\$config = \Arr::merge(static::\$_defaults, \Config::get('{$name}', array()), \$config);
 
