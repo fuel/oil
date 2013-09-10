@@ -967,7 +967,7 @@ HELP;
 	{
 		$name       = str_replace(array('/', '_', '-'), '', \Str::lower(array_shift($args)));
 		$class_name = ucfirst($name);
-		$vsc        = \Cli::option('vsc', \Cli::option('v', false));
+		$vcs        = \Cli::option('vcs', \Cli::option('v', false));
 		$path       = \Cli::option('path', \Cli::option('p', PKGPATH));
 		$drivers    = \Cli::option('drivers', \Cli::option('d', ''));
 
@@ -989,7 +989,7 @@ HELP;
 			throw new \Exception('Package already exists.');
 		}
 
-		if ($vsc)
+		if ($vcs)
 		{
 			$output = <<<COMPOSER
 {
