@@ -976,12 +976,12 @@ HELP;
 			throw new \Exception('No package name has been provided.');
 		}
 
-		if ( ! in_array($path, \Config::get('package_paths')) && ! in_array(realpath($path), \Config::get('package_paths')) )
+		if ( ! in_array($path, \Config::get('package_paths')) and ! in_array(realpath($path), \Config::get('package_paths')) )
 		{
 			throw new \Exception('Given path is not a valid package path.');
 		}
 
-		! \Str::ends_with($path, DS) && $path .= DS;
+		\Str::ends_with($path, DS) or $path .= DS;
 		$path .= $name . DS;
 
 		if (is_dir($path))
@@ -1028,7 +1028,7 @@ README;
 
 		if ( ! empty($drivers))
 		{
-			! ($drivers === true) and $drivers = explode(',', $drivers);
+			$drivers === true or $drivers = explode(',', $drivers);
 
 			$output = <<<CLASS
 <?php
