@@ -1085,7 +1085,7 @@ class {$class_name}
 
 		\$driver = new \$class(\$config);
 
-		static::\$_instances[\$instance] =& \$driver;
+		static::\$_instances[\$instance] = \$driver;
 
 		return \$driver;
 	}
