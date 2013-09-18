@@ -930,7 +930,7 @@ CONTROLLER;
 	{
 		$output = <<<HELP
 Usage:
-  php oil [g|generate] [config|controller|views|model|migration|scaffold|admin|task] [options]
+  php oil [g|generate] [config|controller|views|model|migration|scaffold|admin|task|package] [options]
 
 Runtime options:
   -f, [--force]    # Overwrite files that already exist
@@ -950,6 +950,7 @@ Examples:
   php oil g scaffold/template_subfolder <modelname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]
   php oil g config <filename> [<key1>:<value1> |<key2>:<value2> |..]
   php oil g task <taskname> [<cmd1> |<cmd2> |..]
+  php oil g package <packagename>
 
 Note that the next two lines are equivalent:
   php oil g scaffold <modelname> ...
