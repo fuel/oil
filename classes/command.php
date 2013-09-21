@@ -154,7 +154,7 @@ class Command
 					$is_phar = false;
 					foreach(explode(':', getenv('PATH')) as $path)
 					{
-						if (file_exists($path.DS.$phpunit_command))
+						if (is_file($path.DS.$phpunit_command))
 						{
 							$handle = fopen($path.DS.$phpunit_command, 'r');
 							$is_phar = fread($handle, 18) == '#!/usr/bin/env php';
@@ -178,7 +178,7 @@ class Command
 					}
 
 					// Check for a custom phpunit config, but default to the one from core
-					if (file_exists(APPPATH.'phpunit.xml'))
+					if (is_file(APPPATH.'phpunit.xml'))
 					{
 						$phpunit_config = APPPATH.'phpunit.xml';
 					}

@@ -495,7 +495,7 @@ MODEL;
 		is_dir($view_dir) or static::$create_folders[] = $view_dir;
 
 		// Add the default template if it doesnt exist
-		if ( ! file_exists($app_template = APPPATH.'views/template.php'))
+		if ( ! is_file($app_template = APPPATH.'views/template.php'))
 		{
 			static::create($app_template, file_get_contents(\Package::exists('oil').'views/scaffolding/template.php'), 'view');
 		}
@@ -1327,7 +1327,7 @@ CLASS;
 		is_dir($directory) or static::$create_folders[] = $directory;
 
 		// Check if a file exists then work out how to react
-		if (file_exists($filepath))
+		if (is_file($filepath))
 		{
 			// Don't override a file
 			if (\Cli::option('s', \Cli::option('skip')) === true)
@@ -1414,11 +1414,11 @@ CLASS;
 
 	private static function _update_current_version($version)
 	{
-		if (file_exists($app_path = APPPATH.'config'.DS.'migrations.php'))
+		if (is_file($app_path = APPPATH.'config'.DS.'migrations.php'))
 		{
 			$contents = file_get_contents($app_path);
 		}
-		elseif (file_exists($core_path = COREPATH.'config'.DS.'migrations.php'))
+		elseif (is_file($core_path = COREPATH.'config'.DS.'migrations.php'))
 		{
 			$contents = file_get_contents($core_path);
 		}

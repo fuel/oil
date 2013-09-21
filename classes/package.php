@@ -164,7 +164,7 @@ HELP;
 		$zip_file = $tmp_folder . '.zip';
 		@copy($zip_url, $zip_file);
 
-		if (file_exists($zip_file))
+		if (is_file($zip_file))
 		{
 			$unzip = new \Unzip;
 			$files = $unzip->extract($zip_file, $tmp_folder);

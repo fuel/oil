@@ -71,7 +71,7 @@ class Generate_Admin extends Generate_Scaffold
 		foreach ($default_files as $file)
 		{
 			// check if there's a template in app, and if so, use that
-			if (file_exists(APPPATH.'views/'.static::$view_subdir.$file['source']))
+			if (is_file(APPPATH.'views/'.static::$view_subdir.$file['source']))
 			{
 				Generate::create(APPPATH.$file['location'], file_get_contents(APPPATH.'views/'.static::$view_subdir.$file['source']), $file['type']);
 			}
