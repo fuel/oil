@@ -680,7 +680,7 @@ VIEW;
 						$field_array['name'] = array_shift($parts);
 						foreach ($parts as $part_i => $part)
 						{
-							preg_match('/([a-z0-9_-]+)(?:\[([0-9a-z\,\s]+)\])?/i', $part, $part_matches);
+							preg_match('/([a-z0-9_-]+)(?:\[([0-9a-z_\-\,\s]+)\])?/i', $part, $part_matches);
 							array_shift($part_matches);
 
 							if (count($part_matches) < 1)
