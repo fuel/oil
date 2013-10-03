@@ -103,7 +103,7 @@ class Refine
 			is_callable($task.'::_init') and $task::_init();
 		}
 
-		if ($return = call_user_func_array(array($new_task, $method), $args))
+		if ($return = call_fuel_func_array(array($new_task, $method), $args))
 		{
 			\Cli::write($return);
 		}
