@@ -64,7 +64,7 @@ class Generate_Scaffold
 
 			if ( ! isset($matches[1]))
 			{
-				throw new Exception('One or more fields were badly specified. Ensure they are name:type');
+				throw new Exception('Unable to determine the field definition for "'.$arg.'". Ensure they are name:type');
 			}
 
 			$data['fields'][] = array(
