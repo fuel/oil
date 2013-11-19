@@ -49,7 +49,7 @@ class Refine
 			{
 				\Module::load($module);
 				$path = \Module::exists($module);
-				\Finder::instance()->add_path($path);
+				\Finder::instance()->add_path($path, -1);
 			}
 			catch (\FuelException $e)
 			{
