@@ -542,6 +542,18 @@ VIEW;
 			$duplicates = array();
 			foreach($migrations as $migration)
 			{
+				// check if it's really a duplicate
+				$part = explode('_', basename($migration->getFilename(), '.php'),2);
+				if ($part[1] != $migration_name)
+				{
+					$part = substr($part[1], strlen($migration_name)+1);
+					if ( ! is_numeric($part))
+					{
+						// not a numbered suffix, but the same base classname
+						continue;
+					}
+				}
+
 				$duplicates[] = $migration->getPathname();
 			}
 		}
