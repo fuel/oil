@@ -654,13 +654,14 @@ VIEW;
 				// create_{table} or drop_{table} (with underscores in table name)
 				else if (count($matches) !== 0)
 				{
-					$name = str_replace(array('create_', 'add_', '_to_'), array('create-', 'add-', '-to-'), $migration_name);
+					$name = str_replace(array('create_', 'add_', 'drop_', '_to_'), array('create-', 'add-', 'drop-', '-to-'), $migration_name);
 
-    				if (preg_match('/^(create|add)\-([a-z0-9\_]*)(\-to\-)?([a-z0-9\_]*)?$/i', $name, $deep_matches))
+    				if (preg_match('/^(create|drop|add)\-([a-z0-9\_]*)(\-to\-)?([a-z0-9\_]*)?$/i', $name, $deep_matches))
     				{
     					switch ($deep_matches[1])
     					{
     						case 'create' :
+    						case 'drop' :
     							$subjects = array(false, $deep_matches[2]);
     						break;
 
