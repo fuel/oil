@@ -280,13 +280,16 @@ VIEWMODEL;
 
 		}, $args));
 
-		// Make sure an id is present
-		strpos($properties, "'id'") === false and $properties = "'id',\n\t\t".$properties.',';
+		// Add a comma to the end of the list
+		$properties .= ",";
 
 		$contents = '';
 
 		if (\Cli::option('crud'))
 		{
+			// Make sure an id is present
+			strpos($properties, "'id'") === false and $properties = "'id',\n\t\t".$properties;
+
 			if ( ! \Cli::option('no-properties'))
 			{
 				$contents = <<<CONTENTS
@@ -384,46 +387,49 @@ MODEL;
 				}
 				elseif (\Cli::option('temporal'))
 				{
-					$temporal_start = \Cli::option('temporal-start', 'temporal_start');
-					is_string($temporal_start) or $temporal_start = 'temporal_start';
 					$temporal_end = \Cli::option('temporal-end', 'temporal_end');
 					is_string($temporal_end) or $temporal_end = 'temporal_end';
+					$properties = "\n\t\t'".$temporal_end."',\n\t\t" . $properties;
 
-					$properties .= "\n\t\t'".$temporal_start."',";
-					$properties .= "\n\t\t'".$temporal_end."',";
+					$timestamp_properties = array_merge($timestamp_properties, array($temporal_end.':'.$time_type));
+
+					$temporal_start = \Cli::option('temporal-start', 'temporal_start');
+					is_string($temporal_start) or $temporal_start = 'temporal_start';
+					$properties = "'".$temporal_start."'," . $properties;
 
 					$timestamp_properties = array_merge($timestamp_properties, array($temporal_start.':'.$time_type));
-					$timestamp_properties = array_merge($timestamp_properties, array($temporal_end.':'.$time_type));
 				}
 				elseif (\Cli::option('nestedset'))
 				{
-					$left_id = \Cli::option('left-id', 'left_id');
-					is_string($left_id) or $left_id = 'left_id';
-					$properties .= "\n\t\t'".$left_id."',";
+					$title = \Cli::option('title', 'title');
+					is_string($title) or $title = 'title';
+					$properties = "\n\t\t'".$title."',\n\t\t" . $properties;
 
-					$timestamp_properties = array_merge($timestamp_properties, array($left_id.':int:unsigned'));
-
-					$right_id = \Cli::option('right-id', 'right_id');
-					is_string($right_id) or $right_id = 'right_id';
-					$properties .= "\n\t\t'".$right_id."',";
-
-					$timestamp_properties = array_merge($timestamp_properties, array($right_id.':int:unsigned'));
-
+					$timestamp_properties = array_merge($timestamp_properties, array($title.':varchar[50]'));
 					$tree_id = \Cli::option('tree-id', 'tree_id');
 					is_string($tree_id) or $tree_id = 'tree_id';
-					$properties .= "\n\t\t'".$tree_id."',";
+					$properties = "\n\t\t'".$tree_id."'," . $properties;
 
 					$timestamp_properties = array_merge($timestamp_properties, array($tree_id.':int:unsigned'));
 
-					$title = \Cli::option('title', 'title');
-					is_string($title) or $title = 'title';
-					$properties .= "\n\t\t'".$title."',";
+					$right_id = \Cli::option('right-id', 'right_id');
+					is_string($right_id) or $right_id = 'right_id';
+					$properties = "\n\t\t'".$right_id."'," . $properties;
 
-					$timestamp_properties = array_merge($timestamp_properties, array($title.':varchar[50]'));
+					$timestamp_properties = array_merge($timestamp_properties, array($right_id.':int:unsigned'));
+
+					$left_id = \Cli::option('left-id', 'left_id');
+					is_string($left_id) or $left_id = 'left_id';
+					$properties = "'".$left_id."'," . $properties;
+
+					$timestamp_properties = array_merge($timestamp_properties, array($left_id.':int:unsigned'));
 				}
 
 				$args = array_merge($args, $timestamp_properties);
 			}
+
+			// Make sure an id is present
+			strpos($properties, "'id'") === false and $properties = "'id',\n\t\t".$properties;
 
 			if ( ! \Cli::option('no-properties'))
 			{
