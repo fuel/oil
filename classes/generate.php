@@ -453,7 +453,7 @@ CONTENTS;
 
 				if ( \Cli::option('soft-delete'))
 				{
-					if(($deleted_at = \Cli::option('deleted-at')) and is_string($updated_at))
+					if(($deleted_at = \Cli::option('deleted-at')) and is_string($deleted_at))
 					{
 						$deleted_at = <<<CONTENTS
 
