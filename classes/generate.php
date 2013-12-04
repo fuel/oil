@@ -395,6 +395,32 @@ MODEL;
 					$timestamp_properties = array_merge($timestamp_properties, array($temporal_start.':'.$time_type));
 					$timestamp_properties = array_merge($timestamp_properties, array($temporal_end.':'.$time_type));
 				}
+				elseif (\Cli::option('nestedset'))
+				{
+					$left_id = \Cli::option('left-id', 'left_id');
+					is_string($left_id) or $left_id = 'left_id';
+					$properties .= "\n\t\t'".$left_id."',";
+
+					$timestamp_properties = array_merge($timestamp_properties, array($left_id.':int:unsigned'));
+
+					$right_id = \Cli::option('right-id', 'right_id');
+					is_string($right_id) or $right_id = 'right_id';
+					$properties .= "\n\t\t'".$right_id."',";
+
+					$timestamp_properties = array_merge($timestamp_properties, array($right_id.':int:unsigned'));
+
+					$tree_id = \Cli::option('tree-id', 'tree_id');
+					is_string($tree_id) or $tree_id = 'tree_id';
+					$properties .= "\n\t\t'".$tree_id."',";
+
+					$timestamp_properties = array_merge($timestamp_properties, array($tree_id.':int:unsigned'));
+
+					$title = \Cli::option('title', 'title');
+					is_string($title) or $title = 'title';
+					$properties .= "\n\t\t'".$title."',";
+
+					$timestamp_properties = array_merge($timestamp_properties, array($title.':varchar[50]'));
+				}
 
 				$args = array_merge($args, $timestamp_properties);
 			}
@@ -509,6 +535,68 @@ CONTENTS;
 CONTENTS;
 
 				}
+				elseif ( \Cli::option('nestedset'))
+				{
+					if(($left_id = \Cli::option('left-id')) and is_string($left_id))
+					{
+						$left_id = <<<CONTENTS
+
+		'left_field' => '{$left_id}',
+CONTENTS;
+					}
+					else
+					{
+						$left_id = '';
+					}
+
+					if(($right_id = \Cli::option('right-id')) and is_string($right_id))
+					{
+						$right_id = <<<CONTENTS
+
+		'right_field' => '{$right_id}',
+CONTENTS;
+					}
+					else
+					{
+						$right_id = '';
+					}
+
+					if(($tree_id = \Cli::option('tree-id')) and is_string($tree_id))
+					{
+						$tree_id = <<<CONTENTS
+
+		'tree_field' => '{$tree_id}',
+CONTENTS;
+					}
+					else
+					{
+						$tree_id = '';
+					}
+
+					if(($title = \Cli::option('title')) and is_string($title))
+					{
+						$title = <<<CONTENTS
+
+		'title_field' => '{$title}',
+CONTENTS;
+					}
+					else
+					{
+						$title = '';
+					}
+
+					if (! empty($left_id) or ! empty($right_id) or ! empty($tree_id) or ! empty($title))
+					{
+						$contents .= <<<CONTENTS
+
+
+	protected static \$_tree = array(
+		$left_id$right_id$tree_id$title
+	);
+CONTENTS;
+					}
+
+				}
 
 			}
 
@@ -552,6 +640,18 @@ MODEL;
 <?php
 
 class Model_{$class_name} extends \Orm\Model_Temporal
+{
+{$contents}
+}
+
+MODEL;
+			}
+			elseif ( \Cli::option('temporal'))
+			{
+				$model .= <<<MODEL
+<?php
+
+class Model_{$class_name} extends \Orm\Model_Nestedset
 {
 {$contents}
 }
