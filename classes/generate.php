@@ -363,6 +363,57 @@ MODEL;
 		}
 		else
 		{
+			$time_type = (\Cli::option('mysql-timestamp')) ? 'timestamp' : 'int';
+
+			if ( \Cli::option('soft-delete'))
+			{
+				$deleted_at = \Cli::option('deleted-at', 'deleted_at');
+				is_string($deleted_at) or $deleted_at = 'deleted_at';
+				$properties .= "\n\t\t'".$deleted_at."',";
+
+				$args = array_merge($args, array($deleted_at.':'.$time_type.':null[1]'));
+			}
+			elseif (\Cli::option('temporal'))
+			{
+				$temporal_end = \Cli::option('temporal-end', 'temporal_end');
+				is_string($temporal_end) or $temporal_end = 'temporal_end';
+				$properties = "\n\t\t'".$temporal_end."',\n\t\t" . $properties;
+
+				$args = array_merge(array($temporal_end.':'.$time_type), $args);
+
+				$temporal_start = \Cli::option('temporal-start', 'temporal_start');
+				is_string($temporal_start) or $temporal_start = 'temporal_start';
+				$properties = "'".$temporal_start."'," . $properties;
+
+				$args = array_merge(array($temporal_start.':'.$time_type), $args);
+			}
+			elseif (\Cli::option('nestedset'))
+			{
+				$title = \Cli::option('title', 'title');
+				is_string($title) or $title = 'title';
+				$properties = "\n\t\t'".$title."',\n\t\t" . $properties;
+
+				$args = array_merge(array($title.':varchar[50]'), $args);
+
+				$tree_id = \Cli::option('tree-id', 'tree_id');
+				is_string($tree_id) or $tree_id = 'tree_id';
+				$properties = "\n\t\t'".$tree_id."'," . $properties;
+
+				$args = array_merge(array($tree_id.':int:unsigned'), $args);
+
+				$right_id = \Cli::option('right-id', 'right_id');
+				is_string($right_id) or $right_id = 'right_id';
+				$properties = "\n\t\t'".$right_id."'," . $properties;
+
+				$args = array_merge(array($right_id.':int:unsigned'), $args);
+
+				$left_id = \Cli::option('left-id', 'left_id');
+				is_string($left_id) or $left_id = 'left_id';
+				$properties = "'".$left_id."'," . $properties;
+
+				$args = array_merge(array($left_id.':int:unsigned'), $args);
+			}
+
 			if ( ! \Cli::option('no-timestamp'))
 			{
 				$created_at = \Cli::option('created-at', 'created_at');
@@ -373,57 +424,7 @@ MODEL;
 				is_string($updated_at) or $updated_at = 'updated_at';
 				$properties .= "\n\t\t'".$updated_at."',";
 
-				$time_type = (\Cli::option('mysql-timestamp')) ? 'timestamp' : 'int';
-
 				$timestamp_properties = array($created_at.':'.$time_type.':null[1]', $updated_at.':'.$time_type.':null[1]');
-
-				if ( \Cli::option('soft-delete'))
-				{
-					$deleted_at = \Cli::option('deleted-at', 'deleted_at');
-					is_string($deleted_at) or $deleted_at = 'deleted_at';
-					$properties .= "\n\t\t'".$deleted_at."',";
-
-					$timestamp_properties = array_merge($timestamp_properties, array($deleted_at.':'.$time_type.':null[1]'));
-				}
-				elseif (\Cli::option('temporal'))
-				{
-					$temporal_end = \Cli::option('temporal-end', 'temporal_end');
-					is_string($temporal_end) or $temporal_end = 'temporal_end';
-					$properties = "\n\t\t'".$temporal_end."',\n\t\t" . $properties;
-
-					$timestamp_properties = array_merge($timestamp_properties, array($temporal_end.':'.$time_type));
-
-					$temporal_start = \Cli::option('temporal-start', 'temporal_start');
-					is_string($temporal_start) or $temporal_start = 'temporal_start';
-					$properties = "'".$temporal_start."'," . $properties;
-
-					$timestamp_properties = array_merge($timestamp_properties, array($temporal_start.':'.$time_type));
-				}
-				elseif (\Cli::option('nestedset'))
-				{
-					$title = \Cli::option('title', 'title');
-					is_string($title) or $title = 'title';
-					$properties = "\n\t\t'".$title."',\n\t\t" . $properties;
-
-					$timestamp_properties = array_merge($timestamp_properties, array($title.':varchar[50]'));
-					$tree_id = \Cli::option('tree-id', 'tree_id');
-					is_string($tree_id) or $tree_id = 'tree_id';
-					$properties = "\n\t\t'".$tree_id."'," . $properties;
-
-					$timestamp_properties = array_merge($timestamp_properties, array($tree_id.':int:unsigned'));
-
-					$right_id = \Cli::option('right-id', 'right_id');
-					is_string($right_id) or $right_id = 'right_id';
-					$properties = "\n\t\t'".$right_id."'," . $properties;
-
-					$timestamp_properties = array_merge($timestamp_properties, array($right_id.':int:unsigned'));
-
-					$left_id = \Cli::option('left-id', 'left_id');
-					is_string($left_id) or $left_id = 'left_id';
-					$properties = "'".$left_id."'," . $properties;
-
-					$timestamp_properties = array_merge($timestamp_properties, array($left_id.':int:unsigned'));
-				}
 
 				$args = array_merge($args, $timestamp_properties);
 			}
@@ -483,125 +484,123 @@ CONTENTS;
 	);
 CONTENTS;
 
-				if ( \Cli::option('soft-delete'))
+			}
+
+			if ( \Cli::option('soft-delete'))
+			{
+				if(($deleted_at = \Cli::option('deleted-at')) and is_string($deleted_at))
 				{
-					if(($deleted_at = \Cli::option('deleted-at')) and is_string($deleted_at))
-					{
-						$deleted_at = <<<CONTENTS
+					$deleted_at = <<<CONTENTS
 
 		'deleted_field' => '{$deleted_at}',
 CONTENTS;
-					}
-					else
-					{
-						$deleted_at = '';
-					}
+				}
+				else
+				{
+					$deleted_at = '';
+				}
 
-					$contents .= <<<CONTENTS
+				$contents .= <<<CONTENTS
 
 
 	protected static \$_soft_delete = array(
 		'mysql_timestamp' => $mysql_timestamp,$deleted_at
 	);
 CONTENTS;
-
-				}
-				elseif ( \Cli::option('temporal'))
+			}
+			elseif ( \Cli::option('temporal'))
+			{
+				if(($temporal_start = \Cli::option('temporal-start')) and is_string($temporal_start))
 				{
-					if(($temporal_start = \Cli::option('temporal-start')) and is_string($temporal_start))
-					{
-						$temporal_start = <<<CONTENTS
+					$temporal_start = <<<CONTENTS
 
 		'start_column' => '{$temporal_start}',
 CONTENTS;
-					}
-					else
-					{
-						$temporal_start = '';
-					}
+				}
+				else
+				{
+					$temporal_start = '';
+				}
 
-					if(($temporal_end = \Cli::option('temporal-end')) and is_string($temporal_end))
-					{
-						$temporal_end = <<<CONTENTS
+				if(($temporal_end = \Cli::option('temporal-end')) and is_string($temporal_end))
+				{
+					$temporal_end = <<<CONTENTS
 
 		'end_column' => '{$temporal_end}',
 CONTENTS;
-					}
-					else
-					{
-						$temporal_end = '';
-					}
+				}
+				else
+				{
+					$temporal_end = '';
+				}
 
-					$contents .= <<<CONTENTS
+				$contents .= <<<CONTENTS
 
 
 	protected static \$_temporal = array(
 		'mysql_timestamp' => $mysql_timestamp,$temporal_start$temporal_end
 	);
 CONTENTS;
-
-				}
-				elseif ( \Cli::option('nestedset'))
+			}
+			elseif ( \Cli::option('nestedset'))
+			{
+				if(($left_id = \Cli::option('left-id')) and is_string($left_id))
 				{
-					if(($left_id = \Cli::option('left-id')) and is_string($left_id))
-					{
-						$left_id = <<<CONTENTS
+					$left_id = <<<CONTENTS
 
 		'left_field' => '{$left_id}',
 CONTENTS;
-					}
-					else
-					{
-						$left_id = '';
-					}
+				}
+				else
+				{
+					$left_id = '';
+				}
 
-					if(($right_id = \Cli::option('right-id')) and is_string($right_id))
-					{
-						$right_id = <<<CONTENTS
+				if(($right_id = \Cli::option('right-id')) and is_string($right_id))
+				{
+					$right_id = <<<CONTENTS
 
 		'right_field' => '{$right_id}',
 CONTENTS;
-					}
-					else
-					{
-						$right_id = '';
-					}
+				}
+				else
+				{
+					$right_id = '';
+				}
 
-					if(($tree_id = \Cli::option('tree-id')) and is_string($tree_id))
-					{
-						$tree_id = <<<CONTENTS
+				if(($tree_id = \Cli::option('tree-id')) and is_string($tree_id))
+				{
+					$tree_id = <<<CONTENTS
 
 		'tree_field' => '{$tree_id}',
 CONTENTS;
-					}
-					else
-					{
-						$tree_id = '';
-					}
+				}
+				else
+				{
+					$tree_id = '';
+				}
 
-					if(($title = \Cli::option('title')) and is_string($title))
-					{
-						$title = <<<CONTENTS
+				if(($title = \Cli::option('title')) and is_string($title))
+				{
+					$title = <<<CONTENTS
 
 		'title_field' => '{$title}',
 CONTENTS;
-					}
-					else
-					{
-						$title = '';
-					}
+				}
+				else
+				{
+					$title = '';
+				}
 
-					if (! empty($left_id) or ! empty($right_id) or ! empty($tree_id) or ! empty($title))
-					{
-						$contents .= <<<CONTENTS
+				if (! empty($left_id) or ! empty($right_id) or ! empty($tree_id) or ! empty($title))
+				{
+					$contents .= <<<CONTENTS
 
 
 	protected static \$_tree = array(
 		$left_id$right_id$tree_id$title
 	);
 CONTENTS;
-					}
-
 				}
 
 			}
