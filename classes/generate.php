@@ -382,6 +382,19 @@ MODEL;
 
 					$timestamp_properties = array_merge($timestamp_properties, array($deleted_at.':'.$time_type.':null[1]'));
 				}
+				elseif (\Cli::option('temporal'))
+				{
+					$temporal_start = \Cli::option('temporal-start', 'temporal_start');
+					is_string($temporal_start) or $temporal_start = 'temporal_start';
+					$temporal_end = \Cli::option('temporal-end', 'temporal_end');
+					is_string($temporal_end) or $temporal_end = 'temporal_end';
+
+					$properties .= "\n\t\t'".$temporal_start."',";
+					$properties .= "\n\t\t'".$temporal_end."',";
+
+					$timestamp_properties = array_merge($timestamp_properties, array($temporal_start.':'.$time_type));
+					$timestamp_properties = array_merge($timestamp_properties, array($temporal_end.':'.$time_type));
+				}
 
 				$args = array_merge($args, $timestamp_properties);
 			}
@@ -461,6 +474,41 @@ CONTENTS;
 CONTENTS;
 
 				}
+				elseif ( \Cli::option('temporal'))
+				{
+					if(($temporal_start = \Cli::option('temporal-start')) and is_string($temporal_start))
+					{
+						$temporal_start = <<<CONTENTS
+
+		'start_column' => '{$temporal_start}',
+CONTENTS;
+					}
+					else
+					{
+						$temporal_start = '';
+					}
+
+					if(($temporal_end = \Cli::option('temporal-end')) and is_string($temporal_end))
+					{
+						$temporal_end = <<<CONTENTS
+
+		'end_column' => '{$temporal_end}',
+CONTENTS;
+					}
+					else
+					{
+						$temporal_end = '';
+					}
+
+					$contents .= <<<CONTENTS
+
+
+	protected static \$_temporal = array(
+		'mysql_timestamp' => $mysql_timestamp,$temporal_start$temporal_end
+	);
+CONTENTS;
+
+				}
 
 			}
 
@@ -497,6 +545,18 @@ class Model_{$class_name} extends \Orm\Model_Soft
 
 MODEL;
 				}
+			}
+			elseif ( \Cli::option('temporal'))
+			{
+				$model .= <<<MODEL
+<?php
+
+class Model_{$class_name} extends \Orm\Model_Temporal
+{
+{$contents}
+}
+
+MODEL;
 			}
 			else
 			{
