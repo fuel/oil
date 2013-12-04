@@ -486,9 +486,9 @@ CONTENTS;
 
 			}
 
-			if ( \Cli::option('soft-delete'))
+			if (\Cli::option('soft-delete'))
 			{
-				if(($deleted_at = \Cli::option('deleted-at')) and is_string($deleted_at))
+				if($deleted_at !== 'deleted_at')
 				{
 					$deleted_at = <<<CONTENTS
 
@@ -508,97 +508,99 @@ CONTENTS;
 	);
 CONTENTS;
 			}
-			elseif ( \Cli::option('temporal'))
+			elseif (\Cli::option('temporal'))
 			{
-				if(($temporal_start = \Cli::option('temporal-start')) and is_string($temporal_start))
+				if($temporal_start !== 'temporal_start')
 				{
-					$temporal_start = <<<CONTENTS
+					$start_column = <<<CONTENTS
 
 		'start_column' => '{$temporal_start}',
 CONTENTS;
 				}
 				else
 				{
-					$temporal_start = '';
+					$start_column = '';
 				}
 
-				if(($temporal_end = \Cli::option('temporal-end')) and is_string($temporal_end))
+				if($temporal_end !== 'temporal_end')
 				{
-					$temporal_end = <<<CONTENTS
+					$end_column = <<<CONTENTS
 
 		'end_column' => '{$temporal_end}',
 CONTENTS;
 				}
 				else
 				{
-					$temporal_end = '';
+					$end_column = '';
 				}
 
 				$contents .= <<<CONTENTS
 
 
 	protected static \$_temporal = array(
-		'mysql_timestamp' => $mysql_timestamp,$temporal_start$temporal_end
+		'mysql_timestamp' => $mysql_timestamp,$start_column$end_column
 	);
+
+	protected static \$_primary_key = array('id', '{$temporal_start}', '{$temporal_end}');
 CONTENTS;
 			}
-			elseif ( \Cli::option('nestedset'))
+			elseif (\Cli::option('nestedset'))
 			{
-				if(($left_id = \Cli::option('left-id')) and is_string($left_id))
+				if($left_id !== 'left_id')
 				{
-					$left_id = <<<CONTENTS
+					$left_field = <<<CONTENTS
 
 		'left_field' => '{$left_id}',
 CONTENTS;
 				}
 				else
 				{
-					$left_id = '';
+					$left_field = '';
 				}
 
-				if(($right_id = \Cli::option('right-id')) and is_string($right_id))
+				if($right_id !== 'right_id')
 				{
-					$right_id = <<<CONTENTS
+					$right_field = <<<CONTENTS
 
 		'right_field' => '{$right_id}',
 CONTENTS;
 				}
 				else
 				{
-					$right_id = '';
+					$right_field = '';
 				}
 
-				if(($tree_id = \Cli::option('tree-id')) and is_string($tree_id))
+				if($tree_id !== 'tree_id')
 				{
-					$tree_id = <<<CONTENTS
+					$tree_field = <<<CONTENTS
 
 		'tree_field' => '{$tree_id}',
 CONTENTS;
 				}
 				else
 				{
-					$tree_id = '';
+					$tree_field = '';
 				}
 
-				if(($title = \Cli::option('title')) and is_string($title))
+				if($title !== 'title')
 				{
-					$title = <<<CONTENTS
+					$title_field = <<<CONTENTS
 
 		'title_field' => '{$title}',
 CONTENTS;
 				}
 				else
 				{
-					$title = '';
+					$title_field = '';
 				}
 
-				if (! empty($left_id) or ! empty($right_id) or ! empty($tree_id) or ! empty($title))
+				if (! empty($left_field) or ! empty($right_field) or ! empty($tree_field) or ! empty($title_field))
 				{
 					$contents .= <<<CONTENTS
 
 
 	protected static \$_tree = array(
-		$left_id$right_id$tree_id$title
+		$left_field$right_field$tree_field$title_field
 	);
 CONTENTS;
 				}
