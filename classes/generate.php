@@ -599,9 +599,22 @@ CONTENTS;
 					$title_field = '';
 				}
 
+				if($read_only = \Cli::option('read-only') and is_string($read_only))
+				{
+					$read_only = explode(',', $read_only);
+					$read_only = "'" . implode("', '", $read_only) . "'";
+					$read_only = <<<CONTENTS
+		'read_only' => array($read_only),
+CONTENTS;
+				}
+				else
+				{
+					$read_only = '';
+				}
+
 				if (! empty($left_field) or ! empty($right_field) or ! empty($tree_field) or ! empty($title_field))
 				{
-					$fields = array($left_field, $right_field, $tree_field, $title_field);
+					$fields = array($left_field, $right_field, $tree_field, $title_field, $read_only);
 					$fields = array_filter($fields);
 					$fields = implode("\n", $fields);
 
