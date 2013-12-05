@@ -389,17 +389,26 @@ MODEL;
 			}
 			elseif (\Cli::option('nestedset'))
 			{
-				$title = \Cli::option('title', 'title');
-				is_string($title) or $title = 'title';
-				$properties = "\n\t\t'".$title."'," . $properties;
+				$title = \Cli::option('title', false);
 
-				$args = array_merge(array($title.':varchar[50]'), $args);
+				if ($title)
+				{
+					is_string($title) or $title = 'title';
+					$properties = "\n\t\t'".$title."'," . $properties;
 
-				$tree_id = \Cli::option('tree-id', 'tree_id');
-				is_string($tree_id) or $tree_id = 'tree_id';
-				$properties = "\n\t\t'".$tree_id."'," . $properties;
+					$args = array_merge(array($title.':varchar[50]'), $args);
+				}
 
-				$args = array_merge(array($tree_id.':int:unsigned'), $args);
+
+				$tree_id = \Cli::option('tree-id', false);
+
+				if ($tree_id)
+				{
+					is_string($tree_id) or $tree_id = 'tree_id';
+					$properties = "\n\t\t'".$tree_id."'," . $properties;
+
+					$args = array_merge(array($tree_id.':int:unsigned'), $args);
+				}
 
 				$right_id = \Cli::option('right-id', 'right_id');
 				is_string($right_id) or $right_id = 'right_id';
@@ -549,7 +558,6 @@ CONTENTS;
 				if($left_id !== 'left_id')
 				{
 					$left_field = <<<CONTENTS
-
 		'left_field' => '{$left_id}',
 CONTENTS;
 				}
@@ -561,7 +569,6 @@ CONTENTS;
 				if($right_id !== 'right_id')
 				{
 					$right_field = <<<CONTENTS
-
 		'right_field' => '{$right_id}',
 CONTENTS;
 				}
@@ -570,10 +577,9 @@ CONTENTS;
 					$right_field = '';
 				}
 
-				if($tree_id !== 'tree_id')
+				if($tree_id)
 				{
 					$tree_field = <<<CONTENTS
-
 		'tree_field' => '{$tree_id}',
 CONTENTS;
 				}
@@ -582,10 +588,9 @@ CONTENTS;
 					$tree_field = '';
 				}
 
-				if($title !== 'title')
+				if($title)
 				{
 					$title_field = <<<CONTENTS
-
 		'title_field' => '{$title}',
 CONTENTS;
 				}
@@ -596,11 +601,15 @@ CONTENTS;
 
 				if (! empty($left_field) or ! empty($right_field) or ! empty($tree_field) or ! empty($title_field))
 				{
+					$fields = array($left_field, $right_field, $tree_field, $title_field);
+					$fields = array_filter($fields);
+					$fields = implode("\n", $fields);
+
 					$contents .= <<<CONTENTS
 
 
 	protected static \$_tree = array(
-		$left_field$right_field$tree_field$title_field
+$fields
 	);
 CONTENTS;
 				}
