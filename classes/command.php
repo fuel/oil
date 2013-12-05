@@ -259,22 +259,50 @@ HELP;
 				case 's':
 				case 'server':
 
-					if (version_compare(PHP_VERSION, '5.4.0') < 0)
+					if (isset($args[2]) and $args[2] == 'help')
 					{
-						\Cli::write('The PHP built-in webserver is only available on PHP 5.4+', 'red');
-						break;
+		$output = <<<HELP
+
+Usage:
+  php oil [s|server]
+
+Runtime options:
+  --php=<file>               # The full pathname of your PHP-CLI binary if it's not in the path.
+  --port=<port>              # TCP port number the webserver should listen too. Defaults to 8000.
+  --host=<host>              # Hostname the webserver should run at. Defaults to "localhost".
+  --docroot=<dir>            # Your FuelPHP docroot. Defaults to "public/".
+  --router=<file>            # PHP router script. Defaults to "fuel/packages/oil/phpserver.php".
+
+Description:
+  Starts a local webserver to run your FuelPHP application, using PHP 5.4+ internal webserver.
+
+Examples:
+  php oil server -p=8080
+
+Documentation:
+  http://fuelphp.com/docs/packages/oil/server.html
+HELP;
+		\Cli::write($output);
 					}
+					else
+					{
+						if (version_compare(PHP_VERSION, '5.4.0') < 0)
+						{
+							\Cli::write('The PHP built-in webserver is only available on PHP 5.4+', 'red');
+							break;
+						}
 
-					$php = \Cli::option('php', 'php');
-					$port = \Cli::option('p', \Cli::option('port', '8000'));
-					$host = \Cli::option('h', \Cli::option('host', 'localhost'));
-					$docroot = \Cli::option('d', \Cli::option('docroot', 'public/'));
-					$router = \Cli::option('r', \Cli::option('router', __DIR__.DS.'..'.DS.'phpserver.php'));
+						$php = \Cli::option('php', 'php');
+						$port = \Cli::option('p', \Cli::option('port', '8000'));
+						$host = \Cli::option('h', \Cli::option('host', 'localhost'));
+						$docroot = \Cli::option('d', \Cli::option('docroot', 'public/'));
+						$router = \Cli::option('r', \Cli::option('router', __DIR__.DS.'..'.DS.'phpserver.php'));
 
-					\Cli::write("Listening on http://$host:$port");
-					\Cli::write("Document root is $docroot");
-					\Cli::write("Press Ctrl-C to quit.");
-					passthru("$php -S $host:$port -t $docroot $router");
+						\Cli::write("Listening on http://$host:$port");
+						\Cli::write("Document root is $docroot");
+						\Cli::write("Press Ctrl-C to quit.");
+						passthru("$php -S $host:$port -t $docroot $router");
+					}
 				break;
 
 				case 'create':
