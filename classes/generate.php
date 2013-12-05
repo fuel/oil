@@ -653,7 +653,7 @@ class Model_{$class_name} extends \Orm\Model_Temporal
 
 MODEL;
 			}
-			elseif ( \Cli::option('temporal'))
+			elseif ( \Cli::option('nestedset'))
 			{
 				$model .= <<<MODEL
 <?php
