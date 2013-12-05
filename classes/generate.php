@@ -281,14 +281,14 @@ VIEWMODEL;
 		}, $args));
 
 		// Add a comma to the end of the list
-		$properties .= ",";
+		$properties = "\n\t\t" . $properties . ",";
 
 		$contents = '';
 
 		if (\Cli::option('crud'))
 		{
 			// Make sure an id is present
-			strpos($properties, "'id'") === false and $properties = "'id',\n\t\t".$properties;
+			strpos($properties, "'id'") === false and $properties = "'id',".$properties;
 
 			if ( ! \Cli::option('no-properties'))
 			{
@@ -377,13 +377,13 @@ MODEL;
 			{
 				$temporal_end = \Cli::option('temporal-end', 'temporal_end');
 				is_string($temporal_end) or $temporal_end = 'temporal_end';
-				$properties = "\n\t\t'".$temporal_end."',\n\t\t" . $properties;
+				$properties = "\n\t\t'".$temporal_end."'," . $properties;
 
 				$args = array_merge(array($temporal_end.':'.$time_type), $args);
 
 				$temporal_start = \Cli::option('temporal-start', 'temporal_start');
 				is_string($temporal_start) or $temporal_start = 'temporal_start';
-				$properties = "'".$temporal_start."'," . $properties;
+				$properties = "\n\t\t'".$temporal_start."'," . $properties;
 
 				$args = array_merge(array($temporal_start.':'.$time_type), $args);
 			}
@@ -391,7 +391,7 @@ MODEL;
 			{
 				$title = \Cli::option('title', 'title');
 				is_string($title) or $title = 'title';
-				$properties = "\n\t\t'".$title."',\n\t\t" . $properties;
+				$properties = "\n\t\t'".$title."'," . $properties;
 
 				$args = array_merge(array($title.':varchar[50]'), $args);
 
@@ -409,7 +409,7 @@ MODEL;
 
 				$left_id = \Cli::option('left-id', 'left_id');
 				is_string($left_id) or $left_id = 'left_id';
-				$properties = "'".$left_id."'," . $properties;
+				$properties = "\n\t\t'".$left_id."'," . $properties;
 
 				$args = array_merge(array($left_id.':int:unsigned'), $args);
 			}
@@ -430,7 +430,7 @@ MODEL;
 			}
 
 			// Make sure an id is present
-			strpos($properties, "'id'") === false and $properties = "'id',\n\t\t".$properties;
+			strpos($properties, "'id'") === false and $properties = "'id',".$properties;
 
 			if ( ! \Cli::option('no-properties'))
 			{
