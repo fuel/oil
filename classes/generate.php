@@ -145,17 +145,17 @@ CONF;
  		$actions = $args;
 
 		$filename = trim(str_replace(array('_', '-'), DS, $name), DS);
-		
+
 		$base_path = APPPATH;
-		
-		if ( $module = \Cli::option('module') )
+
+		if ($module = \Cli::option('module'))
 		{
-			if ( ! ( $base_path = \Module::exists($module) ) )
+			if ( ! ($base_path = \Module::exists($module)) )
 			{
-				throw new Exception('Module ' . $module . ' was not found within any of the defined module paths');
+				throw new Exception('Module '.$module.' was not found within any of the defined module paths');
 			}
 		}
-		
+
 		$filepath = $base_path.'classes'.DS.'controller'.DS.$filename.'.php';
 
 		// Uppercase each part of the class name and remove hyphens
@@ -253,19 +253,19 @@ VIEWMODEL;
 
 		$filename = trim(str_replace(array('_', '-'), DS, $singular), DS);
 		$base_path = APPPATH;
-		
-		if ( $module = \Cli::option('module') )
+
+		if ($module = \Cli::option('module'))
 		{
-			if ( ! ( $base_path = \Module::exists($module) ) )
+			if ( ! ($base_path = \Module::exists($module)) )
 			{
-				throw new Exception('Module ' . $module . ' was not found within any of the defined module paths');
+				throw new Exception('Module '.$module.' was not found within any of the defined module paths');
 			}
-			
+
 			$module_namespace = ucwords($module);
 		}
-		
+
 		$filepath = $base_path.'classes'.DS.'model'.DS.$filename.'.php';
-		
+
 		// Uppercase each part of the class name and remove hyphens
 		$class_name = \Inflector::classify(str_replace(array('\\', '/'), '_', $singular), false);
 
@@ -333,7 +333,7 @@ CONTENTS;
 	protected static \$_table_name = '{$plural}';
 
 CONTENTS;
-			if ( $module )
+			if ($module)
 			{
 				$model = <<<MODEL
 <?php namespace {$module_namespace};
@@ -473,7 +473,7 @@ CONTENTS;
 			$model = '';
 			if ( \Cli::option('soft-delete'))
 			{
-				if ( $module )
+				if ($module)
 				{
 					$model .= <<<MODEL
 <?php namespace {$module_namespace};
@@ -500,7 +500,7 @@ MODEL;
 			}
 			else
 			{
-				if ( $module )
+				if ($module)
 				{
 					$model .= <<<MODEL
 <?php namespace {$module_namespace};
@@ -546,55 +546,52 @@ MODEL;
 
 		$build and static::build();
 	}
-	
-	
+
+
 	public static function module($args)
 	{
 		$module_name = strtolower(array_shift($args));
-		
-		if ( $path = \Module::exists($module_name) )
+
+		if ($path = \Module::exists($module_name))
 		{
-			throw new Exception('A module named ' . $module_name . ' already exists at ' . $path);
+			throw new Exception('A module named '.$module_name.' already exists at '.$path);
 		}
-		
+
 		$module_paths = \Config::get('module_paths');
 		$base = reset($module_paths);
-		
-		if ( count($module_paths) > 1 )
+
+		if (count($module_paths) > 1)
 		{
 			\Cli::write('You\'re app has multiple module paths defined. Please choose the appropriate path from the list below', 'yellow', 'blue');
-			
+
 			$options = array();
-			foreach ( $module_paths as $key => $path )
+			foreach ($module_paths as $key => $path)
 			{
 				$idx = $key+1;
-				\Cli::write('['.$idx.'] ' . $path);
+				\Cli::write('['.$idx.'] '.$path);
 				$options[] = $idx;
 			}
-			
+
 			$path_idx = \Cli::prompt('Please choose the desired module path', $options);
-			
+
 			$base = $module_paths[$path_idx - 1];
 		}
-		
+
 		$module_path = $base.$module_name.DS;
-		
+
 		static::$create_folders[] = $module_path;
 		static::$create_folders[] = $module_path.'classes/';
-		
-		if ( $folders = \Cli::option('folders') )
+
+		if ( ($folders = \Cli::option('folders')) !== true )
 		{
-			if ( $folders !== true )
+			$folders = explode(',', $folders);
+
+			foreach ($folders as $folder)
 			{
-				$folders = explode(',', $folders);
-				
-				foreach ( $folders as $folder )
-				{
-					static::$create_folders[] = $module_path.$folder;
-				}
+				static::$create_folders[] = $module_path.$folder;
 			}
 		}
-		
+
 		static::$create_folders && static::build();
 	}
 
@@ -603,16 +600,16 @@ MODEL;
 	{
 		$controller = strtolower(array_shift($args));
 		$controller_title = \Inflector::humanize($controller);
-		
+
 		$base_path = APPPATH;
-		if ( $module = \Cli::option('module') )
+		if ($module = \Cli::option('module'))
 		{
-			if ( ! ( $base_path = \Module::exists($module) ) )
+			if ( ! ($base_path = \Module::exists($module)) )
 			{
-				throw new Exception('Module ' . $module . ' was not found within any of the defined module paths');
+				throw new Exception('Module '.$module.' was not found within any of the defined module paths');
 			}
 		}
-		
+
 		$view_dir = $base_path.'views/'.trim(str_replace(array('_', '-'), DS, $controller), DS).DS;
 
 		$args or $args = array('index');
@@ -620,7 +617,7 @@ MODEL;
 		// Make the directory for these views to be store in
 		is_dir($view_dir) or static::$create_folders[] = $view_dir;
 
-		// Add the default template if it doesnt exist
+		// Add the default template if it doesn't exist
 		if ( ! is_file($app_template = $base_path.'views/template.php') )
 		{
 			static::create($app_template, file_get_contents(\Package::exists('oil').'views/scaffolding/template.php'), 'view');
@@ -660,18 +657,18 @@ VIEW;
 		{
 			throw new Exception("Command is invalid.".PHP_EOL."\tphp oil g migration <migrationname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]");
 		}
-		
+
 		$base_path = APPPATH;
-		
+
 		// Check if a migration with this name already exists
-		if ( $module = \Cli::option('module') )
+		if ($module = \Cli::option('module'))
 		{
-			if ( ! ( $base_path = \Module::exists($module) ) )
+			if ( ! ($base_path = \Module::exists($module)) )
 			{
-				throw new Exception('Module ' . $module . ' was not found within any of the defined module paths');
+				throw new Exception('Module '.$module.' was not found within any of the defined module paths');
 			}
 		}
-		
+
 		$migrations = new \GlobIterator($base_path.'migrations/*_'.$migration_name.'*');
 
 		try
@@ -990,17 +987,17 @@ MIGRATION;
 		// Uppercase each part of the class name and remove hyphens
 		$class_name = \Inflector::classify($name, false);
 		$filename = trim(str_replace(array('_', '-'), DS, $name), DS);
-		
+
 		$base_path = APPPATH;
-		
-		if ( $module = \Cli::option('module') )
+
+		if ($module = \Cli::option('module'))
 		{
-			if ( ! ( $base_path = \Module::exists($module) ) )
+			if ( ! ($base_path = \Module::exists($module)) )
 			{
-				throw new Exception('Module ' . $module . ' was not found within any of the defined module paths');
+				throw new Exception('Module '.$module.' was not found within any of the defined module paths');
 			}
 		}
-		
+
 		$filepath = $base_path.'tasks'.DS.$filename.'.php';
 
 		$action_str = '';
@@ -1518,7 +1515,7 @@ CLASS;
 		{
 			is_dir($folder) or mkdir($folder, 0755, TRUE);
 		}
-		
+
 		$result = true;
 
 		foreach (static::$create_files as $file)
@@ -1556,17 +1553,17 @@ CLASS;
 	private static function _find_migration_number()
 	{
 		$base_path = APPPATH;
-		
-		if ( $module = \Cli::option('module') )
+
+		if ($module = \Cli::option('module'))
 		{
-			if ( ! ( $base_path = \Module::exists($module) ) )
+			if ( ! ($base_path = \Module::exists($module)) )
 			{
 				throw new Exception('Module ' . $module . ' was not found within any of the defined module paths');
 			}
 		}
-		
+
 		$files = new \GlobIterator($base_path .'migrations/*_*.php');
-		
+
 		try
 		{
 			$migrations = array();
