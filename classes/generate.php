@@ -550,7 +550,10 @@ MODEL;
 
 	public static function module($args)
 	{
-		$module_name = strtolower(array_shift($args));
+		if ( ! ($module_name = strtolower(array_shift($args)) ) )
+		{
+			throw new Exception('No module name has been provided.');
+		}
 
 		if ($path = \Module::exists($module_name))
 		{
@@ -562,7 +565,7 @@ MODEL;
 
 		if (count($module_paths) > 1)
 		{
-			\Cli::write('You\'re app has multiple module paths defined. Please choose the appropriate path from the list below', 'yellow', 'blue');
+			\Cli::write('Your app has multiple module paths defined. Please choose the appropriate path from the list below', 'yellow', 'blue');
 
 			$options = array();
 			foreach ($module_paths as $key => $path)
