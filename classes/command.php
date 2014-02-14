@@ -62,6 +62,7 @@ class Command
 						case 'config':
 						case 'controller':
 						case 'model':
+						case 'module':
 						case 'migration':
 						case 'task':
 						case 'package':
