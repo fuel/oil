@@ -39,7 +39,6 @@ class Generate_Admin extends Generate_Scaffold
 
 	public static function forge($args, $subfolder)
 	{
-
 		$default_files = array(
 			array(
 				'source' => $subfolder.'/controllers/base.php',
@@ -68,16 +67,43 @@ class Generate_Admin extends Generate_Scaffold
 			),
 		);
 
+		$base_path = APPPATH;
+		$data = array(
+			'Module'    => '',
+			'namespace' => '',
+			'module_ds' => '',
+			'module_bs' => '',
+			'action_url_segment' => 2,
+			'base_path' => 'APPPATH',
+		);
+
+		// Check if a migration with this name already exists
+		if ($module = \Cli::option('module'))
+		{
+			if ( ! ($base_path = \Module::exists($module)) )
+			{
+				throw new Exception('Module '.$module.' was not found within any of the defined module paths');
+			}
+			
+			$data['Module'] = ucfirst($module);
+			$data['namespace'] = 'namespace '.$data['Module'].';';
+			$data['module_ds'] = $module.'/';
+			$data['module_bs'] = $data['Module'].'\\';
+			$data['action_url_segment'] = 3;
+			$data['base_path'] = "\Module::exists('$module')";
+		}
+
 		foreach ($default_files as $file)
 		{
 			// check if there's a template in app, and if so, use that
-			if (is_file(APPPATH.'views/'.static::$view_subdir.$file['source']))
+			if (is_file($base_path.'views/'.static::$view_subdir.$file['source']))
 			{
-				Generate::create(APPPATH.$file['location'], file_get_contents(APPPATH.'views/'.static::$view_subdir.$file['source']), $file['type']);
+				Generate::create($base_path.$file['location'], file_get_contents($base_path.'views/'.static::$view_subdir.$file['source']), $file['type']);
 			}
 			else
 			{
-				Generate::create(APPPATH.$file['location'], file_get_contents(\Package::exists('oil').'views/'.static::$view_subdir.$file['source']), $file['type']);
+				$file_contents = \View::forge(\Package::exists('oil').'views/'.static::$view_subdir.$file['source'], $data, false);
+				Generate::create($base_path.$file['location'], $file_contents, $file['type']);
 			}
 		}
 

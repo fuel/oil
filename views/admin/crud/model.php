@@ -1,4 +1,8 @@
-<?php echo '<?php' ?>
+<?php echo '<?php'."\n" ?>
+
+<?php if ($namespace !== ''): ?>
+<?php echo $namespace."\n"; ?>
+<?php endif; ?>
 
 class Model_<?php echo $model_name; ?> extends Model_Crud
 {

@@ -30,7 +30,7 @@ class Generate_Scaffold
 	public static $controller_prefix = '';
 	public static $model_prefix = '';
 
-	public static $controller_parent = 'Controller_Template';
+	public static $controller_parent = '\Controller_Template';
 
 	public static function _init()
 	{
@@ -46,13 +46,34 @@ class Generate_Scaffold
 	 */
 	public static function forge($args, $subfolder)
 	{
-		$data = array();
+		$data = array(
+			'Module'    => '',
+			'namespace' => '',
+			'module_ds' => '',
+			'module_bs' => '',
+		);
 
 		$subfolder = trim($subfolder, '/');
 
 		if ( ! is_dir(\Package::exists('oil').'views/'.static::$view_subdir.$subfolder))
 		{
 			throw new Exception('The subfolder for admin templates does not exist or is spelled wrong: '.$subfolder.' ');
+		}
+
+		$base_path = APPPATH;
+
+		// Check if a migration with this name already exists
+		if ($module = \Cli::option('module'))
+		{
+			if ( ! ($base_path = \Module::exists($module)) )
+			{
+				throw new Exception('Module '.$module.' was not found within any of the defined module paths');
+			}
+			
+			$data['Module'] = ucfirst($module);
+			$data['namespace'] = 'namespace '.$data['Module'].';';
+			$data['module_ds'] = $module.'/';
+			$data['module_bs'] = $data['Module'].'\\';
 		}
 
 		// Go through all arguments after the first and make them into field arrays
@@ -97,7 +118,7 @@ class Generate_Scaffold
 		);
 
 		// uri's have forward slashes, DS is a backslash on Windows
-		$uri = str_replace(DS, '/', $controller_path);
+		$uri = $data['module_ds'].str_replace(DS, '/', $controller_path);
 
 		$data['include_timestamps'] = ( ! \Cli::option('no-timestamp', false));
 
@@ -137,7 +158,7 @@ class Generate_Scaffold
 		$model = \View::forge(static::$view_subdir.$subfolder.'/model', $data);
 
 		Generate::create(
-			APPPATH.'classes/model/'.$model_path.'.php',
+			$base_path.'classes/model/'.$model_path.'.php',
 			$model,
 			'model'
 		);
@@ -174,7 +195,7 @@ class Generate_Scaffold
 		);
 
 		Generate::create(
-			APPPATH.'classes/controller/'.$controller_path.'.php',
+			$base_path.'classes/controller/'.$controller_path.'.php',
 			$controller,
 			'controller'
 		);
@@ -186,19 +207,19 @@ class Generate_Scaffold
 		foreach (array('index', 'view', 'create', 'edit', '_form') as $view)
 		{
 			Generate::create(
-				APPPATH.'views/'.$controller_path.'/'.$view.'.php',
+				$base_path.'views/'.$controller_path.'/'.$view.'.php',
 				\View::forge(static::$view_subdir.$subfolder.'/views/actions/'.$view, $data),
 				'view'
 			);
 		}
 
 		// Add the default template if it doesnt exist
-		if ( ! is_file($app_template = APPPATH.'views/template.php'))
+		if ( ! is_file($app_template = $base_path.'views/template.php'))
 		{
 			// check if there's a template in app, and if so, use that
-			if (is_file(APPPATH.'views/'.static::$view_subdir.$subfolder.'/views/template.php'))
+			if (is_file($base_path.'views/'.static::$view_subdir.$subfolder.'/views/template.php'))
 			{
-				Generate::create($app_template, file_get_contents(APPPATH.'views/'.static::$view_subdir.$subfolder.'/views/template.php'), 'view');
+				Generate::create($app_template, file_get_contents($base_path.'views/'.static::$view_subdir.$subfolder.'/views/template.php'), 'view');
 			}
 			else
 			{

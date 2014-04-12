@@ -1,4 +1,8 @@
-<?php echo '<?php' ?>
+<?php echo '<?php'."\n"; ?>
+
+<?php if ($namespace !== ''): ?>
+<?php echo $namespace."\n"; ?>
+<?php endif; ?>
 
 class Controller_<?php echo $controller_name; ?> extends <?php echo \Cli::option('extends', $controller_parent)."\n"; ?>
 {

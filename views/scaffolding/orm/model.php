@@ -1,4 +1,8 @@
-<?php echo '<?php' ?>
+<?php echo '<?php'."\n" ?>
+
+<?php if ($namespace !== ''): ?>
+<?php echo $namespace."\n"; ?>
+<?php endif; ?>
 
 use Orm\Model;
 
@@ -30,7 +34,7 @@ class Model_<?php echo $model_name; ?> extends Model
 
 	public static function validate($factory)
 	{
-		$val = Validation::forge($factory);
+		$val = \Validation::forge($factory);
 <?php foreach ($fields as $field): ?>
 <?php
 		$rules = array('required');

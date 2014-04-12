@@ -1,3 +1,4 @@
+<?php echo <<<'EOL'
 <div class="row">
 	<div class="col-md-3">
 		<?php echo Form::open(array()); ?>
@@ -35,3 +36,4 @@
 		<?php echo Form::close(); ?>
 	</div>
 </div>
+EOL;

@@ -1,3 +1,4 @@
+<?php echo <<<'EOL'
 <!DOCTYPE html>
 <html>
 <head>
@@ -30,19 +31,42 @@
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					<li class="<?php echo Uri::segment(2) == '' ? 'active' : '' ?>">
-						<?php echo Html::anchor('admin', 'Dashboard') ?>
-					</li>
+EOL;
+?>
 
+<?php echo <<<EOL
+					<li class="<?php echo Uri::segment($action_url_segment) == '' ? 'active' : '' ?>">
+						<?php echo Html::anchor('{$module_ds}admin', 'Dashboard') ?>
+					</li>
+EOL;
+?>
+
+<?php echo <<<'EOL'
 					<?php
-						$files = new GlobIterator(APPPATH.'classes/controller/admin/*.php');
+EOL;
+?>
+
+<?php echo "
+						".'$files'." = new GlobIterator($base_path.'classes/controller/admin/*.php');
+";
+?>
+
+<?php echo <<<'EOL'
 						foreach($files as $file)
 						{
 							$section_segment = $file->getBasename('.php');
 							$section_title = Inflector::humanize($section_segment);
 							?>
-							<li class="<?php echo Uri::segment(2) == $section_segment ? 'active' : '' ?>">
-								<?php echo Html::anchor('admin/'.$section_segment, $section_title) ?>
+EOL;
+?>
+
+<?php echo "
+							<li class=\"<?php echo Uri::segment($action_url_segment) == ".'$section_segment'." ? 'active' : '' ?>\">
+								<?php echo Html::anchor('{$module_ds}admin/'.".'$section_segment, $section_title'.") ?>
+";
+?>
+
+<?php echo <<<'EOL'
 							</li>
 							<?php
 						}
@@ -52,7 +76,15 @@
 					<li class="dropdown">
 						<a data-toggle="dropdown" class="dropdown-toggle" href="#"><?php echo $current_user->username ?> <b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><?php echo Html::anchor('admin/logout', 'Logout') ?></li>
+EOL;
+?>
+
+<?php echo <<<EOL
+							<li><?php echo Html::anchor('{$module_ds}admin/logout', 'Logout') ?></li>
+EOL;
+?>
+
+<?php echo <<<'EOL'
 						</ul>
 					</li>
 				</ul>
@@ -98,3 +130,4 @@
 	</div>
 </body>
 </html>
+EOL;
