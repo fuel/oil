@@ -170,6 +170,7 @@ Runtime options:
   --file=<file>              # Run a test on a specific file only.
   --group=<group>            # Only runs tests from the specified group(s).
   --exclude-group=<group>    # Exclude tests from the specified group(s).
+  --testsuite=<testsuite>    # Only runs tests from the specified testsuite(s).
   --coverage-clover=<file>   # Generate code coverage report in Clover XML format.
   --coverage-html=<dir>      # Generate code coverage report in HTML format.
   --coverage-php=<file>      # Serialize PHP_CodeCoverage object to file.
@@ -234,6 +235,9 @@ HELP;
 						// Respect the group options
 						\Cli::option('group') and $command .= ' --group '.\Cli::option('group');
 						\Cli::option('exclude-group') and $command .= ' --exclude-group '.\Cli::option('exclude-group');
+						
+						// Respect the testsuite options
+						\Cli::option('testsuite') and $command .= ' --testsuite '.\Cli::option('testsuite');
 
 						// Respect the coverage-html option
 						\Cli::option('coverage-html') and $command .= ' --coverage-html '.\Cli::option('coverage-html');
