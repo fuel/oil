@@ -364,6 +364,7 @@ MODEL;
 		else
 		{
 			$time_type = (\Cli::option('mysql-timestamp')) ? 'timestamp' : 'int';
+			$no_timestamp_default = false;
 
 			if ( \Cli::option('soft-delete'))
 			{
@@ -386,6 +387,7 @@ MODEL;
 				$properties = "\n\t\t'".$temporal_start."'," . $properties;
 
 				$args = array_merge(array($temporal_start.':'.$time_type), $args);
+				$no_timestamp_default = true;
 			}
 			elseif (\Cli::option('nestedset'))
 			{
@@ -421,9 +423,10 @@ MODEL;
 				$properties = "\n\t\t'".$left_id."'," . $properties;
 
 				$args = array_merge(array($left_id.':int:unsigned'), $args);
+				$no_timestamp_default = true;
 			}
 
-			if ( ! \Cli::option('no-timestamp'))
+			if ( ! \Cli::option('no-timestamp', $no_timestamp_default))
 			{
 				$created_at = \Cli::option('created-at', 'created_at');
 				is_string($created_at) or $created_at = 'created_at';
@@ -451,9 +454,10 @@ MODEL;
 CONTENTS;
 			}
 
-			if ( ! \Cli::option('no-timestamp'))
+			$mysql_timestamp = (\Cli::option('mysql-timestamp')) ? 'true' : 'false';
+
+			if ( ! \Cli::option('no-timestamp', $no_timestamp_default))
 			{
-				$mysql_timestamp = (\Cli::option('mysql-timestamp')) ? 'true' : 'false';
 
 				if(($created_at = \Cli::option('created-at')) and is_string($created_at))
 				{
