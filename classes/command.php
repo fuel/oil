@@ -176,6 +176,7 @@ Runtime options:
   --coverage-php=<file>      # Serialize PHP_CodeCoverage object to file.
   --coverage-text=<file>     # Generate code coverage report in text format.
   --log-junit=<file>         # Generate report of test execution in JUnit XML format to file.
+  --debug                    # Display debugging information during test execution.
 
 Description:
   Run phpunit on all or a subset of tests defined for the current application.
@@ -238,6 +239,9 @@ HELP;
 						
 						// Respect the testsuite options
 						\Cli::option('testsuite') and $command .= ' --testsuite '.\Cli::option('testsuite');
+
+						// Respect the debug options
+						\Cli::option('debug') and $command .= ' --debug';
 
 						// Respect the coverage-html option
 						\Cli::option('coverage-html') and $command .= ' --coverage-html '.\Cli::option('coverage-html');
