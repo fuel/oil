@@ -1,4 +1,5 @@
 <?php
+
 use Orm\Model;
 
 class Model_Article extends Model
@@ -24,7 +25,7 @@ class Model_Article extends Model
 
 	public static function validate($factory)
 	{
-		$val = Validation::forge($factory);
+		$val = \Validation::forge($factory);
 		$val->add_field('title', 'Title', 'required|max_length[50]');
 		$val->add_field('body', 'Body', 'required');
 

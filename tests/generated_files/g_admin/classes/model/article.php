@@ -1,4 +1,5 @@
 <?php
+
 class Model_Article extends \Orm\Model
 {
 	protected static $_properties = array(
@@ -22,7 +23,7 @@ class Model_Article extends \Orm\Model
 
 	public static function validate($factory)
 	{
-		$val = Validation::forge($factory);
+		$val = \Validation::forge($factory);
 		$val->add_field('title', 'Title', 'required|max_length[50]');
 		$val->add_field('body', 'Body', 'required');
 
