@@ -1737,6 +1737,8 @@ CLASS;
 			@chmod($file['path'], 0666);
 		}
 
+		static::$create_files = array();
+
 		return $result;
 	}
 

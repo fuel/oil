@@ -1,9 +1,11 @@
 <?php echo '<?php'."\n"; ?>
 
-<?php if ($namespace !== ''): ?>
-<?php echo $namespace."\n"; ?>
-<?php endif; ?>
-
+<?php
+	if ($namespace !== '')
+	{
+		echo $namespace."\n\n";
+	}
+?>
 class Controller_Base extends \Controller_Template
 {
 

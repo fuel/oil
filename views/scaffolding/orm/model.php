@@ -1,9 +1,11 @@
-<?php echo '<?php'."\n" ?>
+<?php echo '<?php'."\n"; ?>
 
-<?php if ($namespace !== ''): ?>
-<?php echo $namespace."\n"; ?>
-<?php endif; ?>
-
+<?php
+	if ($namespace !== '')
+	{
+		echo $namespace."\n\n";
+	}
+?>
 use Orm\Model;
 
 class Model_<?php echo $model_name; ?> extends Model

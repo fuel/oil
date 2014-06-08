@@ -1,3 +1,4 @@
+<?php echo <<<'EOL'
 <!DOCTYPE html>
 <html>
 <head>
@@ -43,3 +44,5 @@
 	</div>
 </body>
 </html>
+
+EOL;

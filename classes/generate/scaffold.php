@@ -216,14 +216,16 @@ class Generate_Scaffold
 		// Add the default template if it doesnt exist
 		if ( ! is_file($app_template = $base_path.'views/template.php'))
 		{
+//var_dump($base_path.'views/'.static::$view_subdir.'template.php'); exit;
 			// check if there's a template in app, and if so, use that
-			if (is_file($base_path.'views/'.static::$view_subdir.$subfolder.'/views/template.php'))
+			if (is_file($base_path.'views/'.static::$view_subdir.'template.php'))
 			{
-				Generate::create($app_template, file_get_contents($base_path.'views/'.static::$view_subdir.$subfolder.'/views/template.php'), 'view');
+				Generate::create($app_template, file_get_contents($base_path.'views/'.static::$view_subdir.'template.php'), 'view');
 			}
 			else
 			{
-				Generate::create($app_template, file_get_contents(\Package::exists('oil').'views/'.static::$view_subdir.'template.php'), 'view');
+				$file_contents = \View::forge(\Package::exists('oil').'views/'.static::$view_subdir.'template.php', $data, false);
+				Generate::create($app_template, $file_contents, 'view');
 			}
 		}
 

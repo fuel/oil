@@ -1,9 +1,11 @@
 <?php echo '<?php'."\n"; ?>
 
-<?php if ($namespace !== ''): ?>
-<?php echo $namespace."\n"; ?>
-<?php endif; ?>
-
+<?php
+	if ($namespace !== '')
+	{
+		echo $namespace."\n\n";
+	}
+?>
 class <?php echo \Config::get('controller_prefix', 'Controller_').$controller_name; ?> extends <?php echo \Cli::option('extends', $controller_parent)."\n"; ?>
 {
 

@@ -51,7 +51,7 @@ class Generate_Admin extends Generate_Scaffold
 				'type' => 'controller',
 			),
 			array(
-				'source' => '/template.php',
+				'source' => 'template.php',
 				'location' => 'views/admin/template.php',
 				'type' => 'views',
 			),
@@ -107,6 +107,7 @@ class Generate_Admin extends Generate_Scaffold
 			}
 		}
 
+		Generate::build();
 		parent::forge($args, $subfolder);
 	}
 }

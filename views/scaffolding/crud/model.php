@@ -1,9 +1,11 @@
 <?php echo '<?php'."\n"; ?>
 
-<?php if ($namespace !== ''): ?>
-<?php echo $namespace."\n"; ?>
-<?php endif; ?>
-
+<?php
+	if ($namespace !== '')
+	{
+		echo $namespace."\n\n";
+	}
+?>
 class Model_<?php echo $model_name; ?> extends \Model_Crud
 {
 	protected static $_table_name = '<?php echo $table; ?>';

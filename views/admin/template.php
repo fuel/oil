@@ -41,16 +41,15 @@ EOL;
 EOL;
 ?>
 
+
 <?php echo <<<'EOL'
 					<?php
 EOL;
 ?>
-
 <?php echo "
 						".'$files'." = new GlobIterator($base_path.'classes/controller/admin/*.php');
 ";
 ?>
-
 <?php echo <<<'EOL'
 						foreach($files as $file)
 						{
@@ -59,13 +58,11 @@ EOL;
 							?>
 EOL;
 ?>
-
 <?php echo "
 							<li class=\"<?php echo Uri::segment($action_url_segment) == ".'$section_segment'." ? 'active' : '' ?>\">
 								<?php echo Html::anchor('{$module_ds}admin/'.".'$section_segment, $section_title'.") ?>
 ";
 ?>
-
 <?php echo <<<'EOL'
 							</li>
 							<?php
@@ -130,4 +127,5 @@ EOL;
 	</div>
 </body>
 </html>
+
 EOL;
