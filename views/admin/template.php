@@ -1,9 +1,9 @@
-<?php echo <<<'EOL'
+<?php echo <<<EOL
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
-	<title><?php echo $title; ?></title>
+	<title><?php echo \$title; ?></title>
 	<?php echo Asset::css('bootstrap.css'); ?>
 	<style>
 		body { margin: 50px; }
@@ -18,7 +18,7 @@
 </head>
 <body>
 
-	<?php if ($current_user): ?>
+	<?php if (\$current_user): ?>
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
 			<div class="navbar-header">
@@ -31,39 +31,19 @@
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-EOL;
-?>
-
-<?php echo <<<EOL
 					<li class="<?php echo Uri::segment($action_url_segment) == '' ? 'active' : '' ?>">
 						<?php echo Html::anchor('{$module_ds}admin', 'Dashboard') ?>
 					</li>
-EOL;
-?>
 
-
-<?php echo <<<'EOL'
 					<?php
-EOL;
-?>
-<?php echo "
-						".'$files'." = new GlobIterator($base_path.'classes/controller/admin/*.php');
-";
-?>
-<?php echo <<<'EOL'
-						foreach($files as $file)
+						\$files = new GlobIterator($base_path.'classes/controller/admin/*.php');
+						foreach(\$files as \$file)
 						{
-							$section_segment = $file->getBasename('.php');
-							$section_title = Inflector::humanize($section_segment);
+							\$section_segment = \$file->getBasename('.php');
+							\$section_title = Inflector::humanize(\$section_segment);
 							?>
-EOL;
-?>
-<?php echo "
-							<li class=\"<?php echo Uri::segment($action_url_segment) == ".'$section_segment'." ? 'active' : '' ?>\">
-								<?php echo Html::anchor('{$module_ds}admin/'.".'$section_segment, $section_title'.") ?>
-";
-?>
-<?php echo <<<'EOL'
+							<li class="<?php echo Uri::segment($action_url_segment) == \$section_segment ? 'active' : '' ?>">
+								<?php echo Html::anchor('{$module_ds}admin/'.\$section_segment, \$section_title) ?>
 							</li>
 							<?php
 						}
@@ -71,17 +51,9 @@ EOL;
 				</ul>
 				<ul class="nav navbar-nav pull-right">
 					<li class="dropdown">
-						<a data-toggle="dropdown" class="dropdown-toggle" href="#"><?php echo $current_user->username ?> <b class="caret"></b></a>
+						<a data-toggle="dropdown" class="dropdown-toggle" href="#"><?php echo \$current_user->username ?> <b class="caret"></b></a>
 						<ul class="dropdown-menu">
-EOL;
-?>
-
-<?php echo <<<EOL
 							<li><?php echo Html::anchor('{$module_ds}admin/logout', 'Logout') ?></li>
-EOL;
-?>
-
-<?php echo <<<'EOL'
 						</ul>
 					</li>
 				</ul>
@@ -93,7 +65,7 @@ EOL;
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
-				<h1><?php echo $title; ?></h1>
+				<h1><?php echo \$title; ?></h1>
 				<hr>
 <?php if (Session::get_flash('success')): ?>
 				<div class="alert alert-success alert-dismissable">
@@ -113,7 +85,7 @@ EOL;
 <?php endif; ?>
 			</div>
 			<div class="col-md-12">
-<?php echo $content; ?>
+<?php echo \$content; ?>
 			</div>
 		</div>
 		<hr/>
