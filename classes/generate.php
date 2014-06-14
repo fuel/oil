@@ -139,8 +139,8 @@ CONF;
 			throw new Exception('No controller name was provided.');
 		}
 
-		// Do we want a view or a viewmodel?
-		$with_viewmodel = \Cli::option('with-viewmodel');
+		// Do we want a view or a presenter?
+		$with_presenter = \Cli::option('with-presenter') or \Cli::option('with-viewmodel');
 
  		$actions = $args;
 
@@ -206,28 +206,28 @@ CONTROLLER;
 		static::create($filepath, $controller, 'controller');
 
 
-		// Do you want a viewmodel with that?
-		if ($with_viewmodel)
+		// Do you want a presenter with that?
+		if ($with_presenter)
 		{
-			$viewmodel_filepath = $base_path.'classes'.DS.'view'.DS.$filename;
+			$presenter_filepath = $base_path.'classes'.DS.'presenter'.DS.$filename;
 
-			// One ViewModel per action
+			// One Presenter per action
 			foreach ($actions as $action)
 			{
-				$viewmodel = <<<VIEWMODEL
+				$presenter = <<<PRESENTER
 <?php
 
-class View_{$class_name}_{$action} extends Viewmodel
+class Presenter_{$class_name}_{$action} extends Presenter
 {
 	public function view()
 	{
 		\$this->content = "{$class_name} &raquo; {$action}";
 	}
 }
-VIEWMODEL;
+PRESENTER;
 
-				// Write viewmodel
-				static::create($viewmodel_filepath.DS.$action.'.php', $viewmodel, 'viewmodel');
+				// Write presenter
+				static::create($presenter_filepath.DS.$action.'.php', $presenter, 'presenter');
 			}
 		}
 
@@ -828,7 +828,7 @@ MODEL;
 
 		foreach ($args as $action)
 		{
-			$view_title = \Cli::option('with-viewmodel') ? '<?php echo $content; ?>' : \Inflector::humanize($action);
+			$view_title = (\Cli::option('with-presenter') or \Cli::option('with-viewmodel')) ? '<?php echo $content; ?>' : \Inflector::humanize($action);
 
 			$view = <<<VIEW
 <ul class="nav nav-pills">
