@@ -1,7 +1,7 @@
 		if (Input::method() == 'POST')
 		{
 			$val = Model_<?php echo $model_name; ?>::validate('create');
-			
+
 			if ($val->run())
 			{
 				$<?php echo $singular_name; ?> = Model_<?php echo $model_name; ?>::forge(array(
@@ -29,4 +29,4 @@
 		}
 
 		$this->template->title = "<?php echo \Str::ucwords($plural_name); ?>";
-		$this->template->content = View::forge('<?php echo $view_path ?>/create');
+		$this->template->content = View::forge('<?php echo $view_path; ?>/create');

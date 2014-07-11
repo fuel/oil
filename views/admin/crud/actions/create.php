@@ -27,4 +27,4 @@
 		}
 
 		$this->template->title = "<?php echo \Str::ucwords($plural_name); ?>";
-		$this->template->content = View::forge('<?php echo $view_path ?>/create');
+		$this->template->content = View::forge('<?php echo $view_path; ?>/create');
