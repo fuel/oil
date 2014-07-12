@@ -90,7 +90,7 @@ class Generate_Scaffold
 		);
 
 		// uri's and view paths have forward slashes, DS is a backslash on Windows
-		$uri = $view_path = str_replace(DS, '/', $view_path);
+		$uri = $view_path = str_replace(DS, '/', $controller_path);
 
 		// Models are always singular, tough!
 		$model_path = str_replace(
