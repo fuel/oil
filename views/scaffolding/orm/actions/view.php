@@ -7,4 +7,4 @@
 		}
 
 		$this->template->title = "<?php echo ucfirst($singular_name) ?>";
-		$this->template->content = View::forge('<?php echo $view_path ?>/view', $data);
+		$this->template->content = View::forge('<?php echo $view_path; ?>/view', $data);

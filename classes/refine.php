@@ -8,7 +8,7 @@
  * @version    1.7
  * @author     Fuel Development Team
  * @license    MIT License
- * @copyright  2010 - 2013 Fuel Development Team
+ * @copyright  2010 - 2014 Fuel Development Team
  * @link       http://fuelphp.com
  */
 
@@ -103,9 +103,33 @@ class Refine
 			is_callable($task.'::_init') and $task::_init();
 		}
 
-		if ($return = call_fuel_func_array(array($new_task, $method), $args))
+		if (is_callable(array($new_task, $method)))
 		{
-			\Cli::write($return);
+			if ($return = call_fuel_func_array(array($new_task, $method), $args))
+			{
+				\Cli::write($return);
+			}
+		}
+		else
+		{
+			\Cli::write(sprintf('Task "%s" does not have a command called "%s".', $task, $method));
+
+			\Cli::write("\nDid you mean:\n");
+			$reflect = new \ReflectionClass($new_task);
+
+			// Ensure we only pull out the public methods
+			$methods = $reflect->getMethods(\ReflectionMethod::IS_PUBLIC);
+			if (count($methods) > 0)
+			{
+				foreach ($methods as $method)
+				{
+					if (strpos($method->name, '_') !== 0)
+					{
+						\Cli::write(sprintf("php oil [r|refine] %s:%s", $reflect->getShortName(), $method->name));
+
+					}
+				}
+			}
 		}
 	}
 

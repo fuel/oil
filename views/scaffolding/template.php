@@ -22,7 +22,7 @@
 			</div>
 <?php endif; ?>
 <?php if (Session::get_flash('error')): ?>
-			<div class="alert alert-error">
+			<div class="alert alert-danger">
 				<strong>Error</strong>
 				<p>
 				<?php echo implode('</p><p>', e((array) Session::get_flash('error'))); ?>

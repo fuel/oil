@@ -8,7 +8,7 @@
  * @version    1.7
  * @author     Fuel Development Team
  * @license    MIT License
- * @copyright  2010 - 2013 Fuel Development Team
+ * @copyright  2010 - 2014 Fuel Development Team
  * @link       http://fuelphp.com
  */
 
@@ -62,6 +62,7 @@ class Command
 						case 'config':
 						case 'controller':
 						case 'model':
+						case 'module':
 						case 'migration':
 						case 'task':
 						case 'package':
@@ -169,11 +170,13 @@ Runtime options:
   --file=<file>              # Run a test on a specific file only.
   --group=<group>            # Only runs tests from the specified group(s).
   --exclude-group=<group>    # Exclude tests from the specified group(s).
+  --testsuite=<testsuite>    # Only runs tests from the specified testsuite(s).
   --coverage-clover=<file>   # Generate code coverage report in Clover XML format.
   --coverage-html=<dir>      # Generate code coverage report in HTML format.
   --coverage-php=<file>      # Serialize PHP_CodeCoverage object to file.
   --coverage-text=<file>     # Generate code coverage report in text format.
   --log-junit=<file>         # Generate report of test execution in JUnit XML format to file.
+  --debug                    # Display debugging information during test execution.
 
 Description:
   Run phpunit on all or a subset of tests defined for the current application.
@@ -233,6 +236,12 @@ HELP;
 						// Respect the group options
 						\Cli::option('group') and $command .= ' --group '.\Cli::option('group');
 						\Cli::option('exclude-group') and $command .= ' --exclude-group '.\Cli::option('exclude-group');
+						
+						// Respect the testsuite options
+						\Cli::option('testsuite') and $command .= ' --testsuite '.\Cli::option('testsuite');
+
+						// Respect the debug options
+						\Cli::option('debug') and $command .= ' --debug';
 
 						// Respect the coverage-html option
 						\Cli::option('coverage-html') and $command .= ' --coverage-html '.\Cli::option('coverage-html');
@@ -259,22 +268,50 @@ HELP;
 				case 's':
 				case 'server':
 
-					if (version_compare(PHP_VERSION, '5.4.0') < 0)
+					if (isset($args[2]) and $args[2] == 'help')
 					{
-						\Cli::write('The PHP built-in webserver is only available on PHP 5.4+', 'red');
-						break;
+		$output = <<<HELP
+
+Usage:
+  php oil [s|server]
+
+Runtime options:
+  --php=<file>               # The full pathname of your PHP-CLI binary if it's not in the path.
+  --port=<port>              # TCP port number the webserver should listen too. Defaults to 8000.
+  --host=<host>              # Hostname the webserver should run at. Defaults to "localhost".
+  --docroot=<dir>            # Your FuelPHP docroot. Defaults to "public/".
+  --router=<file>            # PHP router script. Defaults to "fuel/packages/oil/phpserver.php".
+
+Description:
+  Starts a local webserver to run your FuelPHP application, using PHP 5.4+ internal webserver.
+
+Examples:
+  php oil server -p=8080
+
+Documentation:
+  http://fuelphp.com/docs/packages/oil/server.html
+HELP;
+		\Cli::write($output);
 					}
+					else
+					{
+						if (version_compare(PHP_VERSION, '5.4.0') < 0)
+						{
+							\Cli::write('The PHP built-in webserver is only available on PHP 5.4+', 'red');
+							break;
+						}
 
-					$php = \Cli::option('php', 'php');
-					$port = \Cli::option('p', \Cli::option('port', '8000'));
-					$host = \Cli::option('h', \Cli::option('host', 'localhost'));
-					$docroot = \Cli::option('d', \Cli::option('docroot', 'public/'));
-					$router = \Cli::option('r', \Cli::option('router', __DIR__.DS.'..'.DS.'phpserver.php'));
+						$php = \Cli::option('php', 'php');
+						$port = \Cli::option('p', \Cli::option('port', '8000'));
+						$host = \Cli::option('h', \Cli::option('host', 'localhost'));
+						$docroot = \Cli::option('d', \Cli::option('docroot', 'public/'));
+						$router = \Cli::option('r', \Cli::option('router', __DIR__.DS.'..'.DS.'phpserver.php'));
 
-					\Cli::write("Listening on http://$host:$port");
-					\Cli::write("Document root is $docroot");
-					\Cli::write("Press Ctrl-C to quit.");
-					passthru("$php -S $host:$port -t $docroot $router");
+						\Cli::write("Listening on http://$host:$port");
+						\Cli::write("Document root is $docroot");
+						\Cli::write("Press Ctrl-C to quit.");
+						passthru("$php -S $host:$port -t $docroot $router");
+					}
 				break;
 
 				case 'create':
