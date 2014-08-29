@@ -236,7 +236,7 @@ HELP;
 		}
 
 		// construct the arguments list, starting with the table name
-		$arguments = array($table);
+		$arguments = array(\Inflector::singularize($table));
 
 		// set some switches
 		$include_timestamps = false;
