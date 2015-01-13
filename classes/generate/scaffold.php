@@ -192,8 +192,8 @@ class Generate_Scaffold
 			);
 		}
 
-		// Add the default template if it doesnt exist
-		if ( ! is_file($app_template = APPPATH.'views/template.php'))
+		// If not generating admin files, add the default template if it doesnt exist
+		if (static::$view_subdir != 'admin/' and  ! is_file($app_template = APPPATH.'views/template.php'))
 		{
 			// check if there's a template in app, and if so, use that
 			if (is_file(APPPATH.'views/'.static::$view_subdir.$subfolder.'/views/template.php'))
