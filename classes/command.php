@@ -279,7 +279,7 @@ Runtime options:
   --php=<file>               # The full pathname of your PHP-CLI binary if it's not in the path.
   --port=<port>              # TCP port number the webserver should listen too. Defaults to 8000.
   --host=<host>              # Hostname the webserver should run at. Defaults to "localhost".
-  --docroot=<dir>            # Your FuelPHP docroot. Defaults to "public/".
+  --docroot=<dir>            # Your FuelPHP docroot. Defaults to "public".
   --router=<file>            # PHP router script. Defaults to "fuel/packages/oil/phpserver.php".
 
 Description:
@@ -304,7 +304,7 @@ HELP;
 						$php = \Cli::option('php', 'php');
 						$port = \Cli::option('p', \Cli::option('port', '8000'));
 						$host = \Cli::option('h', \Cli::option('host', 'localhost'));
-						$docroot = \Cli::option('d', \Cli::option('docroot', 'public/'));
+						$docroot = \Cli::option('d', \Cli::option('docroot', 'public'));
 						$router = \Cli::option('r', \Cli::option('router', __DIR__.DS.'..'.DS.'phpserver.php'));
 
 						\Cli::write("Listening on http://$host:$port");
