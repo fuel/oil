@@ -1,4 +1,4 @@
-<h2>Listing <span class='muted'><?php echo \Str::ucfirst($plural_name); ?></span></h2>
+<h2>Listing <span class='text-muted'><?php echo \Str::ucfirst($plural_name); ?></span></h2>
 <br>
 <?php echo "<?php if (\${$plural_name}): ?>"; ?>
 
