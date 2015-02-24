@@ -21,9 +21,9 @@
 			<td>
 				<div class="btn-toolbar">
 					<div class="btn-group">
-						<?php echo '<?php'; ?> echo Html::anchor('<?php echo $uri; ?>/view/'.$item->id, '<i class="icon-eye-open"></i> View', array('class' => 'btn btn-default btn-sm')); <?php echo '?>'; ?>
-						<?php echo '<?php'; ?> echo Html::anchor('<?php echo $uri; ?>/edit/'.$item->id, '<i class="icon-wrench"></i> Edit', array('class' => 'btn btn-default btn-sm')); <?php echo '?>'; ?>
-						<?php echo '<?php'; ?> echo Html::anchor('<?php echo $uri; ?>/delete/'.$item->id, '<i class="icon-trash icon-white"></i> Delete', array('class' => 'btn btn-sm btn-danger', 'onclick' => "return confirm('Are you sure?')")); <?php echo '?>'; ?>
+						<?php echo '<?php'; ?> echo Html::anchor('<?php echo $uri; ?>/view/'.$item->id, '<span class="glyphicon glyphicon-eye-open"></span> View', array('class' => 'btn btn-default btn-sm')); <?php echo '?>'; ?>
+						<?php echo '<?php'; ?> echo Html::anchor('<?php echo $uri; ?>/edit/'.$item->id, '<span class="glyphicon glyphicon-wrench"></span> Edit', array('class' => 'btn btn-default btn-sm')); <?php echo '?>'; ?>
+						<?php echo '<?php'; ?> echo Html::anchor('<?php echo $uri; ?>/delete/'.$item->id, '<span class="glyphicon glyphicon-trash"></span> Delete', array('class' => 'btn btn-sm btn-danger', 'onclick' => "return confirm('Are you sure?')")); <?php echo '?>'; ?>
 					</div>
 				</div>
 
