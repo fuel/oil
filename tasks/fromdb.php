@@ -152,7 +152,6 @@ HELP;
 		}
 	}
 
-
 	/**
 	 * Generate model for a database table.
 	 *

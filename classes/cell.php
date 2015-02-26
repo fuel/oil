@@ -112,7 +112,6 @@ class Cell
 		}
 	}
 
-
 	public static function uninstall($package)
 	{
 		// Check to see if this package is already installed
@@ -151,7 +150,7 @@ class Cell
 			throw new \FuelException('No response from the API. Perhaps check your internet connection?');
 		}
 
-		else if (empty($response['cell']))
+		elseif (empty($response['cell']))
 		{
 			throw new \FuelException('Could not find the cell "' . $cell . '".');
 		}
@@ -186,7 +185,6 @@ HELP;
 		\Cli::write($output);
 
 	}
-
 
 	protected static function _use_git()
 	{

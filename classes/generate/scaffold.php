@@ -70,7 +70,7 @@ class Generate_Scaffold
 			$data['fields'][] = array(
 				'name'       => \Str::lower($matches[1]),
 				'type'       => isset($matches[2]) ? $matches[2] : 'string',
-				'constraint' => isset($matches[4]) ? $matches[4] : null
+				'constraint' => isset($matches[4]) ? $matches[4] : null,
 			);
 		}
 

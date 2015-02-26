@@ -49,7 +49,7 @@ class Command
 				case 'g':
 				case 'generate':
 
-					$action = isset($args[2]) ? $args[2]: 'help';
+					$action = isset($args[2]) ? $args[2] : 'help';
 
 					$subfolder = 'orm';
 					if (is_int(strpos($action, '/')))
@@ -104,7 +104,7 @@ class Command
 				case 'p':
 				case 'package':
 
-					$action = isset($args[2]) ? $args[2]: 'help';
+					$action = isset($args[2]) ? $args[2] : 'help';
 
 					switch ($action)
 					{
@@ -130,7 +130,7 @@ class Command
 				case 'cell':
 				case 'cells':
 
-					$action = isset($args[2]) ? $args[2]: 'help';
+					$action = isset($args[2]) ? $args[2] : 'help';
 
 					switch ($action)
 					{
@@ -212,7 +212,7 @@ HELP;
 						// Suppressing this because if the file does not exist... well thats a bad thing and we can't really check
 						// I know that supressing errors is bad, but if you're going to complain: shut up. - Phil
 						$phpunit_autoload_path = \Config::get('oil.phpunit.autoload_path', 'PHPUnit/Autoload.php' );
-						@include_once($phpunit_autoload_path);
+						@include_once $phpunit_autoload_path;
 
 						// Attempt to load PHUnit.  If it fails, we are done.
 						if ( ! $is_phar and ! class_exists('PHPUnit_Framework_TestCase'))
