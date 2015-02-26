@@ -25,7 +25,6 @@ namespace Oil;
  */
 class Generate_Migration_Actions
 {
-
 	/**
 	 * Each migration action should return an array with two items, 0 being the up and 1 the being down.
 	 */
@@ -167,7 +166,7 @@ DOWN;
 
 					case 'enum':
 					case 'set':
-					  $constraint = '"\''.implode('\',\'',$column['options']).'\'"';
+					  $constraint = '"\''.implode('\',\'', $column['options']).'\'"';
 					break;
 				}
 			break;
@@ -233,7 +232,7 @@ UP;
 
 						case 'enum':
 						case 'set':
-							$constraint = '"\''.implode('\',\'',$column['options']).'\'"';
+							$constraint = '"\''.implode('\',\'', $column['options']).'\'"';
 						break;
 					}
 				break;
@@ -247,7 +246,7 @@ UP;
 			{
 			  $primary_keys[] = "'{$column['name']}'";
 			}
-			else if ($column['key'] == 'MUL')
+			elseif ($column['key'] == 'MUL')
 			{
 			  $indexes[] = $column['name'];
 			}

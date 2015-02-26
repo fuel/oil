@@ -83,7 +83,6 @@ class Package
 		throw new Exception('Could not find package "' . $package . '".');
 	}
 
-
 	public static function uninstall($package)
 	{
 		$package_folder = PKGPATH . $package;
@@ -131,7 +130,6 @@ HELP;
 		\Cli::write($output);
 
 	}
-
 
 	private static function _use_git()
 	{

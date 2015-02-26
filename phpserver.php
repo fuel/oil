@@ -34,6 +34,5 @@ if (file_exists($file))
 else
 {
 	// route requests though the normal path
-	include($_SERVER['DOCUMENT_ROOT'].'/index.php');
+	include $_SERVER['DOCUMENT_ROOT'].'/index.php';
 }
-
