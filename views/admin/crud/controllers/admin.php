@@ -41,19 +41,30 @@ class Controller_Admin extends Controller_Base
 
 			if ($val->run())
 			{
-				$auth = Auth::instance();
-
-				// check the credentials. This assumes that you have the previous table created
-				if (Auth::check() or $auth->login(Input::post('email'), Input::post('password')))
+				if ( ! Auth::check())
 				{
-					// credentials ok, go right in
-					$current_user = Model_User::find_by_username(Auth::get_screen_name());
-					Session::set_flash('success', e('Welcome, '.$current_user->username));
-					Response::redirect('admin');
+					if (Auth::login(Input::post('email'), Input::post('password')))
+					{
+						// assign the user id that lasted updated this record
+						foreach (\Auth::verified() as $driver)
+						{
+							if (($id = $driver->get_user_id()) !== false)
+							{
+								// credentials ok, go right in
+								$current_user = Model_User::find($id[1]);
+								Session::set_flash('success', e('Welcome, '.$current_user->username));
+								Response::redirect('admin');
+							}
+						}
+					}
+					else
+					{
+						$this->template->set_global('login_error', 'Login failed!');
+					}
 				}
 				else
 				{
-					$this->template->set_global('login_error', 'Fail');
+					$this->template->set_global('login_error', 'Already logged in!');
 				}
 			}
 		}
