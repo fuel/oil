@@ -19,7 +19,7 @@
 		<h2>Contribute</h2>
 		<p>FuelPHP wouldn't exist without awesome contributions from the community.  Use the links below to get contributing.</p>
 		<ul>
-			<li><a href="http://docs.fuelphp.com/general/coding_standards.html">Coding Standards</a></li>
+			<li><a href="http://fuelphp.com/docs/general/coding_standards.html">Coding Standards</a></li>
 			<li><a href="http://github.com/fuel/fuel">GitHub Respository</a></li>
 			<li><a href="http://fuelphp.com/contribute/issue-tracker">Issue Tracker</a></li>
 		</ul>

@@ -236,7 +236,7 @@ HELP;
 						// Respect the group options
 						\Cli::option('group') and $command .= ' --group '.\Cli::option('group');
 						\Cli::option('exclude-group') and $command .= ' --exclude-group '.\Cli::option('exclude-group');
-						
+
 						// Respect the testsuite options
 						\Cli::option('testsuite') and $command .= ' --testsuite '.\Cli::option('testsuite');
 
@@ -376,7 +376,7 @@ More information:
   about that specific command: php oil package help
 
 Documentation:
-  http://docs.fuelphp.com/packages/oil/intro.html
+  http://fuelphp.com/docs/packages/oil/intro.html
 
 HELP;
 

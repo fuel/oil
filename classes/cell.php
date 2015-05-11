@@ -180,7 +180,7 @@ Examples:
   oil cell uninstall <cell-name>
 
 Documentation:
-  http://docs.fuelphp.com/packages/oil/cell.html
+  http://fuelphp.com/docs/packages/oil/cell.html
 HELP;
 		\Cli::write($output);
 

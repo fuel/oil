@@ -1302,7 +1302,7 @@ Note that the next two lines are equivalent:
   php oil g scaffold/orm <modelname> ...
 
 Documentation:
-  http://docs.fuelphp.com/packages/oil/generate.html
+  http://fuelphp.com/docs/packages/oil/generate.html
 HELP;
 
 		\Cli::write($output);
