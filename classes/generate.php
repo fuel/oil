@@ -280,6 +280,25 @@ PRESENTER;
 
 		// Add a comma to the end of the list
 		$properties = "\n\t\t" . $properties . ",";
+		
+		// PHPDoc Properties
+		$doc_properties = implode("\n", array_map(function($field) {
+
+			$parts = preg_split("/[^a-z^0-9^,^-^_]/i", $field, 4);
+
+			$type = $parts[1];
+			$comment = "\t";
+
+			switch($parts[1]){
+				case 'enum':
+					$type = 'string';
+					$comment = "\t[" . $parts[2] . "]";
+				break;
+			}
+
+			return " * @property \t" . $type . "\t\t\$" . $parts[0] . $comment;
+
+		}, $args));		
 
 		$contents = '';
 
@@ -707,6 +726,21 @@ MODEL;
 				{
 					$model .= <<<MODEL
 <?php
+
+/**
+ *
+ * Model_{$class_name}
+ *
+ *
+ * @package
+ * @extends  \Orm\Model
+ * @author
+ * @version
+ * @copyright
+ * @access   public
+ *
+{$doc_properties}
+ */
 
 class Model_{$class_name} extends \Orm\Model
 {
