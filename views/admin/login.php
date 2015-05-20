@@ -3,7 +3,7 @@
 		<?php echo Form::open(array()); ?>
 
 			<?php if (isset($_GET['destination'])): ?>
-				<?php echo Form::hidden('destination',$_GET['destination']); ?>
+				<?php echo Form::hidden('destination', $_GET['destination']); ?>
 			<?php endif; ?>
 
 			<?php if (isset($login_error)): ?>

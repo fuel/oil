@@ -8,7 +8,7 @@
  * @version    1.7
  * @author     Fuel Development Team
  * @license    MIT License
- * @copyright  2010 - 2014 Fuel Development Team
+ * @copyright  2010 - 2015 Fuel Development Team
  * @link       http://fuelphp.com
  */
 
@@ -32,7 +32,7 @@ class Generate
 	private static $_default_constraints = array(
 		'varchar' => 255,
 		'char' => 255,
-		'int' => 11
+		'int' => 11,
 	);
 
 	public static function config($args)
@@ -97,7 +97,7 @@ CONF;
 		{
 			// strip the classes directory as we need the module root
 			// and construct the filename
-			$path = substr($path,0, -8).'config'.DS.$file.'.php';
+			$path = substr($path, 0, -8).'config'.DS.$file.'.php';
 			$path_name = "\\".ucfirst($module).'::';
 		}
 		elseif ( ! empty($module))
@@ -205,7 +205,6 @@ CONTROLLER;
 		// Write controller
 		static::create($filepath, $controller, 'controller');
 
-
 		// Do you want a presenter with that?
 		if ($with_presenter)
 		{
@@ -233,7 +232,6 @@ PRESENTER;
 
 		$build and static::build();
 	}
-
 
 	public static function model($args, $build = true)
 	{
@@ -400,7 +398,6 @@ MODEL;
 
 					$args = array_merge(array($title.':varchar[50]'), $args);
 				}
-
 
 				$tree_id = \Cli::option('tree-id', false);
 
@@ -741,7 +738,6 @@ MODEL;
 		$build and static::build();
 	}
 
-
 	public static function module($args)
 	{
 		if ( ! ($module_name = strtolower(array_shift($args)) ) )
@@ -791,7 +787,6 @@ MODEL;
 
 		static::$create_folders && static::build();
 	}
-
 
 	public static function views($args, $subfolder, $build = true)
 	{
@@ -844,7 +839,6 @@ VIEW;
 		$build and static::build();
 	}
 
-
 	public static function migration($args, $build = true)
 	{
 		// Get the migration name
@@ -874,7 +868,7 @@ VIEW;
 			foreach($migrations as $migration)
 			{
 				// check if it's really a duplicate
-				$part = explode('_', basename($migration->getFilename(), '.php'),2);
+				$part = explode('_', basename($migration->getFilename(), '.php'), 2);
 				if ($part[1] != $migration_name)
 				{
 					$part = substr($part[1], strlen($migration_name)+1);
@@ -952,38 +946,38 @@ VIEW;
 				}
 
 				// add_{field}_to_{table}
-				else if (count($matches) == 3 && $matches[1] == 'to')
+				elseif (count($matches) == 3 && $matches[1] == 'to')
 				{
 					$subjects = array($matches[0], $matches[2]);
 				}
 
 				// delete_{field}_from_{table}
-				else if (count($matches) == 3 && $matches[1] == 'from')
+				elseif (count($matches) == 3 && $matches[1] == 'from')
 				{
 					$subjects = array($matches[0], $matches[2]);
 				}
 
 				// rename_field_{field}_to_{field}_in_{table} (with underscores in field names)
-				else if (count($matches) >= 5 && in_array('to', $matches) && in_array('in', $matches))
+				elseif (count($matches) >= 5 && in_array('to', $matches) && in_array('in', $matches))
 				{
 					$subjects = array(
 					 implode('_', array_slice($matches, array_search('in', $matches)+1)),
 					 implode('_', array_slice($matches, 0, array_search('to', $matches))),
-					 implode('_', array_slice($matches, array_search('to', $matches)+1, array_search('in', $matches)-array_search('to', $matches)-1))
+					 implode('_', array_slice($matches, array_search('to', $matches)+1, array_search('in', $matches)-array_search('to', $matches)-1)),
 				  );
 				}
 
 				// rename_table
-				else if ($method_name == 'rename_table')
+				elseif ($method_name == 'rename_table')
 				{
 					$subjects = array(
 					 implode('_', array_slice($matches, 0, array_search('to', $matches))),
-					 implode('_', array_slice($matches, array_search('to', $matches)+1))
+					 implode('_', array_slice($matches, array_search('to', $matches)+1)),
 				  );
 				}
 
 				// create_{table} or drop_{table} (with underscores in table name)
-				else if (count($matches) !== 0)
+				elseif (count($matches) !== 0)
 				{
 					$name = str_replace(array('create_', 'add_', 'drop_', '_to_'), array('create-', 'add-', 'drop-', '-to-'), $migration_name);
 
@@ -1045,7 +1039,7 @@ VIEW;
 								{
 									$type = 'varchar';
 								}
-								else if ($type === 'integer')
+								elseif ($type === 'integer')
 								{
 									$type = 'int';
 								}
@@ -1164,8 +1158,6 @@ MIGRATION;
 		$build and static::build();
 	}
 
-
-
 	public static function task($args, $build = true)
 	{
 
@@ -1279,7 +1271,6 @@ CONTROLLER;
 		$build and static::build();
 	}
 
-
 	public static function help()
 	{
 		$output = <<<HELP
@@ -1316,7 +1307,6 @@ HELP;
 
 		\Cli::write($output);
 	}
-
 
 	public static function package($args, $build = true)
 	{
@@ -1475,7 +1465,6 @@ class {$class_name}
 CLASS;
 
 			static::create($path . 'classes' . DS . $name . '.php', $output);
-
 
 			$output = <<<DRIVER
 <?php
@@ -1674,7 +1663,6 @@ CLASS;
 		$build and static::build();
 	}
 
-
 	public static function create($filepath, $contents, $type = 'file')
 	{
 		$directory = dirname($filepath);
@@ -1701,10 +1689,9 @@ CLASS;
 		static::$create_files[] = array(
 			'path' => $filepath,
 			'contents' => $contents,
-			'type' => $type
+			'type' => $type,
 		);
 	}
-
 
 	public static function build()
 	{

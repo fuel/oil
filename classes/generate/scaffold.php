@@ -8,7 +8,7 @@
  * @version    1.7
  * @author     Fuel Development Team
  * @license    MIT License
- * @copyright  2010 - 2014 Fuel Development Team
+ * @copyright  2010 - 2015 Fuel Development Team
  * @link       http://fuelphp.com
  */
 
@@ -70,7 +70,7 @@ class Generate_Scaffold
 			$data['fields'][] = array(
 				'name'       => \Str::lower($matches[1]),
 				'type'       => isset($matches[2]) ? $matches[2] : 'string',
-				'constraint' => isset($matches[4]) ? $matches[4] : null
+				'constraint' => isset($matches[4]) ? $matches[4] : null,
 			);
 		}
 
@@ -192,8 +192,8 @@ class Generate_Scaffold
 			);
 		}
 
-		// Add the default template if it doesnt exist
-		if ( ! is_file($app_template = APPPATH.'views/template.php'))
+		// If not generating admin files, add the default template if it doesnt exist
+		if (static::$view_subdir != 'admin/' and  ! is_file($app_template = APPPATH.'views/template.php'))
 		{
 			// check if there's a template in app, and if so, use that
 			if (is_file(APPPATH.'views/'.static::$view_subdir.$subfolder.'/views/template.php'))
