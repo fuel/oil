@@ -58,8 +58,9 @@ class Fromdb
 		$output = <<<HELP
 
 Description:
-  Run scaffolding or generate a model from existing database table(s).
-  Database settings must be configured correctly for this to work.
+  Run scaffolding, generate a model or generate migrations from existing
+  database table(s). Database settings must be configured correctly for
+  this to work.
 
 Runtime options:
   -f, [--force]       # Overwrite files that already exist
@@ -71,6 +72,8 @@ Runtime options:
 Commands:
   php oil refine fromdb:scaffold <table_name,table_name...>
   php oil refine fromdb:scaffold --all
+  php oil refine fromdb:migration <table_name,table_name...>
+  php oil refine fromdb:migration --all
   php oil refine fromdb:model <table_name,table_name...>
   php oil refine fromdb:model --all
   php oil refine fromdb:help
@@ -91,45 +94,14 @@ HELP;
 		// do we have any tables defined?
 		if (empty($tables))
 		{
-			// do we want to generate for all tables?
-			if ( ! \Cli::option('all', false))
-			{
-				\Cli::write('No table names specified to run scaffolding on.', 'red');
-				exit();
-			}
-
-			// get the list of all available tables
-			try
-			{
-				$list = \DB::list_tables(null, \Cli::option('db', null));
-			}
-			catch (\FuelException $e)
-			{
-				\Cli::write('The database driver configured does not support listing tables. Please specify them manually.', 'red');
-				exit();
-			}
-
-			$prefix = \DB::table_prefix();
-			$migration = \Config::get('migrations.table', 'migration');
-
-			$tables = array();
-
-			// create the table list
-			foreach ($list as $table)
-			{
-				// strip any defined table prefix from the table name
-				if ( ! empty($prefix) and strpos($table, $prefix) === 0)
-				{
-					$table = substr($table, strlen($prefix));
-				}
-
-				// skip the migration table
-				$table == $migration or $tables[] = $table;
-			}
+			// fetch them all if possible
+			$tables = static::fetch_tables('scaffolding');
 		}
-
-		// make sure we have an array to work with
-		is_array($tables) or $tables = explode(',', $tables);
+		else
+		{
+			// make sure we have an array to work with
+			is_array($tables) or $tables = explode(',', $tables);
+		}
 
 		// check what kind of models we need to generate
 		$subfolder = \Cli::option('crud') ? 'crud' : 'orm';
@@ -164,45 +136,14 @@ HELP;
 		// do we have any tables defined?
 		if (empty($tables))
 		{
-			// do we want to generate for all tables?
-			if ( ! \Cli::option('all', false))
-			{
-				\Cli::write('No table names specified to generate a model on.', 'red');
-				exit();
-			}
-
-			// get the list of all available tables
-			try
-			{
-				$list = \DB::list_tables(null, \Cli::option('db', null));
-			}
-			catch (\FuelException $e)
-			{
-				\Cli::write('The database driver configured does not support listing tables. Please specify them manually.', 'red');
-				exit();
-			}
-
-			$prefix = \DB::table_prefix();
-			$migration = \Config::get('migrations.table', 'migration');
-
-			$tables = array();
-
-			// create the table list
-			foreach ($list as $table)
-			{
-				// strip any defined table prefix from the table name
-				if ( ! empty($prefix) and strpos($table, $prefix) === 0)
-				{
-					$table = substr($table, strlen($prefix));
-				}
-
-				// skip the migration table
-				$table == $migration or $tables[] = $table;
-			}
+			// fetch them all if possible
+			$tables = static::fetch_tables('a model');
 		}
-
-		// make sure we have an array to work with
-		is_array($tables) or $tables = explode(',', $tables);
+		else
+		{
+			// make sure we have an array to work with
+			is_array($tables) or $tables = explode(',', $tables);
+		}
 
 		// generate for each table defined
 		foreach ($tables as $table)
@@ -216,12 +157,95 @@ HELP;
 	}
 
 	/**
+	 * Generate migrations for a database table.
+	 *
+	 * Usage (from command line):
+	 *
+	 * php oil refine fromdb:migration <table_name,table_name...>
+	 */
+	public static function migration($tables = '')
+	{
+		// do we have any tables defined?
+		if (empty($tables))
+		{
+			// fetch them all if possible
+			$tables = static::fetch_tables('a model');
+		}
+		else
+		{
+			// make sure we have an array to work with
+			is_array($tables) or $tables = explode(',', $tables);
+		}
+
+		// generate for each table defined
+		foreach ($tables as $table)
+		{
+			// start with an empty list
+			\Oil\Generate::$create_files = array();
+
+			// and generate
+			call_user_func('Oil\Generate::migration', static::arguments($table, 'migration'));
+		}
+	}
+
+	/**
+	 * Construct the list of tables
+	 *
+	 * @param  string  type of action being called, used to display a customized message
+	 * @return  array
+	 */
+	protected static function fetch_tables($type)
+	{
+		// do we want to generate for all tables?
+		if ( ! \Cli::option('all', false))
+		{
+			\Cli::write('No table names specified to run '.$type.' on.', 'red');
+			exit();
+		}
+
+		// get the list of all available tables
+		try
+		{
+			$list = \DB::list_tables(null, \Cli::option('db', null));
+		}
+		catch (\sFuelException $e)
+		{
+			\Cli::write('The database driver configured does not support listing tables. Please specify them manually.', 'red');
+			exit();
+		}
+
+		$prefix = \DB::table_prefix();
+		$migration = \Config::get('migrations.table', 'migration');
+
+		$tables = array();
+
+		// create the table list
+		foreach ($list as $table)
+		{
+			// strip any defined table prefix from the table name
+			if ( ! empty($prefix) and strpos($table, $prefix) === 0)
+			{
+				$table = substr($table, strlen($prefix));
+			}
+
+			// skip the migration table
+			if ($table !== $migration)
+			{
+				$tables[] = $table;
+			}
+		}
+
+		return $tables;
+	}
+
+	/**
 	 * Construct the argument list
 	 *
-	 * @param  string  $table  name of the database table we need to create the list for
+	 * @param  string  $table      name of the database table we need to create the list for
+	 * @param  string  $migration  type of file we're generating an arguments list for
 	 * @return array
 	 */
-	protected static function arguments($table)
+	protected static function arguments($table, $type = 'model')
 	{
 		// get the list of columns from the table
 		try
@@ -235,7 +259,16 @@ HELP;
 		}
 
 		// construct the arguments list, starting with the table name
-		$arguments = array(\Inflector::singularize($table));
+		switch ($type)
+		{
+			case 'migration':
+				$arguments = array('create_'.$table);
+				break;
+
+			case 'model':
+			default:
+				$arguments = array(\Inflector::singularize($table));
+		}
 
 		// set some switches
 		$include_timestamps = false;
@@ -246,12 +279,6 @@ HELP;
 		{
 			// do we have a data_type defined? If not, use the generic type
 			isset($column['data_type']) or $column['data_type'] = $column['type'];
-
-			// skip the 'id' column, it will be added automatically
-			if ($column['name'] == 'id')
-			{
-				continue;
-			}
 
 			// detect timestamp columns
 			if (in_array($column['name'], array('created_at', 'updated_at')))
