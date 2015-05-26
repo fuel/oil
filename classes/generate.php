@@ -236,6 +236,12 @@ PRESENTER;
 			}
 		}
 
+		// Generate with test?
+		$with_test = \Cli::option('with-test');
+		if ($with_presenter and $with_test) {
+			static::_create_test('Presenter', $class_name, $base_path);
+		}
+
 		$build and static::build();
 	}
 
