@@ -162,7 +162,7 @@ Usage:
     php oil [r|refine] <taskname>
 
 Description:
-    Tasks are classes that can be run through the the command line or set up as a cron job.
+    Tasks are classes that can be run through the command line or set up as a cron job.
 
 Available tasks:
 $output_available_tasks
