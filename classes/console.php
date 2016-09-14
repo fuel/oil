@@ -140,7 +140,7 @@ HELP;
 				}
 				elseif ( ! is_null($ret))
 				{
-					var_export($ret);
+					print_r($ret);
 				}
 			}
 
