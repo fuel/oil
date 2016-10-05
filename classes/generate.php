@@ -1449,7 +1449,7 @@ class {$class_name}
 
 		if( ! class_exists(\$class, true))
 		{
-			throw new \FuelException('Could not find {$class_name} driver: ' . ucfirst(strtolower(\$config['driver']));
+			throw new \FuelException('Could not find {$class_name} driver: ' . ucfirst(strtolower(\$config['driver'])));
 		}
 
 		\$driver = new \$class(\$config);
