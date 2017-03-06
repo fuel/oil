@@ -1771,20 +1771,26 @@ CLASS;
 		}
 
 		$files = new \GlobIterator($base_path .'migrations/*_*.php');
-
-		try
+		if ($files->count())
 		{
-			$migrations = array();
-			foreach($files as $file)
+			try
 			{
-				$migrations[] = $file->getPathname();
+				$migrations = array();
+				foreach($files as $file)
+				{
+					$migrations[] = $file->getPathname();
+				}
+				sort($migrations);
+				list($last) = explode('_', basename(end($migrations)));
 			}
-			sort($migrations);
-			list($last) = explode('_', basename(end($migrations)));
+			catch (\LogicException $e)
+			{
+				throw new Exception("Unable to read existing migrations. Path does not exist, or you may have an 'open_basedir' defined");
+			}
 		}
-		catch (\LogicException $e)
+		else
 		{
-			throw new Exception("Unable to read existing migrations. Path does not exist, or you may have an 'open_basedir' defined");
+			$last = 0;
 		}
 
 		return str_pad($last + 1, 3, '0', STR_PAD_LEFT);
