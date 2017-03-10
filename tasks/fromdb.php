@@ -247,17 +247,6 @@ HELP;
 	 */
 	protected static function arguments($table, $type = 'model')
 	{
-		// get the list of columns from the table
-		try
-		{
-			$columns = \DB::list_columns(trim($table), null, \Cli::option('db', null));
-		}
-		catch (\Exception $e)
-		{
-			\Cli::write($e->getMessage(), 'red');
-			exit();
-		}
-
 		// construct the arguments list, starting with the table name
 		switch ($type)
 		{
@@ -273,6 +262,17 @@ HELP;
 		// set some switches
 		$include_timestamps = false;
 		$timestamp_is_int = true;
+
+		// get the list of columns from the table
+		try
+		{
+			$columns = \DB::list_columns(trim($table), null, \Cli::option('db', null));
+		}
+		catch (\Exception $e)
+		{
+			\Cli::write($e->getMessage(), 'red');
+			exit();
+		}
 
 		// process the columns found
 		foreach ($columns as $column)
@@ -295,23 +295,25 @@ HELP;
 				// check if we have such a column, and filter out some default values
 				if (isset($column[$idx]) and ! in_array($column[$idx], array('65535', '4294967295')))
 				{
-					$constraint = '['.$column[$idx].']';
+					$constraint = $column[$idx];
 					break;
 				}
 			}
 			// if it's an enum column, list the available options
 			if (in_array($column['data_type'], array('set', 'enum')))
 			{
-					$constraint = '['.implode(',', $column['options']).']';
+					$constraint = implode(',', $column['options']);
 			}
 
+			// store the constraint
+			$column['constraint'] = $constraint;
+
 			// store the column in the argument list
-			$arguments[] = $column['name'].':'.$column['data_type'].$constraint;
+			$arguments[] = $column;
 		}
 
-		// set the switches for the code generation
-		\Cli::set_option('no-timestamp', $include_timestamps === false);
-		\Cli::set_option('mysql-timestamp', $timestamp_is_int === false);
+		// tell oil not to fiddle with column information
+		\Cli::set_option('no-standardisation', true);
 
 		// return the generated argument list
 		return $arguments;
