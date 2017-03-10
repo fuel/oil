@@ -274,6 +274,17 @@ HELP;
 			exit();
 		}
 
+		// get the list of indexes from the table
+		try
+		{
+			$indexes = \DB::list_indexes(trim($table), null, \Cli::option('db', null));
+		}
+		catch (\Exception $e)
+		{
+			\Cli::write($e->getMessage(), 'red');
+			exit();
+		}
+
 		// process the columns found
 		foreach ($columns as $column)
 		{
@@ -308,8 +319,20 @@ HELP;
 			// store the constraint
 			$column['constraint'] = $constraint;
 
+			// fetch index information
+			$column['indexes'] = array();
+			foreach ($indexes as $index)
+			{
+				// check if we have an index on the current column
+				if ($column['name'] == $index['column'])
+				{
+					// add the index details for this field
+					$column['indexes'][$index['name']] = $index;
+				}
+			}
+
 			// store the column in the argument list
-			$arguments[] = $column;
+			$arguments[$column['name']] = $column;
 		}
 
 		// tell oil not to fiddle with column information

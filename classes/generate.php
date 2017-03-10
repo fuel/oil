@@ -286,7 +286,7 @@ PRESENTER;
 			throw new Exception('No fields have been provided, the model will not know how to build the table.');
 		}
 
-		$plural = \Cli::option('singular') ? $singular : \Inflector::pluralize($singular);
+		$plural = (\Cli::option('singular') or \Cli::option('no-standardisation')) ? $singular : \Inflector::pluralize($singular);
 
 		$filename = trim(str_replace(array('_', '-'), DS, $singular), DS);
 		$base_path = APPPATH;
@@ -580,9 +580,15 @@ CONTENTS;
 			$keys = array();
 			foreach($args as $arg)
 			{
-				if (isset($arg['key']) and $arg['key'] == 'PRI')
+				if (isset($arg['indexes']))
 				{
-					$keys[] = $arg['name'];
+					foreach ($arg['indexes'] as $idx)
+					{
+						if ($idx['primary'] === true)
+						{
+							$keys[$idx['order']] = $idx['column'];
+						}
+					}
 				}
 			}
 
@@ -1846,16 +1852,32 @@ CLASS;
 		$pk = false;
 		foreach ($args as $arg)
 		{
-			if (isset($arg['key']) and $arg['key'] == 'PRI')
+			if (isset($arg['indexes']))
 			{
-				$pk = true;
+				foreach ($arg['indexes'] as $idx)
+				{
+					if ($idx['primary'])
+					{
+						$pk = true;
+						break;
+					}
+				}
 			}
 		}
+
+		// keep track of the primary keys added
+		$pk_counter = 0;
 
 		// add a PK if none are present
 		if ( ! $pk and ! \Cli::option('no-standardisation'))
 		{
-			$normalized['id'] = array('name' => 'id', 'data_type' => 'int', 'unsigned' => true, 'null' => false, 'auto_increment' => true, 'key' => 'PRI', 'constraint' => '11');;
+			// define the default key column
+			$normalized['id'] = array('name' => 'id', 'data_type' => 'int', 'unsigned' => true, 'null' => false, 'auto_increment' => true, 'constraint' => '11');
+
+			// and it's primary index
+			$normalized['id']['indexes'] = array('PRIMARY' => array(
+				'name' => 'PRIMARY', 'column' => 'id', 'order' => strval(++$pk_counter), 'type' => 'BTREE', 'primary' => true, 'unique' => true, 'null' => false, 'ascending' => true,
+			));
 		}
 		elseif ($normalized['id'] === null)
 		{
@@ -1870,7 +1892,7 @@ CLASS;
 			$no_timestamp_default = false;
 
 			// closure used to add a new field
-			$add_field = function($args, $name, $type, $options = array()) {
+			$add_field = function($args, $name, $type, $options = array()) use($pk_counter) {
 
 				// create the field
 				$field = static::$_field_defaults['_default_'];
@@ -1885,6 +1907,20 @@ CLASS;
 				$field['name'] = $name;
 				$field['type'] = $type;
 				$field['data_type'] = $type;
+
+				// need to add an index?
+				if (isset($options['key']))
+				{
+					// add a primary key
+					if ($options['key'] == 'PRI')
+					{
+						$field['indexes'] = array('PRIMARY' => array(
+							'name' => 'PRIMARY', 'column' => $name, 'order' => strval(++$pk_counter), 'type' => 'BTREE', 'primary' => true, 'unique' => true, 'null' => false, 'ascending' => true,
+						));
+					}
+
+					unset($options['key']);
+				}
 
 				// return the result
 				return array_merge($args, array($name => array_merge($field, $options)));

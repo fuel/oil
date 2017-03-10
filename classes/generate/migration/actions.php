@@ -75,20 +75,62 @@ class Generate_Migration_Actions
 		// generate the code for the fields
 		list($field_up_str, $not_used, $pks, $idx) = static::_generate_field_string($fields);
 
+		// construct the primary key list
+		$pk_str = '';
+		if ($pks)
+		{
+			$pk_str = array();
+			foreach ($pks as $pk)
+			{
+				$pk_str[$pk['order']] = $pk['column'];
+			}
+			ksort($pk_str);
+			$pk_str = ", array('".implode("', '", $pk_str)."')";
+		}
+
+		// generate the up() code
 		$up = <<<UP
 		\DBUtil::create_table('{$table_prefix}{$subjects[1]}', array(
 $field_up_str
-		), array({$pks}));
+		)$pk_str);
 UP;
 
+		// generate the down() code
 		$down = '';
 		if ($idx)
 		{
-			$up .= PHP_EOL;
-			foreach ($idx as $field)
+			// transform the index data
+			$tidx = array();
+			foreach ($idx as $idxval)
 			{
-				$up .= PHP_EOL."\t\t\\DB::query('CREATE INDEX {$field}_idx ON {$table_prefix}{$subjects[1]}(`{$field}`)')->execute();";
-				$down .= PHP_EOL."\t\t\\DB::query('DROP INDEX {$field}_idx ON {$table_prefix}{$subjects[1]}')->execute();";
+				if ( ! isset($tidx[$idxval['name']]))
+				{
+					$tidx[$idxval['name']] = array((int)$idxval['order'] => $idxval);
+				}
+				else
+				{
+					$tidx[$idxval['name']][(int)$idxval['order']] = $idxval;
+				}
+			}
+
+			$up .= PHP_EOL;
+			foreach ($tidx as $name => $idx)
+			{
+				$field = array();
+				foreach ($idx as $fidx)
+				{
+					$fidx['column'] = \DB::quote_identifier($fidx['column']);
+					if ( ! $fidx['ascending'])
+					{
+						$fidx['column'] .= ' DESC';
+					}
+					$field[] = $fidx['column'];
+				}
+				$unique = reset($idx);
+				$unique = $unique['unique'] ? ' UNUQUE' : '';
+				$field = implode(', ', $field);
+				$up .= PHP_EOL."\t\t\\DB::query('CREATE{$unique} INDEX {$name} ON {$table_prefix}{$subjects[1]}({$field})')->execute();";
+				$down .= PHP_EOL."\t\t\\DB::query('DROP INDEX {$name} ON {$table_prefix}{$subjects[1]}')->execute();";
 			}
 			$down = ltrim($down, PHP_EOL).PHP_EOL.PHP_EOL;
 		}
@@ -161,7 +203,7 @@ DOWN;
 		}
 
 		// generate the code for the fields
-		list($field_up_str, $field_down_str, $pks, $idx) = static::_generate_field_string($fields);
+		list($field_up_str, $field_down_str, $not_used, $not_used) = static::_generate_field_string($fields);
 
 		$up = <<<UP
 		\DBUtil::add_fields('{$subjects[1]}', array(
@@ -237,7 +279,7 @@ DOWN;
 		}
 
 		// generate the code for the fields
-		list($field_up_str, $not_used, $not_used, $not_used) = static::_generate_field_string($column);
+		list($field_up_str, $field_down_str, $not_used, $not_used) = static::_generate_field_string($column);
 
 		// modify for different dbutil syntax
 		$field_down_str = str_replace('array(', 'array(\'name\' => \''.$subjects[0].'\', ', str_replace($subjects[0], $subjects[1], $field_up_str));
@@ -306,23 +348,28 @@ DOWN;
 			// loop over the field options
 			foreach($field as $option => $val)
 			{
-				// deal with key data first
-				if ($option == 'key')
+				// deal with index data first
+				if ($option == 'indexes')
 				{
-					// primary key field
-					if ($val == 'PRI')
+					foreach ($val as $validx)
 					{
-						$pks[] = $name;
-					}
-					if ($val == 'MUL')
-					{
-						$idx[] = $name;
+						// deal with primary indexes
+						if ($validx['primary'])
+						{
+							$pks[] = $validx;
+						}
+
+						// secondary index
+						else
+						{
+							$idx[] = $validx;
+						}
 					}
 					continue;
 				}
 
 				// skip option data from describe not supported by DBUtil::create_table()
-				if (in_array($option, array('max', 'min', 'name', 'type', 'ordinal_position', 'display', 'comment', 'privileges', 'collation_name', 'options', 'character_maximum_length', 'numeric_precision', 'numeric_scale', 'exact')))
+				if (in_array($option, array('indexes', 'key', 'max', 'min', 'name', 'type', 'ordinal_position', 'display', 'comment', 'privileges', 'collation_name', 'options', 'character_maximum_length', 'numeric_precision', 'numeric_scale', 'exact')))
 				{
 					continue;
 				}
@@ -381,7 +428,6 @@ DOWN;
 			$fields_down[] = "\t\t\t'$name'".PHP_EOL;
 		}
 
-		$pks = "'".implode("', '", $pks)."'";
 		$field_up_str = rtrim($field_up_str, PHP_EOL);
 		$field_down_str = rtrim(implode(',', $fields_down), PHP_EOL);
 
