@@ -201,7 +201,7 @@ HELP;
 			return false;
 		}
 
-		$kw = preg_split("[^a-z0-9_]i", $code);
+		$kw = preg_split("/[^a-z0-9_]/i", $code);
 		foreach ($kw as $i)
 		{
 			if (in_array($i, $skip))
