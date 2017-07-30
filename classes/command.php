@@ -333,6 +333,8 @@ HELP;
 
 	protected static function print_exception(\Exception $ex)
 	{
+		logger(\Fuel::L_ERROR, $ex->getMessage());
+
 		\Cli::error('Uncaught exception '.get_class($ex).': '.$ex->getMessage());
 		if (\Fuel::$env != \Fuel::PRODUCTION)
 		{
