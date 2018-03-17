@@ -231,7 +231,7 @@ HELP;
 		$files = $unzip->extract($zip_file, $tmp_folder);
 
 		// Grab the first folder out of it (we dont know what it's called)
-		foreach($pkgfolders = new \GlobIterator($tmp_folder.DS.'*') as $pkgfolder)
+		foreach(new \GlobIterator($tmp_folder.DS.'*') as $pkgfolder)
 		{
 			if ($pkgfolder->isDir())
 			{

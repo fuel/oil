@@ -874,31 +874,22 @@ VIEW;
 			}
 		}
 
-		$migrations = new \GlobIterator($base_path.'migrations/*_'.$migration_name.'*');
-
-		try
+		$duplicates = array();
+		foreach($migrations = new \GlobIterator($base_path.'migrations/*_'.$migration_name.'*') as $migration)
 		{
-			$duplicates = array();
-			foreach($migrations as $migration)
+			// check if it's really a duplicate
+			$part = explode('_', basename($migration->getFilename(), '.php'), 2);
+			if ($part[1] != $migration_name)
 			{
-				// check if it's really a duplicate
-				$part = explode('_', basename($migration->getFilename(), '.php'), 2);
-				if ($part[1] != $migration_name)
+				$part = substr($part[1], strlen($migration_name)+1);
+				if ( ! is_numeric($part))
 				{
-					$part = substr($part[1], strlen($migration_name)+1);
-					if ( ! is_numeric($part))
-					{
-						// not a numbered suffix, but the same base classname
-						continue;
-					}
+					// not a numbered suffix, but the same base classname
+					continue;
 				}
-
-				$duplicates[] = $migration->getPathname();
 			}
-		}
-		catch (\LogicException $e)
-		{
-			throw new Exception("Unable to read existing migrations. Path does not exist, or you may have an 'open_basedir' defined");
+
+			$duplicates[] = $migration->getPathname();
 		}
 
 		// save the migration name, it's also used as table name
@@ -2033,23 +2024,14 @@ CLASS;
 			}
 		}
 
-		$files = new \GlobIterator($base_path .'migrations/*_*.php');
-		if ($files->count())
+		foreach(new \GlobIterator($base_path .'migrations/*_*.php') as $file)
 		{
-			try
-			{
-				$migrations = array();
-				foreach($files as $file)
-				{
-					$migrations[] = $file->getPathname();
-				}
-				sort($migrations);
-				list($last) = explode('_', basename(end($migrations)));
-			}
-			catch (\LogicException $e)
-			{
-				throw new Exception("Unable to read existing migrations. Path does not exist, or you may have an 'open_basedir' defined");
-			}
+			$migrations[] = $file->getPathname();
+		}
+		if ( ! empty($migrations))
+		{
+			sort($migrations);
+			list($last) = explode('_', basename(end($migrations)));
 		}
 		else
 		{
