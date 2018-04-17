@@ -5,10 +5,10 @@
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
  * @package    Fuel
- * @version    1.8
+ * @version    1.8.1
  * @author     Fuel Development Team
  * @license    MIT License
- * @copyright  2010 - 2016 Fuel Development Team
+ * @copyright  2010 - 2018 Fuel Development Team
  * @link       http://fuelphp.com
  */
 
@@ -236,7 +236,7 @@ HELP;
 						// Respect the group options
 						\Cli::option('group') and $command .= ' --group '.\Cli::option('group');
 						\Cli::option('exclude-group') and $command .= ' --exclude-group '.\Cli::option('exclude-group');
-						
+
 						// Respect the testsuite options
 						\Cli::option('testsuite') and $command .= ' --testsuite '.\Cli::option('testsuite');
 
@@ -333,7 +333,12 @@ HELP;
 
 	protected static function print_exception(\Exception $ex)
 	{
-		\Cli::error('Uncaught exception '.get_class($ex).': '.$ex->getMessage());
+		// create the error message, log and display it
+		$msg = $ex->getCode().' - '.$ex->getMessage().' in '.$ex->getFile().' on line '.$ex->getLine();
+		logger(\Fuel::L_ERROR, $msg);
+		\Cli::error('Uncaught exception '.get_class($ex).': '.$msg);
+
+		// print a trace if not in production, don't want to spoil external logging
 		if (\Fuel::$env != \Fuel::PRODUCTION)
 		{
 			\Cli::error('Callstack: ');
@@ -342,6 +347,7 @@ HELP;
 		\Cli::beep();
 		\Cli::option('speak') and `say --voice="Trinoids" "{$ex->getMessage()}"`;
 
+		// print any previous exception(s) too...
 		if (($previous = $ex->getPrevious()) != null)
 		{
 			\Cli::error('');

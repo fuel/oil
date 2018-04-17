@@ -5,10 +5,10 @@
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
  * @package    Fuel
- * @version    1.8
+ * @version    1.8.1
  * @author     Fuel Development Team
  * @license    MIT License
- * @copyright  2010 - 2016 Fuel Development Team
+ * @copyright  2010 - 2018 Fuel Development Team
  * @link       http://fuelphp.com
  */
 
@@ -59,19 +59,39 @@ class Generate_Scaffold
 		$data['fields'] = array();
 		foreach (array_slice($args, 1) as $arg)
 		{
-			// Parse the argument for each field in a pattern of name:type[constraint]
-			preg_match(static::$fields_regex, $arg, $matches);
-
-			if ( ! isset($matches[1]))
+			// parse the argument for each field in a pattern of name:type[constraint]
+			if (is_string($arg))
 			{
-				throw new Exception('Unable to determine the field definition for "'.$arg.'". Ensure they are name:type');
+				preg_match(static::$fields_regex, $arg, $matches);
+
+				if ( ! isset($matches[1]))
+				{
+					throw new Exception('Unable to determine the field definition for "'.$arg.'". Ensure they are name:type');
+				}
+
+				$data['fields'][] = array(
+					'name'       => \Str::lower($matches[1]),
+					'type'       => isset($matches[2]) ? $matches[2] : 'string',
+					'constraint' => isset($matches[4]) ? $matches[4] : null,
+				);
 			}
 
-			$data['fields'][] = array(
-				'name'       => \Str::lower($matches[1]),
-				'type'       => isset($matches[2]) ? $matches[2] : 'string',
-				'constraint' => isset($matches[4]) ? $matches[4] : null,
-			);
+			// argument is an array with a column definition
+			elseif (is_array($arg))
+			{
+				$data['fields'][] = array(
+					'name'       => $arg['name'],
+					'type'       => $arg['type'],
+					'constraint' => $arg['constraint'],
+				);
+			}
+
+			// huh?
+			else
+			{
+				// skip it
+				logger(\Fuel::L_DEBUG, 'Generate_Scaffold::forge(): incorrect argument type passed');
+			}
 		}
 
 		$name = array_shift($args);

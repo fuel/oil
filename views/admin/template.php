@@ -35,8 +35,7 @@
 					</li>
 
 					<?php
-						$files = new GlobIterator(APPPATH.'classes/controller/admin/*.php');
-						foreach($files as $file)
+						foreach(new GlobIterator(APPPATH.'classes/controller/admin/*.php') as $file)
 						{
 							$section_segment = $file->getBasename('.php');
 							$section_title = Inflector::humanize($section_segment);
