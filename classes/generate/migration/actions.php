@@ -125,7 +125,7 @@ UP;
 					$field[] = $fidx['column'];
 				}
 				$unique = reset($idx);
-				$unique = $unique['unique'] ? ' UNUQUE' : '';
+				$unique = $unique['unique'] ? ' UNIQUE' : '';
 				$field = implode(', ', $field);
 				$up .= PHP_EOL."\t\t\\DB::query('CREATE{$unique} INDEX {$name} ON {$table_prefix}{$subjects[1]}({$field})')->execute();";
 				$down .= PHP_EOL."\t\t\\DB::query('DROP INDEX {$name} ON {$table_prefix}{$subjects[1]}')->execute();";
