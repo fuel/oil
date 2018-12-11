@@ -16,7 +16,6 @@
 
 					Response::redirect('<?php echo $uri; ?>');
 				}
-
 				else
 				{
 					Session::set_flash('error', e('Could not save <?php echo $singular_name; ?>.'));
@@ -28,5 +27,5 @@
 			}
 		}
 
-		$this->template->title = "<?php echo \Str::ucwords($plural_name); ?>";
+		$this->template->title   = "<?php echo \Str::ucwords($plural_name); ?>";
 		$this->template->content = View::forge('<?php echo $view_path; ?>/create');
