@@ -7,11 +7,12 @@
  * @author     Fuel Development Team
  * @license    MIT License
  * @copyright  2010 - 2018 Fuel Development Team
- * @link       http://fuelphp.com
+ * @link       https://fuelphp.com
  */
 
 class Controller_Admin extends Controller_Base
 {
+
 	public $template = 'admin/template';
 
 	public function before()
@@ -23,9 +24,11 @@ class Controller_Admin extends Controller_Base
 			if (Auth::check())
 			{
 				$admin_group_id = Config::get('auth.driver', 'Simpleauth') == 'Ormauth' ? 6 : 100;
+
 				if ( ! Auth::member($admin_group_id))
 				{
 					Session::set_flash('error', e('You don\'t have access to the admin panel'));
+
 					Response::redirect('/');
 				}
 			}
@@ -36,9 +39,27 @@ class Controller_Admin extends Controller_Base
 		}
 	}
 
+	/**
+	 * The index action.
+	 *
+	 * @access  public
+	 * @return  void
+	 */
+	public function action_index()
+	{
+		$this->template->title   = 'Dashboard';
+		$this->template->content = View::forge('admin/dashboard');
+	}
+
+	/**
+	 * The log in action.
+	 *
+	 * @access  public
+	 * @return  void
+	 */
 	public function action_login()
 	{
-		// Already logged in
+		// Go to dashboard page if already logged in
 		Auth::check() and Response::redirect('admin');
 
 		$val = Validation::forge();
@@ -63,7 +84,9 @@ class Controller_Admin extends Controller_Base
 							{
 								// credentials ok, go right in
 								$current_user = Model\Auth_User::find($id[1]);
+
 								Session::set_flash('success', e('Welcome, '.$current_user->username));
+
 								Response::redirect('admin');
 							}
 						}
@@ -80,12 +103,12 @@ class Controller_Admin extends Controller_Base
 			}
 		}
 
-		$this->template->title = 'Login';
+		$this->template->title   = 'Login';
 		$this->template->content = View::forge('admin/login', array('val' => $val), false);
 	}
 
 	/**
-	 * The logout action.
+	 * The log out action.
 	 *
 	 * @access  public
 	 * @return  void
@@ -93,21 +116,8 @@ class Controller_Admin extends Controller_Base
 	public function action_logout()
 	{
 		Auth::logout();
+
 		Response::redirect('admin');
 	}
 
-	/**
-	 * The index action.
-	 *
-	 * @access  public
-	 * @return  void
-	 */
-	public function action_index()
-	{
-		$this->template->title = 'Dashboard';
-		$this->template->content = View::forge('admin/dashboard');
-	}
-
 }
-
-/* End of file admin.php */
