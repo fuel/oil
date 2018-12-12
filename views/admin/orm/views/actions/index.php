@@ -27,9 +27,11 @@
 			</td>
 		</tr>
 <?php echo '<?php endforeach; ?>'; ?>
-<?php echo $pagination;?>
+
 	</tbody>
 </table>
+
+<?php echo '<?php'; ?> echo $pagination <?php echo '?>'; ?>
 
 <?php echo '<?php else: ?>'; ?>
 
