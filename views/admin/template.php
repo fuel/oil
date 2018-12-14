@@ -8,7 +8,7 @@
 		body { margin: 50px; }
 	</style>
 	<?php echo Asset::js(array(
-		'http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js',
+		'http://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js',
 		'bootstrap.js',
 	)); ?>
 	<script>
