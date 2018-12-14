@@ -9,7 +9,7 @@
 			->rows_limit($pagination->per_page)
 			->get();
 
-		$this->template->set_global('pagination', $pagination, true);
+		$this->template->set_global('pagination', $pagination, false);
 
 		$this->template->title   = "<?php echo ucfirst($plural_name); ?>";
 		$this->template->content = View::forge('<?php echo $view_path; ?>/index', $data);
