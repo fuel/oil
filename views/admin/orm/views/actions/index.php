@@ -19,9 +19,9 @@
 			<td><?php echo '<?php'; ?> echo $item<?php echo '->'.$field['name']; ?>; <?php echo '?>'; ?></td>
 <?php endforeach; ?>
 			<td>
-				<?php echo '<?php'; ?> echo Html::anchor('<?php echo $uri; ?>/view/'.$item->id, 'View'); <?php echo '?>'; ?> |
-				<?php echo '<?php'; ?> echo Html::anchor('<?php echo $uri; ?>/edit/'.$item->id, 'Edit'); <?php echo '?>'; ?> |
-				<?php echo '<?php'; ?> echo Html::anchor('<?php echo $uri; ?>/delete/'.$item->id, 'Delete', array('onclick' => "return confirm('Are you sure?')")); <?php echo '?>'; ?>
+				<?php echo '<?php'; ?> echo Html::anchor('<?php echo $uri; ?>/view/'.$item->id, 'View', array('class' => 'btn btn-xs btn-link')); <?php echo '?>'; ?>
+				<?php echo '<?php'; ?> echo Html::anchor('<?php echo $uri; ?>/edit/'.$item->id, 'Edit', array('class' => 'btn btn-xs btn-link')); <?php echo '?>'; ?>
+				<?php echo '<?php'; ?> echo Html::anchor('<?php echo $uri; ?>/delete/'.$item->id, 'Delete', array('class' => 'btn btn-xs btn-link', 'onclick' => "return confirm('Are you sure?')")); <?php echo '?>'; ?>
 
 
 			</td>
