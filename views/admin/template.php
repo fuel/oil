@@ -47,7 +47,7 @@
 				<ul class="nav navbar-nav pull-right">
 					<li class="dropdown">
 						<a data-toggle="dropdown" class="dropdown-toggle" href="#"><?php echo $current_user->username ?> <b class="caret"></b></a>
-						<ul class="dropdown-menu">
+						<ul class="dropdown-menu dropdown-menu-right">
 							<li><?php echo Html::anchor('admin/logout', 'Logout') ?></li>
 						</ul>
 					</li>
