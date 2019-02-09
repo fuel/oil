@@ -21,6 +21,17 @@ endswitch; ?>
 <?php endforeach; ?>
 		<div class="form-group">
 			<?php echo '<?php'; ?> echo Form::submit('submit', 'Save', array('class' => 'btn btn-primary')); <?php echo '?>'; ?>
+
+			<div class="pull-right">
+				<?php echo '<?php'; ?> if (Uri::segment(3) === 'edit'): <?php echo '?>'; ?>
+					<div class="btn-group">
+						<?php echo '<?php'; ?> echo Html::anchor('<?php echo $uri; ?>/view/'.$<?php echo $singular_name; ?>->id, 'View', array('class' => 'btn btn-info')); <?php echo '?>'; ?>
+						<?php echo '<?php'; ?> echo Html::anchor('<?php echo $uri; ?>', 'Back', array('class' => 'btn btn-default')); <?php echo '?>'; ?>
+					</div>
+				<?php echo '<?php'; ?> else: <?php echo '?>'; ?>
+					<?php echo '<?php'; ?> echo Html::anchor('<?php echo $uri; ?>', 'Back', array('class' => 'btn btn-link')); <?php echo '?>'; ?>
+				<?php echo '<?php'; ?> endif <?php echo '?>'; ?>
+			</div>
 		</div>
 	</fieldset>
 <?php if ($csrf): ?>

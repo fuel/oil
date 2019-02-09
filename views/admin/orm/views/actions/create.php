@@ -6,5 +6,3 @@
 		<?php echo '<?php'; ?> echo render('<?php echo $view_path; ?>/_form'); ?>
 	</div>
 </div>
-
-<p><?php echo '<?php'; ?> echo Html::anchor('<?php echo $uri ?>', 'Back'); <?php echo '?>'; ?></p>
