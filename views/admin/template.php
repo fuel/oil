@@ -11,9 +11,6 @@
 		'http://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js',
 		'bootstrap.js',
 	)); ?>
-	<script>
-		$(function(){ $('.topbar').dropdown(); });
-	</script>
 </head>
 <body>
 
