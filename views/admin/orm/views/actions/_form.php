@@ -1,4 +1,4 @@
-<?php echo '<?php echo Form::open(array("class"=>"form-horizontal")); ?>' ?>
+<?php echo '<?php echo Form::open(); ?>' ?>
 
 
 	<fieldset>
@@ -9,18 +9,17 @@
 <?php switch($field['type']):
 
 				case 'text':
-					echo "\t\t\t\t<?php echo Form::textarea('{$field['name']}', Input::post('{$field['name']}', isset(\${$singular_name}) ? \${$singular_name}->{$field['name']} : ''), array('class' => 'col-md-8 form-control', 'rows' => 8, 'placeholder'=>'".\Inflector::humanize($field['name'])."')); ?>\n";
+					echo "\t\t\t\t<?php echo Form::textarea('{$field['name']}', Input::post('{$field['name']}', isset(\${$singular_name}) ? \${$singular_name}->{$field['name']} : ''), array('class' => 'form-control', 'rows' => 8, 'placeholder'=>'".\Inflector::humanize($field['name'])."')); ?>\n";
 				break;
 
 				default:
-					echo "\t\t\t\t<?php echo Form::input('{$field['name']}', Input::post('{$field['name']}', isset(\${$singular_name}) ? \${$singular_name}->{$field['name']} : ''), array('class' => 'col-md-4 form-control', 'placeholder'=>'".\Inflector::humanize($field['name'])."')); ?>\n";
+					echo "\t\t\t\t<?php echo Form::input('{$field['name']}', Input::post('{$field['name']}', isset(\${$singular_name}) ? \${$singular_name}->{$field['name']} : ''), array('class' => 'form-control', 'placeholder'=>'".\Inflector::humanize($field['name'])."')); ?>\n";
 
 endswitch; ?>
 
 		</div>
 <?php endforeach; ?>
 		<div class="form-group">
-			<label class='control-label'>&nbsp;</label>
 			<?php echo '<?php'; ?> echo Form::submit('submit', 'Save', array('class' => 'btn btn-primary')); <?php echo '?>'; ?>
 		</div>
 	</fieldset>
