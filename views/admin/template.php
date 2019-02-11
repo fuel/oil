@@ -44,7 +44,7 @@
 						}
 					?>
 				</ul>
-				<ul class="nav navbar-nav pull-right">
+				<ul class="nav navbar-nav navbar-right">
 					<li class="dropdown">
 						<a data-toggle="dropdown" class="dropdown-toggle" href="#"><?php echo $current_user->username ?> <b class="caret"></b></a>
 						<ul class="dropdown-menu dropdown-menu-right">
