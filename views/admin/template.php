@@ -9,10 +9,6 @@
 	<style>
 		body { margin-top: 50px; }
 	</style>
-	<?php echo Asset::js(array(
-		'http://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js',
-		'bootstrap.js',
-	)); ?>
 </head>
 <body>
 
@@ -94,5 +90,10 @@
 			</p>
 		</footer>
 	</div>
+	
+	<?php echo Asset::js(array(
+		'http://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js',
+		'bootstrap.js',
+	)); ?>
 </body>
 </html>
