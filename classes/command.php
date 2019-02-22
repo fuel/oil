@@ -125,35 +125,6 @@ class Command
 
 				break;
 
-				case 'cell':
-				case 'cells':
-
-					$action = isset($args[2]) ? $args[2] : 'help';
-
-					switch ($action)
-					{
-						case 'list':
-							call_user_func('Oil\Cell::all');
-						break;
-
-						case 'search':
-						case 'install':
-						case 'upgrade':
-						case 'uninstall':
-							call_fuel_func_array('Oil\Cell::'.$action, array_slice($args, 3));
-						break;
-
-						case 'info':
-						case 'details':
-							call_fuel_func_array('Oil\Cell::info', array_slice($args, 3));
-						break;
-
-						default:
-							Cell::help();
-					}
-
-				break;
-
 				case 't':
 				case 'test':
 
@@ -359,7 +330,7 @@ HELP;
 		echo <<<HELP
 
 Usage:
-  php oil [cell|console|generate|package|refine|help|server|test]
+  php oil [console|generate|package|refine|help|server|test]
 
 Runtime options:
   -f, [--force]    # Overwrite files that already exist
