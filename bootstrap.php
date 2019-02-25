@@ -11,7 +11,6 @@
  */
 
 \Autoloader::add_classes(array(
-	'Oil\\Cell'                       => __DIR__.'/classes/cell.php',
 	'Oil\\Command'                    => __DIR__.'/classes/command.php',
 	'Oil\\Console'                    => __DIR__.'/classes/console.php',
 	'Oil\\Exception'                  => __DIR__.'/classes/exception.php',
