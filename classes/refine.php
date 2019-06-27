@@ -7,7 +7,7 @@
  * @author     Fuel Development Team
  * @license    MIT License
  * @copyright  2010 - 2018 Fuel Development Team
- * @link       http://fuelphp.com
+ * @link       https://fuelphp.com
  */
 
 namespace Oil;
@@ -165,7 +165,7 @@ Description:
 Available tasks:
 $output_available_tasks
 Documentation:
-    http://docs.fuelphp.com/packages/oil/refine.html
+    https://docs.fuelphp.com/packages/oil/refine.html
 HELP;
 		\Cli::write($output);
 

@@ -7,7 +7,7 @@
  * @author     Fuel Development Team
  * @license    MIT License
  * @copyright  2010 - 2018 Fuel Development Team
- * @link       http://fuelphp.com
+ * @link       https://fuelphp.com
  */
 
 // determine the file we're loading, we need to strip the query string for that

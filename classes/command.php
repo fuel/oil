@@ -7,7 +7,7 @@
  * @author     Fuel Development Team
  * @license    MIT License
  * @copyright  2010 - 2018 Fuel Development Team
- * @link       http://fuelphp.com
+ * @link       https://fuelphp.com
  */
 
 namespace Oil;
@@ -125,35 +125,6 @@ class Command
 
 				break;
 
-				case 'cell':
-				case 'cells':
-
-					$action = isset($args[2]) ? $args[2] : 'help';
-
-					switch ($action)
-					{
-						case 'list':
-							call_user_func('Oil\Cell::all');
-						break;
-
-						case 'search':
-						case 'install':
-						case 'upgrade':
-						case 'uninstall':
-							call_fuel_func_array('Oil\Cell::'.$action, array_slice($args, 3));
-						break;
-
-						case 'info':
-						case 'details':
-							call_fuel_func_array('Oil\Cell::info', array_slice($args, 3));
-						break;
-
-						default:
-							Cell::help();
-					}
-
-				break;
-
 				case 't':
 				case 'test':
 
@@ -183,7 +154,7 @@ Examples:
   php oil test
 
 Documentation:
-  http://fuelphp.com/docs/packages/oil/test.html
+  https://fuelphp.com/docs/packages/oil/test.html
 HELP;
 		\Cli::write($output);
 					}
@@ -215,7 +186,7 @@ HELP;
 						// Attempt to load PHUnit.  If it fails, we are done.
 						if ( ! $is_phar and ! class_exists('PHPUnit_Framework_TestCase'))
 						{
-							throw new Exception('PHPUnit does not appear to be installed.'.PHP_EOL.PHP_EOL."\tPlease visit http://phpunit.de and install.");
+							throw new Exception('PHPUnit does not appear to be installed.'.PHP_EOL.PHP_EOL."\tPlease visit https://phpunit.de and install.");
 						}
 
 						// Check for a custom phpunit config, but default to the one from core
@@ -287,7 +258,7 @@ Examples:
   php oil server -p=8080
 
 Documentation:
-  http://fuelphp.com/docs/packages/oil/server.html
+  https://fuelphp.com/docs/packages/oil/server.html
 HELP;
 		\Cli::write($output);
 					}
@@ -359,7 +330,7 @@ HELP;
 		echo <<<HELP
 
 Usage:
-  php oil [cell|console|generate|package|refine|help|server|test]
+  php oil [console|generate|package|refine|help|server|test]
 
 Runtime options:
   -f, [--force]    # Overwrite files that already exist
@@ -380,7 +351,7 @@ More information:
   about that specific command: php oil package help
 
 Documentation:
-  http://docs.fuelphp.com/packages/oil/intro.html
+  https://docs.fuelphp.com/packages/oil/intro.html
 
 HELP;
 

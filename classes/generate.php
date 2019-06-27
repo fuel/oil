@@ -7,7 +7,7 @@
  * @author     Fuel Development Team
  * @license    MIT License
  * @copyright  2010 - 2018 Fuel Development Team
- * @link       http://fuelphp.com
+ * @link       https://fuelphp.com
  */
 
 namespace Oil;
@@ -1204,7 +1204,7 @@ Note that the next two lines are equivalent:
   php oil g scaffold/orm <modelname> ...
 
 Documentation:
-  http://docs.fuelphp.com/packages/oil/generate.html
+  https://docs.fuelphp.com/packages/oil/generate.html
 HELP;
 
 		\Cli::write($output);
@@ -1247,7 +1247,7 @@ HELP;
 	"type": "fuel-package",
 	"description": "{$class_name} package",
 	"keywords": [""],
-	"homepage": "http://fuelphp.com",
+	"homepage": "https://fuelphp.com",
 	"license": "MIT",
 	"authors": [
 		{

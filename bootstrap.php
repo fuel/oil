@@ -7,11 +7,10 @@
  * @author     Fuel Development Team
  * @license    MIT License
  * @copyright  2010 - 2018 Fuel Development Team
- * @link       http://fuelphp.com
+ * @link       https://fuelphp.com
  */
 
 \Autoloader::add_classes(array(
-	'Oil\\Cell'                       => __DIR__.'/classes/cell.php',
 	'Oil\\Command'                    => __DIR__.'/classes/command.php',
 	'Oil\\Console'                    => __DIR__.'/classes/console.php',
 	'Oil\\Exception'                  => __DIR__.'/classes/exception.php',

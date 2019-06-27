@@ -7,7 +7,7 @@
  * @author     Fuel Development Team
  * @license    MIT License
  * @copyright  2010 - 2018 Fuel Development Team
- * @link       http://fuelphp.com
+ * @link       https://fuelphp.com
  */
 
 namespace Oil;
@@ -123,7 +123,7 @@ Examples:
   php oil package uninstall <packagename>
 
 Documentation:
-  http://fuelphp.com/docs/packages/oil/package.html
+  https://fuelphp.com/docs/packages/oil/package.html
 HELP;
 		\Cli::write($output);
 
