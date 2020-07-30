@@ -173,7 +173,7 @@ HELP;
 
 		for ($i = 0; $i < strlen($line); $i++)
 		{
-			$c = $line{$i};
+			$c = $line[$i];
 			if ($c == "'")
 			{
 				$sq = !$sq;
