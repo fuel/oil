@@ -2,12 +2,12 @@
 /**
  * Fuel is a fast, lightweight, community driven PHP 5.4+ framework.
  *
- * @package    Fuel
- * @version    1.9-dev
- * @author     Fuel Development Team
- * @license    MIT License
+ * @package	   Fuel
+ * @version	   1.9-dev
+ * @author	   Fuel Development Team
+ * @license	   MIT License
  * @copyright  2010 - 2019 Fuel Development Team
- * @link       https://fuelphp.com
+ * @link	   https://fuelphp.com
  */
 
 namespace Oil;
@@ -34,7 +34,7 @@ class Console
 
 		while (ob_get_level())
 		{
-			 ob_end_clean();
+			ob_end_clean();
 		}
 
 		ob_implicit_flush(true);
@@ -64,6 +64,29 @@ HELP;
 
 	}
 
+	private const MAX_HISTORY = 99;
+	private $history = [];
+
+	private function push_history($line)
+	{
+		// delimit each line, allowing for copy & paste of history back into Console
+		$line .= ';';
+
+		array_push($this->history, $line);
+		$this->history = array_slice($this->history, -self::MAX_HISTORY);
+	}
+
+	private function pop_history()
+	{
+		array_pop($this->history);
+	}
+
+	private function show_history()
+	{
+		\Cli::write($this->history);
+		\Cli::write('');
+	}
+
 	private function main()
 	{
 		\Cli::write(sprintf(
@@ -74,6 +97,8 @@ HELP;
 			self::build_date(),
 			PHP_OS
 		));
+
+		\Cli::write(['', 'Commands', ':q | quit - exit the console', ':h | history - show transcript', '']);
 
 		// Loop until they break it
 		while (TRUE)
@@ -88,13 +113,19 @@ HELP;
 				continue;
 			}
 
-			if ($__line == 'quit')
+			if ($__line == ':q' || $__line == 'quit')
 			{
 				break;
 			}
+			elseif ($__line == ':h' || $__line == 'history')
+			{
+				$this->show_history();
+				continue;
+			}
 
 			// Add this line to history
-			//$this->history[] = array_slice($this->history, 0, -99) + array($line);
+			$this->push_history($__line);
+
 			if (\Cli::$readline_support)
 			{
 				readline_add_history($__line);
@@ -113,8 +144,11 @@ HELP;
 			{
 				$ret = eval("unset(\$__line); $__line;");
 			}
-			catch(\Exception $e)
+			catch(\Exception|\Error $e)
 			{
+				// Remove last (bad) line from history
+				$this->pop_history();
+
 				$ret = $random_ret;
 				$__line = $e->getMessage();
 			}
@@ -219,7 +253,7 @@ HELP;
 
 		foreach ($func["user"] as $i)
 		{
-				$func["internal"][] = $i;
+			$func["internal"][] = $i;
 		}
 		$func = $func["internal"];
 
@@ -235,7 +269,7 @@ HELP;
 		ob_end_clean();
 
 		$x = strip_tags($x);
-		$x = explode("\n", $x);	// PHP_EOL doesn't work on Windows
+		$x = explode("\n", $x); // PHP_EOL doesn't work on Windows
 		$s = array('Build Date => ', 'Build Date ');
 
 		foreach ($x as $i)
