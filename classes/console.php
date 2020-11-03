@@ -2,12 +2,12 @@
 /**
  * Fuel is a fast, lightweight, community driven PHP 5.4+ framework.
  *
- * @package	   Fuel
- * @version	   1.9-dev
- * @author	   Fuel Development Team
- * @license	   MIT License
+ * @package    Fuel
+ * @version    1.9-dev
+ * @author     Fuel Development Team
+ * @license    MIT License
  * @copyright  2010 - 2019 Fuel Development Team
- * @link	   https://fuelphp.com
+ * @link       https://fuelphp.com
  */
 
 namespace Oil;
@@ -20,9 +20,13 @@ namespace Oil;
  * @category	Core
  * @author		Phil Sturgeon
  */
-
 class Console
 {
+
+	protected const MAX_HISTORY = 99;
+
+	protected $history = array();
+
 	public function __construct()
 	{
 		error_reporting(E_ALL | E_STRICT);
@@ -64,10 +68,7 @@ HELP;
 
 	}
 
-	private const MAX_HISTORY = 99;
-	private $history = [];
-
-	private function push_history($line)
+	protected function push_history($line)
 	{
 		// delimit each line, allowing for copy & paste of history back into Console
 		$line .= ';';
@@ -76,18 +77,18 @@ HELP;
 		$this->history = array_slice($this->history, -self::MAX_HISTORY);
 	}
 
-	private function pop_history()
+	protected function pop_history()
 	{
 		array_pop($this->history);
 	}
 
-	private function show_history()
+	protected function show_history()
 	{
 		\Cli::write($this->history);
 		\Cli::write('');
 	}
 
-	private function main()
+	protected function main()
 	{
 		\Cli::write(sprintf(
 			'Fuel %s - PHP %s (%s) (%s) [%s]',
@@ -98,7 +99,13 @@ HELP;
 			PHP_OS
 		));
 
-		\Cli::write(['', 'Commands', ':q | quit - exit the console', ':h | history - show transcript', '']);
+		\Cli::write(array(
+			'', 
+			'Commands', 
+			':q | quit - exit the console', 
+			':h | history - show transcript',
+			''
+		));
 
 		// Loop until they break it
 		while (TRUE)
@@ -113,11 +120,11 @@ HELP;
 				continue;
 			}
 
-			if ($__line == ':q' || $__line == 'quit')
+			if ($__line == ':q' or $__line == 'quit')
 			{
 				break;
 			}
-			elseif ($__line == ':h' || $__line == 'history')
+			elseif ($__line == ':h' or $__line == 'history')
 			{
 				$this->show_history();
 				continue;
@@ -144,7 +151,7 @@ HELP;
 			{
 				$ret = eval("unset(\$__line); $__line;");
 			}
-			catch(\Exception|\Error $e)
+			catch(\Exception $e)
 			{
 				// Remove last (bad) line from history
 				$this->pop_history();
@@ -152,7 +159,15 @@ HELP;
 				$ret = $random_ret;
 				$__line = $e->getMessage();
 			}
+			catch(\Error $e)
+			{
+				// Remove last (bad) line from history
+				$this->pop_history();
 
+				$ret = $random_ret;
+				$__line = $e->getMessage();
+			}
+            
 			// Error was returned
 			if ($ret === $random_ret)
 			{
