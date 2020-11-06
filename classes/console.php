@@ -20,9 +20,13 @@ namespace Oil;
  * @category	Core
  * @author		Phil Sturgeon
  */
-
 class Console
 {
+
+	protected const MAX_HISTORY = 99;
+
+	protected $history = array();
+
 	public function __construct()
 	{
 		error_reporting(E_ALL | E_STRICT);
@@ -34,7 +38,7 @@ class Console
 
 		while (ob_get_level())
 		{
-			 ob_end_clean();
+			ob_end_clean();
 		}
 
 		ob_implicit_flush(true);
@@ -64,7 +68,27 @@ HELP;
 
 	}
 
-	private function main()
+	protected function push_history($line)
+	{
+		// delimit each line, allowing for copy & paste of history back into Console
+		$line .= ';';
+
+		array_push($this->history, $line);
+		$this->history = array_slice($this->history, -self::MAX_HISTORY);
+	}
+
+	protected function pop_history()
+	{
+		array_pop($this->history);
+	}
+
+	protected function show_history()
+	{
+		\Cli::write($this->history);
+		\Cli::write('');
+	}
+
+	protected function main()
 	{
 		\Cli::write(sprintf(
 			'Fuel %s - PHP %s (%s) (%s) [%s]',
@@ -73,6 +97,14 @@ HELP;
 			php_sapi_name(),
 			self::build_date(),
 			PHP_OS
+		));
+
+		\Cli::write(array(
+			'', 
+			'Commands', 
+			':q | quit - exit the console', 
+			':h | history - show transcript',
+			''
 		));
 
 		// Loop until they break it
@@ -88,13 +120,19 @@ HELP;
 				continue;
 			}
 
-			if ($__line == 'quit')
+			if ($__line == ':q' or $__line == 'quit')
 			{
 				break;
 			}
+			elseif ($__line == ':h' or $__line == 'history')
+			{
+				$this->show_history();
+				continue;
+			}
 
 			// Add this line to history
-			//$this->history[] = array_slice($this->history, 0, -99) + array($line);
+			$this->push_history($__line);
+
 			if (\Cli::$readline_support)
 			{
 				readline_add_history($__line);
@@ -115,10 +153,21 @@ HELP;
 			}
 			catch(\Exception $e)
 			{
+				// Remove last (bad) line from history
+				$this->pop_history();
+
 				$ret = $random_ret;
 				$__line = $e->getMessage();
 			}
+			catch(\Error $e)
+			{
+				// Remove last (bad) line from history
+				$this->pop_history();
 
+				$ret = $random_ret;
+				$__line = $e->getMessage();
+			}
+            
 			// Error was returned
 			if ($ret === $random_ret)
 			{
@@ -219,7 +268,7 @@ HELP;
 
 		foreach ($func["user"] as $i)
 		{
-				$func["internal"][] = $i;
+			$func["internal"][] = $i;
 		}
 		$func = $func["internal"];
 
@@ -235,7 +284,7 @@ HELP;
 		ob_end_clean();
 
 		$x = strip_tags($x);
-		$x = explode("\n", $x);	// PHP_EOL doesn't work on Windows
+		$x = explode("\n", $x); // PHP_EOL doesn't work on Windows
 		$s = array('Build Date => ', 'Build Date ');
 
 		foreach ($x as $i)
