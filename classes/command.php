@@ -181,7 +181,10 @@ HELP;
 						// Suppressing this because if the file does not exist... well thats a bad thing and we can't really check
 						// I know that supressing errors is bad, but if you're going to complain: shut up. - Phil
 						$phpunit_autoload_path = \Config::get('oil.phpunit.autoload_path', 'PHPUnit/Autoload.php' );
-						@include_once $phpunit_autoload_path;
+						if (file_exists($phpunit_autoload_path))
+						{
+							include_once $phpunit_autoload_path;
+						}
 
 						// Attempt to load PHUnit.  If it fails, we are done.
 						if ( ! $is_phar and ! (class_exists('PHPUnit_Framework_TestCase') or class_exists('PHPUnit\Framework\TestCase')))
