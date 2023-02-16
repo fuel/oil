@@ -21,7 +21,7 @@ namespace Oil;
  */
 class Refine
 {
-	public static function run($task, $args = array())
+	public static function run($task = '', $args = array())
 	{
 		$task = strtolower($task);
 
