@@ -23,7 +23,7 @@ class Refine
 {
 	public static function run($task = '', $args = array())
 	{
-		$task = strtolower($task);
+		$task = strtolower((string)$task);
 
 		// Make sure something is set
 		if (empty($task) or $task === 'help')
