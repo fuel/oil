@@ -201,7 +201,7 @@ DOWN;
 		}
 
 		// generate the code for the fields
-		list($field_up_str, $field_down_str, $not_used, $not_used) = static::_generate_field_string($fields);
+		list($field_up_str, $field_down_str, $not_used1, $not_used2) = static::_generate_field_string($fields);
 
 		$up = <<<UP
 		\DBUtil::add_fields('{$subjects[1]}', array(
@@ -277,7 +277,7 @@ DOWN;
 		}
 
 		// generate the code for the fields
-		list($field_up_str, $field_down_str, $not_used, $not_used) = static::_generate_field_string($column);
+		list($field_up_str, $field_down_str, $not_used1, $not_used2) = static::_generate_field_string($column);
 
 		// modify for different dbutil syntax
 		$field_down_str = str_replace('array(', 'array(\'name\' => \''.$subjects[0].'\', ', str_replace($subjects[0], $subjects[1], $field_up_str));
