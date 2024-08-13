@@ -100,9 +100,9 @@ HELP;
 		));
 
 		\Cli::write(array(
-			'', 
-			'Commands', 
-			':q | quit - exit the console', 
+			'',
+			'Commands',
+			':q | quit - exit the console',
 			':h | history - show transcript',
 			''
 		));
@@ -157,7 +157,7 @@ HELP;
 				$this->pop_history();
 
 				$ret = $random_ret;
-				$__line = $e->getMessage();
+				$__line = $e;
 			}
 			catch(\Error $e)
 			{
@@ -165,13 +165,21 @@ HELP;
 				$this->pop_history();
 
 				$ret = $random_ret;
-				$__line = $e->getMessage();
+				$__line = $e;
 			}
-            
+
 			// Error was returned
 			if ($ret === $random_ret)
 			{
-				\Cli::error('Parse Error - ' . $__line);
+				if ($e instanceOf \Throwable)
+				{
+					\Cli::error('Parse Error - ' . $e->getMessage());
+					\Cli::error('              in ' . $e->getFile() . ' at line '.$e->getLine());
+				}
+				else
+				{
+					\Cli::error('Parse Error - ' . $__line);
+				}
 				\Cli::beep();
 			}
 
