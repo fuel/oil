@@ -29,7 +29,14 @@ class Console
 
 	public function __construct()
 	{
-		error_reporting(E_ALL | E_STRICT);
+		if (PHP_VERSION_ID < 80400)
+		{
+			error_reporting(E_ALL | E_STRICT);
+		}
+		else
+		{
+			error_reporting(E_ALL);
+		}
 
 		ini_set("error_log", NULL);
 		ini_set("log_errors", 1);
