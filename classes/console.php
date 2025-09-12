@@ -156,7 +156,14 @@ HELP;
 			$random_ret = \Str::random();
 			try
 			{
-				$ret = eval("unset(\$__line); $__line;");
+				$__evalfile = tempnam(sys_get_temp_dir(), 'oil');
+				file_put_contents($__evalfile, '<?php'.PHP_EOL.$__line.';');
+				$ret = include($__evalfile);
+				if (strpos($__line, 'return ') !== 0)
+				{
+					$ret = null;
+				}
+				unset($__line);
 			}
 			catch(\Exception $e)
 			{
@@ -174,6 +181,7 @@ HELP;
 				$ret = $random_ret;
 				$__line = $e;
 			}
+			unlink($__evalfile);
 
 			// Error was returned
 			if ($ret === $random_ret)
@@ -280,12 +288,7 @@ HELP;
 		$const = array_keys(get_defined_constants());
 		$var = array_keys($GLOBALS);
 		$func = get_defined_functions();
-
-		foreach ($func["user"] as $i)
-		{
-			$func["internal"][] = $i;
-		}
-		$func = $func["internal"];
+		$func = array_merge($func["internal"], $func["user"]);
 
 		return array_merge($const, $var, $func);
 	}
