@@ -314,7 +314,7 @@ HELP;
 			\Cli::error($ex->getTraceAsString());
 		}
 		\Cli::beep();
-		\Cli::option('speak') and `say --voice="Trinoids" "{$ex->getMessage()}"`;
+		\Cli::option('speak') and shell_exec('say --voice="Trinoids" "{$ex->getMessage()}"');
 
 		// print any previous exception(s) too...
 		if (($previous = $ex->getPrevious()) != null)
