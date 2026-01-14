@@ -180,6 +180,7 @@ HELP;
 	protected static function _discover_tasks()
 	{
 		$result = array();
+
 		$files = \Finder::instance()->list_files('tasks');
 
 		if (count($files) > 0)
@@ -203,6 +204,39 @@ HELP;
 					foreach ($methods as $method)
 					{
 						strpos($method->name, '_') !== 0 and $result[$task_name][] = $method->name;
+					}
+				}
+			}
+		}
+
+		$modules = \Module::loaded();
+
+		foreach ($modules as $module => $path)
+		{
+			$files = \Finder::forge($path)->list_files('tasks');
+
+			if (count($files) > 0)
+			{
+				foreach ($files as $file)
+				{
+					$task_name = strtolower($module).'::'.str_replace('.php', '', basename($file));
+					$class_name = '\\Fuel\\Tasks\\'.str_replace('.php', '', basename($file));
+
+					require $file;
+
+					$reflect = new \ReflectionClass($class_name);
+
+					// Ensure we only pull out the public methods
+					$methods = $reflect->getMethods(\ReflectionMethod::IS_PUBLIC);
+
+					$result[$task_name] = array();
+
+					if (count($methods) > 0)
+					{
+						foreach ($methods as $method)
+						{
+							strpos($method->name, '_') !== 0 and $result[$task_name][] = $method->name;
+						}
 					}
 				}
 			}
